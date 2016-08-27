@@ -2,13 +2,25 @@ package TnT.ld.ld36;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.swing.JPanel;
 
 public class Map {
+	public static Image test;
+	static{
+		try {
+			test = Resources.getImage("soldier.png");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 	public static final int MAP_WIDTH = 1000;
 	public static final int MAP_HEIGHT = 1000;
 	/**Ratio of width:height of hexagon*/
@@ -19,6 +31,7 @@ public class Map {
 	
 	//Alternatively, could use first 4 bits to specify city ID, but then limits to 16 cities
 	//to use, just and with the bit you want and check > 0
+	//If cities have everything by default, then just OR each of these with CITY_BIT
 	public static final byte CITY_BIT = 1;
 	public static final byte FOOT_PATH_BIT = 2;
 	public static final byte DIRT_ROAD_BIT = 4;
@@ -37,7 +50,7 @@ public class Map {
 	}
 	public static Map generate(){
 		Map m = new Map();		
-		m.data[3][2] |= CITY_BIT;
+		m.setTile(3,2,CITY_BIT, true);//m.data[3][2] |= CITY_BIT;
 		m.data[7][6] |= CITY_BIT;
 		m.data[11][3] |= CITY_BIT;
 		return m;
@@ -56,6 +69,16 @@ public class Map {
 	}
 	public void findPath(int x1, int y1, int x2, int y2, Transport type){
 		//TODO use canUse method above for pathfinder. pass it transport type.
+	}
+	public void setTile(int xi, int yi, byte bit, boolean v){
+		if(v)data[xi][yi] |= bit;
+		else data[xi][yi] &= ~bit;
+	}
+	public void setTile(Point p, byte bit , boolean v){
+		int xi = 0;
+		int yi = 0;
+		if(v)data[xi][yi] |= bit;
+		else data[xi][yi] &= ~bit;
 	}
 	/**
 	 * 
@@ -86,6 +109,7 @@ public class Map {
 						g.fillRect((int)(x+x1),(int)(y+ y1+10),20, 20);
 						g.setColor(Color.BLACK);
 					}
+					g.drawImage(test,(int)( x+x1+10),(int)( y+5),null);
 					//to display diff path types, just & with bits
 					
 					y+=y1;

@@ -1,5 +1,7 @@
 package TnT.ld.ld36;
 
-public class Sprite {
+import java.awt.geom.Rectangle2D;
+
+public class Sprite{
 
 }
