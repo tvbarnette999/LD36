@@ -13,6 +13,7 @@ import java.awt.geom.Path2D.Double;
 import java.awt.geom.Point2D;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Random;
 
 import javax.swing.JPanel;
 
@@ -70,6 +71,7 @@ public class Map {
 	public ArrayList<Sprite> sprites = new ArrayList<Sprite>();
 	public void mouseClicked(MouseEvent e){
 		System.out.println("map click");
+		System.out.println(getContainingTile(transformToMap(e.getX(), e.getY())));
 	}
 	Point mouseLoc = null;
 	public void mousePressed(MouseEvent e){
@@ -94,7 +96,10 @@ public class Map {
 		transY = Math.min(0, Math.max(FRAME_HEIGHT-MAP_PIXEL_HEIGHT*zoom, transY));
 	}
 	public static Map generate(){
-		Map m = new Map();		
+		Map m = new Map();
+		Random r = new Random();
+		for (int i = 0; i < MAP_WIDTH; i++)
+			r.nextBytes(m.data[i]);
 		m.setTile(3,2,CITY_BIT, true);//m.data[3][2] |= CITY_BIT;
 		m.data[7][6] |= CITY_BIT;
 		m.data[11][3] |= CITY_BIT;
@@ -105,12 +110,6 @@ public class Map {
 	}
 	private int round(double d){
 		return (int) Math.round(d);
-	}
-	private void drawLine(Graphics2D g, double x1, double y1, double x2, double y2){
-		g.drawLine(round(x1), round(y1), round(x2), round(y2));
-	}
-	private boolean canUse(int x, int y, Transport t){
-		return (data[x][y] & t.getBits()) > 0;
 	}
 	public void findPath(int x1, int y1, int x2, int y2, Transport type){
 		//TODO use canUse method above for pathfinder. pass it transport type.
@@ -125,7 +124,36 @@ public class Map {
 		if(v)data[xi][yi] |= bit;
 		else data[xi][yi] &= ~bit;
 	}
-	
+	public Point2D.Double getTileLocation(int x, int y) {
+		return new Point2D.Double(x * MAX_WIDTH * .75, (y + (x%2==1?.5:0)) * MAX_HEIGHT);
+	}
+	public Point2D.Double transformToMap(double x, double y) {
+		return new Point2D.Double((x-transX)/zoom, (y-transY)/zoom);
+	}
+	public Point getContainingTile(Point2D.Double p) {
+		return getContainingTile(p.x, p.y);
+	}
+	public Point getContainingTile(double x, double y) {
+		if (x / MAX_WIDTH * 4 % 3 >= 1) {
+			// middle section
+			System.out.println("middle");
+			x /= MAX_WIDTH*.75;
+			if (x % 2 >= 1) {
+				return new Point((int) x, (int) Math.floor(y/MAX_HEIGHT-.5));
+			} else {
+				return new Point((int) x, (int) Math.floor(y/MAX_HEIGHT));
+			}
+		} else {
+			// overlap section
+			if (x / (MAX_WIDTH*.75) % 2 >= 1) {
+				System.out.println("odd");
+			} else {
+				System.out.println("even");
+			}
+			System.out.println("overlap");
+		}
+		return null;
+	}
 	double zoom = 1;
 	double transX = 0, transY = 0;
 	static final double MIN_ZOOM = .5;
@@ -146,9 +174,8 @@ public class Map {
 		if (endY >= MAP_HEIGHT) endY = MAP_HEIGHT-1;
 		
 		Path2D.Double tile = (Double) tilePoly.clone();
-		double tx = startX*MAX_WIDTH*.75;
-		double ty = (startY + (startX%2==1?.5:0))*MAX_HEIGHT;
-		tile.transform(AffineTransform.getTranslateInstance(tx, ty));
+		Point2D.Double loc = getTileLocation(startX, startY);
+		tile.transform(AffineTransform.getTranslateInstance(loc.x, loc.y));
 		double sup = MAX_HEIGHT*(startY - endY - .5);
 		double lup = sup - MAX_HEIGHT;
 		AffineTransform tsup = AffineTransform.getTranslateInstance(MAX_WIDTH * .75, sup);
@@ -156,21 +183,41 @@ public class Map {
 		for (int x = startX; x <= endX; x++) {
 			for (int y = startY; y <= endY; y++) {
 				//TODO draw stuff in tile (corner at tx, ty)
+				if ((data[x][y]&CITY_BIT) != 0) {
+					g.setColor(Color.MAGENTA);
+					g.fill(tile);
+				}
+				if ((data[x][y]&DIRT_ROAD_BIT) != 0) {
+					g.setColor(Color.yellow.darker().darker());
+					g.fillRect((int)loc.x + 20, (int) (loc.y + 20), 20, 20);
+				}
+				if ((data[x][y]&FOOT_PATH_BIT) != 0) {
+					g.setColor(Color.GREEN);
+					g.fillRect((int)loc.x + 60, (int)loc.y + 20, 20, 20);
+				}
+				if ((data[x][y]&PAVED_ROAD_BIT) != 0) {
+					g.setColor(Color.black);
+					g.fillRect((int)loc.x + 20, (int)loc.y + 60, 20, 20);
+				}
+				if ((data[x][y]&TRACK_BIT) != 0) {
+					g.setColor(Color.red);
+					g.fillRect((int)loc.x + 60, (int)loc.y + 60, 20, 20);
+				}
 				
 				// draw tile outline
 				g.setColor(Color.black);
 				g.draw(tile);
 				tile.transform(tDown);
-				ty += MAX_HEIGHT;
+				loc.y += MAX_HEIGHT;
 			}
 			if (x%2==0) {
 				tile.transform(tsup);
-				ty += sup;
+				loc.y += sup;
 			} else {
 				tile.transform(tlup);
-				ty += lup;
+				loc.y += lup;
 			}
-			tx += MAX_WIDTH * .75;
+			loc.x += MAX_WIDTH * .75;
 		}
 		
 		
