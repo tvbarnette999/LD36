@@ -2,7 +2,7 @@ package TnT.ld.ld36;
 
 import java.util.ArrayList;
 
-public class TechTree {
+public class TechTree extends Overlay{
 
 	static ArrayList<Tech> heads = new ArrayList<Tech>();
 	
@@ -14,4 +14,9 @@ public class TechTree {
 		heads.add(shoes);
 		horseShoes.addParent(shoes);
 	}
+	
+	public TechTree(){
+		
+	}
+	
 }

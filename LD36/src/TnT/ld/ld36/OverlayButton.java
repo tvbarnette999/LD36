@@ -3,20 +3,32 @@ package TnT.ld.ld36;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 
 import javax.swing.JOptionPane;
 
 public class OverlayButton extends Overlay {
 	public String text = "Click ME";
-	public OverlayButton(){
+	public boolean selectable = false;
+	public boolean selected = false;
+	public ActionListener callback = null;
+	public OverlayButton(String text, boolean selectable){
 		this.background = Color.lightGray;
+		this.text = text;
+	}
+	public OverlayButton(String text){
+		this(text,false);
+	}
+	public OverlayButton(){
+		this("", false);
 	}
 	public void draw(Graphics2D g){
 		super.draw(g);
 		Color oc = g.getColor();
 		Font of = g.getFont();
-		g.setColor(Color.blue);
+		g.setColor(selected?Color.RED :Color.blue);
 		g.draw(this);
 		g.setColor(Color.GREEN);
 		g.setFont(of.deriveFont(24f));
@@ -34,6 +46,11 @@ public class OverlayButton extends Overlay {
 		e.consume();
 	}
 	public void mouseClicked(MouseEvent e){
-		JOptionPane.showMessageDialog(null, "You Clicked It!");
+		if(callback!=null){
+			callback.actionPerformed(new ActionEvent(this, 0, "", 0, 0));
+		}
+	}
+	public void setActionListener(ActionListener al){
+		callback = al;
 	}
 }
