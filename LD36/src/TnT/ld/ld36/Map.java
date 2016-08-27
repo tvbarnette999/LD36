@@ -85,6 +85,7 @@ public class Map {
 						g.fillRect((int)(x+x1),(int)(y+ y1+10),20, 20);
 						g.setColor(Color.BLACK);
 					}
+					//to display diff path types, just & with bits
 					
 					y+=y1;
 					x+=x2;
