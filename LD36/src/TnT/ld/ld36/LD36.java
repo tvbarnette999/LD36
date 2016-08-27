@@ -200,6 +200,7 @@ public class LD36 extends JFrame{
 					case GAME:
 						if(techTree.visible){
 							techTree.draw(g);
+							
 							break;
 						}
 						map.draw(g);
@@ -247,6 +248,8 @@ public class LD36 extends JFrame{
 		gameState = State.GAME;
 		
 		treeButton.setRect(10, buffer.getHeight() - 100, 200, 50);
+		
+		techTree.setRect(0, 0, buffer.getWidth(), buffer.getHeight());
 		double BY = buffer.getHeight() - 100;
 		double BW = 50;
 		double GAP = 25;
@@ -297,6 +300,7 @@ public class LD36 extends JFrame{
 		activeOverlays.add(right);
 		activeOverlays.add(techTree);
 	
+		techTree.addChild(treeButton);
 		techTree.visible = false;
 		
 	}
