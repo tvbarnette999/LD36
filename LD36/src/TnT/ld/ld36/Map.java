@@ -157,7 +157,6 @@ public class Map {
 			for (int y = startY; y <= endY; y++) {
 				//TODO draw stuff in tile (corner at tx, ty)
 				
-				
 				// draw tile outline
 				g.setColor(Color.black);
 				g.draw(tile);
