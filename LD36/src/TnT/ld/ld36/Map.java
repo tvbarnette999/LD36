@@ -50,6 +50,12 @@ public class Map {
 	private void drawLine(Graphics2D g, double x1, double y1, double x2, double y2){
 		g.drawLine(round(x1), round(y1), round(x2), round(y2));
 	}
+	private boolean canUse(int x, int y, Transport t){
+		return (data[x][y] & t.getBits()) > 0;
+	}
+	public void findPath(int x1, int y1, int x2, int y2, Transport type){
+		//TODO use canUse method above for pathfinder. pass it transport type.
+	}
 	/**
 	 * 
 	 * passed the dimension of the graphics object's container.
