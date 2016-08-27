@@ -24,6 +24,7 @@ public class Map {
 	public static final byte DIRT_ROAD_BIT = 4;
 	public static final byte PAVED_ROAD_BIT = 8;
 	public static final byte TRACK_BIT = 16;
+	//bit for impassable?
 
 	
 	public byte[][] data = new byte[MAP_WIDTH][MAP_HEIGHT]; //this array is done [x][y] to simplify.
