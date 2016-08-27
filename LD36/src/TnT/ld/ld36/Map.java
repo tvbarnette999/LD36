@@ -90,8 +90,8 @@ public class Map {
 		restrictScroll();
 	}
 	public void restrictScroll() {
-		transX = Math.max(FRAME_WIDTH-MAP_PIXEL_WIDTH, Math.min(0, transX));
-		transY = Math.max(FRAME_HEIGHT-MAP_PIXEL_HEIGHT, Math.min(0, transY));
+		transX = Math.min(0, Math.max(FRAME_WIDTH-MAP_PIXEL_WIDTH*zoom, transX));
+		transY = Math.min(0, Math.max(FRAME_HEIGHT-MAP_PIXEL_HEIGHT*zoom, transY));
 	}
 	public static Map generate(){
 		Map m = new Map();		
@@ -153,7 +153,6 @@ public class Map {
 		double lup = sup - MAX_HEIGHT;
 		AffineTransform tsup = AffineTransform.getTranslateInstance(MAX_WIDTH * .75, sup);
 		AffineTransform tlup = AffineTransform.getTranslateInstance(MAX_WIDTH * .75, lup);
-		System.out.println(startX + ", " + endX + ", " + startY + ", " + endY);
 		for (int x = startX; x <= endX; x++) {
 			for (int y = startY; y <= endY; y++) {
 				//TODO draw stuff in tile (corner at tx, ty)
