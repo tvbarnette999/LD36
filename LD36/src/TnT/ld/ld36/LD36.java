@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.RenderingHints;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
@@ -161,6 +162,7 @@ public class LD36 extends JFrame{
 		public void run(){
 			while(true){
 				Graphics2D g = buffer.createGraphics();
+				g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 				g.setColor(Color.WHITE);
 				g.fillRect(0, 0, buffer.getWidth(), buffer.getHeight());
 				g.setColor(Color.BLACK);
@@ -169,11 +171,11 @@ public class LD36 extends JFrame{
 						g.drawString("Click To Start", 400, 400);
 						break;
 					case GAME:
-						map.draw(g, buffer.getWidth(), buffer.getHeight());
+						map.draw(g);
 						
 						//draw everything above the map
-						bottom.setRect(0, buffer.getHeight() - 150, buffer.getWidth(), 150);
-						right.setRect(buffer.getWidth() - 200, 0, 200, buffer.getHeight() - 150);
+						bottom.setRect(0, buffer.getHeight() - Overlay.BOTTOM_HEIGHT, buffer.getWidth(), Overlay.BOTTOM_HEIGHT);
+						right.setRect(buffer.getWidth() - Overlay.RIGHT_WIDTH, 0, Overlay.RIGHT_WIDTH, buffer.getHeight() - Overlay.BOTTOM_HEIGHT);
 						right.draw(g);
 						bottom.draw(g);
 					//	g.setColor(Color.DARK_GRAY);

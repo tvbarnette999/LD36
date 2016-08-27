@@ -15,6 +15,9 @@ import java.util.ArrayList;
  *
  */
 public class Overlay extends Rectangle2D.Double implements MouseListener, MouseMotionListener{
+	public static final int BOTTOM_HEIGHT = 150;
+	public static final int RIGHT_WIDTH = 200;
+	
 	public ArrayList<Overlay> elements = new ArrayList<Overlay>();
 	Color background = Color.LIGHT_GRAY;
 	boolean visible = true;

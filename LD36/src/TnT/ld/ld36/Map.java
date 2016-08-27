@@ -7,6 +7,10 @@ import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Path2D;
+import java.awt.geom.Path2D.Double;
+import java.awt.geom.Point2D;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -30,6 +34,13 @@ public class Map {
 	public static final double MAX_HEIGHT = 100;
 	public static final double MAX_WIDTH = (MAX_HEIGHT * RATIO);
 	
+	// size of the map section on the screen
+	public static final int FRAME_WIDTH = 1280 - Overlay.RIGHT_WIDTH;
+	public static final int FRAME_HEIGHT = 768 - Overlay.BOTTOM_HEIGHT;
+	// total pixel size of the map
+	public static final double MAP_PIXEL_WIDTH = MAX_WIDTH * (.75*MAP_WIDTH + .25);
+	public static final double MAP_PIXEL_HEIGHT = MAX_HEIGHT * (MAP_HEIGHT + .5);
+	
 	//Alternatively, could use first 4 bits to specify city ID, but then limits to 16 cities
 	//to use, just and with the bit you want and check > 0
 	//If cities have everything by default, then just OR each of these with CITY_BIT
@@ -39,6 +50,20 @@ public class Map {
 	public static final byte PAVED_ROAD_BIT = 8;
 	public static final byte TRACK_BIT = 16;
 	//bit for impassable?
+	
+	// make tile poly
+	static Path2D.Double tilePoly;
+	static AffineTransform tDown = AffineTransform.getTranslateInstance(0, MAX_HEIGHT);
+	static {
+		tilePoly = new Path2D.Double();
+		tilePoly.moveTo(0, MAX_HEIGHT/2);
+		tilePoly.lineTo(MAX_WIDTH/4, 0);
+		tilePoly.lineTo(MAX_WIDTH*3/4, 0);
+		tilePoly.lineTo(MAX_WIDTH, MAX_HEIGHT/2);
+		tilePoly.lineTo(MAX_WIDTH*3/4, MAX_HEIGHT);
+		tilePoly.lineTo(MAX_WIDTH/4, MAX_HEIGHT);
+		tilePoly.closePath();
+	}
 
 	
 	public byte[][] data = new byte[MAP_WIDTH][MAP_HEIGHT]; //this array is done [x][y] to simplify.
@@ -48,22 +73,25 @@ public class Map {
 	}
 	Point mouseLoc = null;
 	public void mousePressed(MouseEvent e){
-		System.out.println("map press");
 		mouseLoc = e.getPoint();
 	}
 	public void mouseDragged(MouseEvent e) {
 		transX -= mouseLoc.x - e.getX();
 		transY -= mouseLoc.y - e.getY();
-		
+		restrictScroll();
 		mouseLoc = e.getPoint();
 	}
 	public void mouseWheelMoved(MouseWheelEvent e) {
-		System.out.println("map scroll");
-		System.out.println(e.getPoint());
 		double oz = zoom;
-		zoom *= Math.pow(1.125, e.getPreciseWheelRotation());
-		transX += e.getX() * (oz/zoom - 1);
-		transY += e.getY() * (oz/zoom - 1);
+		zoom *= Math.pow(1.125, -e.getPreciseWheelRotation());
+		zoom = Math.max(MIN_ZOOM, Math.min(1, zoom));
+		transX = e.getX() - (e.getX() - transX) * zoom / oz;
+		transY = e.getY() - (e.getY() - transY) * zoom / oz;
+		restrictScroll();
+	}
+	public void restrictScroll() {
+		transX = Math.max(FRAME_WIDTH-MAP_PIXEL_WIDTH, Math.min(0, transX));
+		transY = Math.max(FRAME_HEIGHT-MAP_PIXEL_HEIGHT, Math.min(0, transY));
 	}
 	public static Map generate(){
 		Map m = new Map();		
@@ -100,51 +128,88 @@ public class Map {
 	
 	double zoom = 1;
 	double transX = 0, transY = 0;
-	/**
-	 * 
-	 * passed the dimension of the graphics object's container.
-	 * 
-	 */
-	public void draw(Graphics2D g, int width, int height){
+	static final double MIN_ZOOM = .5;
+	public void draw(Graphics2D g){
 		final double zoom = this.zoom, transX = this.transX, transY = this.transY;
 		g.translate(transX, transY);
 		g.scale(zoom, zoom);
 		
 		g.setColor(Color.BLACK);
-		final double x1 = MAX_WIDTH/4.0;
-		final double x2 = 3 * x1;
-		final double y1 = MAX_HEIGHT / 2.0;
-		//TODO do this properly.
-		int xi = 0;
-		int yi = 0;
-		for(double y = 0; y < height; y+=MAX_HEIGHT){
-			for(double x = 0; x < width; ){
-//				g.drawRect(x, y, MAX_WIDTH, MAX_HEIGHT);
-				for(int i = 0; i < 2; i++){
-					drawLine(g, x+x1, y, x+x2, y);
-					drawLine(g, x+x2, y, x+MAX_WIDTH, y+y1);
-					drawLine(g, x+MAX_WIDTH, y+y1, x+x2, y+MAX_HEIGHT);
-					drawLine(g, x+x1,  y+MAX_HEIGHT, x+x2, y+MAX_HEIGHT);
-					drawLine(g, x, y+y1, x+x1, y+MAX_HEIGHT);
-					drawLine(g, x,y+ y1, x+x1, y);
-					g.drawString(xi+","+yi, (int)(x+x1),(int) (y+y1));
-					if(hasCity(xi,yi)){
-						g.setColor(Color.RED);
-						g.fillRect((int)(x+x1),(int)(y+ y1+10),20, 20);
-						g.setColor(Color.BLACK);
-					}
-					g.drawImage(test,(int)( x+x1+10),(int)( y+5),null);
-					//to display diff path types, just & with bits
-					
-					y+=y1;
-					x+=x2;
-					xi++;
-				}
-				y-=y1*2;
+		
+		int startX = (int) (-transX / zoom / (MAX_WIDTH*3/4));
+		int endX = startX + (int) (FRAME_WIDTH / zoom / (MAX_WIDTH*3/4));
+		if (startX < 0) startX = 0;
+		if (endX >= MAP_WIDTH) endX = MAP_WIDTH-1;
+		int startY = (int) (-transY / zoom / MAX_HEIGHT);
+		int endY = startY + (int) (FRAME_HEIGHT / zoom / MAX_HEIGHT);
+		if (startY < 0) startY = 0;
+		if (endY >= MAP_HEIGHT) endY = MAP_HEIGHT-1;
+		
+		Path2D.Double tile = (Double) tilePoly.clone();
+		double tx = startX*MAX_WIDTH;
+		double ty = (startY + (startX%2==1?.5:0))*MAX_HEIGHT;
+		tile.transform(AffineTransform.getTranslateInstance(tx, ty));
+		double sup = MAX_HEIGHT*(startY - endY + .5);
+		double lup = sup + MAX_HEIGHT;
+		AffineTransform tsup = AffineTransform.getTranslateInstance(MAX_WIDTH * .75, sup);
+		AffineTransform tlup = AffineTransform.getTranslateInstance(MAX_WIDTH * .75, lup);
+		System.out.println(startX + ", " + endX + ", " + startY + ", " + endY);
+		for (int x = startX; x <= endX; x++) {
+			for (int y = startY; y <= endY; y++) {
+				//TODO draw stuff in tile (corner at tx, ty)
+				System.out.print("("+x+", "+y+")");
+				
+				// draw tile outline
+				g.draw(tile);
+				tile.transform(tDown);
+				y += MAX_HEIGHT;
 			}
-			xi = 0;
-			yi++;
+			if (x%2==0) {
+				tile.transform(tsup);
+				ty += sup;
+			} else {
+				tile.transform(tlup);
+				ty += lup;
+			}
+			x += MAX_WIDTH * .75;
 		}
+		System.out.println();
+		
+		
+//		final double x1 = MAX_WIDTH/4.0;
+//		final double x2 = 3 * x1;
+//		final double y1 = MAX_HEIGHT / 2.0;
+//		//TODO do this properly.
+//		int xi = 0;
+//		int yi = 0;
+//		for(double y = 0; y < 100; y+=MAX_HEIGHT){
+//			for(double x = 0; x < 100; ){
+////				g.drawRect(x, y, MAX_WIDTH, MAX_HEIGHT);
+//				for(int i = 0; i < 2; i++){
+//					drawLine(g, x+x1, y, x+x2, y);
+//					drawLine(g, x+x2, y, x+MAX_WIDTH, y+y1);
+//					drawLine(g, x+MAX_WIDTH, y+y1, x+x2, y+MAX_HEIGHT);
+//					drawLine(g, x+x1,  y+MAX_HEIGHT, x+x2, y+MAX_HEIGHT);
+//					drawLine(g, x, y+y1, x+x1, y+MAX_HEIGHT);
+//					drawLine(g, x,y+ y1, x+x1, y);
+//					g.drawString(xi+","+yi, (int)(x+x1),(int) (y+y1));
+//					if(hasCity(xi,yi)){
+//						g.setColor(Color.RED);
+//						g.fillRect((int)(x+x1),(int)(y+ y1+10),20, 20);
+//						g.setColor(Color.BLACK);
+//					}
+//					g.drawImage(test,(int)( x+x1+10),(int)( y+5),null);
+//					//to display diff path types, just & with bits
+//					
+//					y+=y1;
+//					x+=x2;
+//					xi++;
+//				}
+//				y-=y1*2;
+//			}
+//			xi = 0;
+//			yi++;
+//		}
 		
 		g.scale(1/zoom, 1/zoom);
 		g.translate(-transX, -transY);
