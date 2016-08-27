@@ -3,8 +3,8 @@ package TnT.ld.ld36;
 import java.util.ArrayList;
 
 public class Tech extends OverlayButton{
-	public static final int WIDTH = 100;
-	public static final int HEIGHT = 50;
+	public static final int WIDTH = 350;
+	public static final int HEIGHT = 120;
 	
 	ArrayList<Tech> parents = new ArrayList<Tech>();
 	String name;

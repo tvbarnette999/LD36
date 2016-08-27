@@ -270,10 +270,12 @@ public class LD36 extends JFrame{
 					techTree.visible = false;
 					bottom.visible = true;
 					right.visible = true;
+					treeButton.text = "Technology Tree";
 				} else{
 					techTree.visible = true;
 					bottom.visible = false;
 					right.visible = false;
+					treeButton.text = "Close";
 				}
 			}
 		});
