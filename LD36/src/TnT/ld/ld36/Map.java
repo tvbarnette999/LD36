@@ -6,6 +6,7 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -43,10 +44,26 @@ public class Map {
 	public byte[][] data = new byte[MAP_WIDTH][MAP_HEIGHT]; //this array is done [x][y] to simplify.
 	public ArrayList<Sprite> sprites = new ArrayList<Sprite>();
 	public void mouseClicked(MouseEvent e){
-		
+		System.out.println("map click");
 	}
-	public void mouseDragged(MouseEvent e){
+	Point mouseLoc = null;
+	public void mousePressed(MouseEvent e){
+		System.out.println("map press");
+		mouseLoc = e.getPoint();
+	}
+	public void mouseDragged(MouseEvent e) {
+		transX -= mouseLoc.x - e.getX();
+		transY -= mouseLoc.y - e.getY();
 		
+		mouseLoc = e.getPoint();
+	}
+	public void mouseWheelMoved(MouseWheelEvent e) {
+		System.out.println("map scroll");
+		System.out.println(e.getPoint());
+		double oz = zoom;
+		zoom *= Math.pow(1.125, e.getPreciseWheelRotation());
+		transX += e.getX() * (oz/zoom - 1);
+		transY += e.getY() * (oz/zoom - 1);
 	}
 	public static Map generate(){
 		Map m = new Map();		
@@ -80,12 +97,19 @@ public class Map {
 		if(v)data[xi][yi] |= bit;
 		else data[xi][yi] &= ~bit;
 	}
+	
+	double zoom = 1;
+	double transX = 0, transY = 0;
 	/**
 	 * 
 	 * passed the dimension of the graphics object's container.
 	 * 
 	 */
 	public void draw(Graphics2D g, int width, int height){
+		final double zoom = this.zoom, transX = this.transX, transY = this.transY;
+		g.translate(transX, transY);
+		g.scale(zoom, zoom);
+		
 		g.setColor(Color.BLACK);
 		final double x1 = MAX_WIDTH/4.0;
 		final double x2 = 3 * x1;
@@ -121,5 +145,8 @@ public class Map {
 			xi = 0;
 			yi++;
 		}
+		
+		g.scale(1/zoom, 1/zoom);
+		g.translate(-transX, -transY);
 	}
 }

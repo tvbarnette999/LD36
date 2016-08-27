@@ -5,9 +5,12 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
+import java.awt.event.MouseWheelEvent;
+import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
@@ -28,6 +31,7 @@ public class LD36 extends JFrame{
 	Overlay bottom = new Overlay();
 	Overlay right = new Overlay();
 	ArrayList<Overlay> activeOverlays = new ArrayList<Overlay>();
+	
 	MouseAdapter adapter = new MouseAdapter(){
 		public void mouseClicked(MouseEvent e){
 			//TODO consider ignoring game state and use overlays for menu?
@@ -41,6 +45,7 @@ public class LD36 extends JFrame{
 						if(!o.visible) continue;
 						if(o.contains(e.getPoint())){
 							o.mouseClicked(e);
+							return;
 						}
 					}
 					map.mouseClicked(e);
@@ -56,8 +61,10 @@ public class LD36 extends JFrame{
 						if(!o.visible) continue;
 						if(o.contains(e.getPoint())){
 							o.mousePressed(e);
+							return;
 						}
 					}
+					map.mousePressed(e);
 			}
 		}
 		public void mouseReleased(MouseEvent e){
@@ -96,7 +103,33 @@ public class LD36 extends JFrame{
 							}
 						}
 					}
-					//TODO map.mouseMoved(e);
+//					map.mouseMoved(e);
+			}
+		}
+		public void mouseDragged(MouseEvent e){
+			switch(gameState){
+				case MAIN:
+					break;
+				case GAME:
+					//handle anything above the map here, then forward to the map
+					for(Overlay o :activeOverlays){
+						if(!o.visible) continue;
+						if(o.contains(e.getPoint())) return;
+					}
+					map.mouseDragged(e);
+			}
+		}
+		public void mouseWheelMoved(MouseWheelEvent e){
+			switch(gameState){
+				case MAIN:
+					break;
+				case GAME:
+					//handle anything above the map here, then forward to the map
+					for(Overlay o :activeOverlays){
+						if(!o.visible) continue;
+						if(o.contains(e.getPoint())) return;
+					}
+					map.mouseWheelMoved(e);
 			}
 		}
 	};
@@ -111,6 +144,7 @@ public class LD36 extends JFrame{
 		buffer = new BufferedImage(1280, 768, BufferedImage.TYPE_4BYTE_ABGR);
 		panel.addMouseListener(adapter);
 		panel.addMouseMotionListener(adapter);
+		panel.addMouseWheelListener(adapter);
 		this.add(panel);
 		this.pack();
 		this.setDefaultCloseOperation(3);
