@@ -26,8 +26,8 @@ public class Map {
 			e.printStackTrace();
 		}
 	}
-	public static final int MAP_WIDTH = 1000;
-	public static final int MAP_HEIGHT = 1000;
+	public static final int MAP_WIDTH = 100;
+	public static final int MAP_HEIGHT = 100;
 	/**Ratio of width:height of hexagon*/
 	public static final double RATIO = 1.154700538;
 	/**The height of a tile at max zoom*/
@@ -136,33 +136,34 @@ public class Map {
 		
 		g.setColor(Color.BLACK);
 		
-		int startX = (int) (-transX / zoom / (MAX_WIDTH*3/4));
-		int endX = startX + (int) (FRAME_WIDTH / zoom / (MAX_WIDTH*3/4));
+		int startX = (int) (-transX / zoom / (MAX_WIDTH*3/4)) - 1;
+		int endX = startX + (int) (FRAME_WIDTH / zoom / (MAX_WIDTH*3/4)) + 2;
 		if (startX < 0) startX = 0;
 		if (endX >= MAP_WIDTH) endX = MAP_WIDTH-1;
-		int startY = (int) (-transY / zoom / MAX_HEIGHT);
-		int endY = startY + (int) (FRAME_HEIGHT / zoom / MAX_HEIGHT);
+		int startY = (int) (-transY / zoom / MAX_HEIGHT) - 1;
+		int endY = startY + (int) (FRAME_HEIGHT / zoom / MAX_HEIGHT) + 2;
 		if (startY < 0) startY = 0;
 		if (endY >= MAP_HEIGHT) endY = MAP_HEIGHT-1;
 		
 		Path2D.Double tile = (Double) tilePoly.clone();
-		double tx = startX*MAX_WIDTH;
+		double tx = startX*MAX_WIDTH*.75;
 		double ty = (startY + (startX%2==1?.5:0))*MAX_HEIGHT;
 		tile.transform(AffineTransform.getTranslateInstance(tx, ty));
-		double sup = MAX_HEIGHT*(startY - endY + .5);
-		double lup = sup + MAX_HEIGHT;
+		double sup = MAX_HEIGHT*(startY - endY - .5);
+		double lup = sup - MAX_HEIGHT;
 		AffineTransform tsup = AffineTransform.getTranslateInstance(MAX_WIDTH * .75, sup);
 		AffineTransform tlup = AffineTransform.getTranslateInstance(MAX_WIDTH * .75, lup);
 		System.out.println(startX + ", " + endX + ", " + startY + ", " + endY);
 		for (int x = startX; x <= endX; x++) {
 			for (int y = startY; y <= endY; y++) {
 				//TODO draw stuff in tile (corner at tx, ty)
-				System.out.print("("+x+", "+y+")");
+				
 				
 				// draw tile outline
+				g.setColor(Color.black);
 				g.draw(tile);
 				tile.transform(tDown);
-				y += MAX_HEIGHT;
+				ty += MAX_HEIGHT;
 			}
 			if (x%2==0) {
 				tile.transform(tsup);
@@ -171,9 +172,8 @@ public class Map {
 				tile.transform(tlup);
 				ty += lup;
 			}
-			x += MAX_WIDTH * .75;
+			tx += MAX_WIDTH * .75;
 		}
-		System.out.println();
 		
 		
 //		final double x1 = MAX_WIDTH/4.0;

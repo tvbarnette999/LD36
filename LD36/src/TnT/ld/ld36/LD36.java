@@ -13,6 +13,7 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
+import java.awt.image.VolatileImage;
 import java.util.ArrayList;
 
 import javax.swing.JFrame;
@@ -28,7 +29,7 @@ public class LD36 extends JFrame{
 	State gameState = State.MAIN;
 	JPanel panel = new JPanel();
 	Map map;
-	BufferedImage buffer;
+	VolatileImage buffer;
 	Overlay bottom = new Overlay();
 	Overlay right = new Overlay();
 	ArrayList<Overlay> activeOverlays = new ArrayList<Overlay>();
@@ -142,7 +143,8 @@ public class LD36 extends JFrame{
 	public void initGUI() {
 		//Fullscreen?
 		panel.setPreferredSize(new Dimension(1280, 768));
-		buffer = new BufferedImage(1280, 768, BufferedImage.TYPE_4BYTE_ABGR);
+//		buffer = new BufferedImage(1280, 768, BufferedImage.TYPE_4BYTE_ABGR);
+		System.out.println(buffer);
 		panel.addMouseListener(adapter);
 		panel.addMouseMotionListener(adapter);
 		panel.addMouseWheelListener(adapter);
@@ -151,6 +153,7 @@ public class LD36 extends JFrame{
 		this.setDefaultCloseOperation(3);
 		this.setLocationRelativeTo(null);
 		this.setVisible(true);
+		buffer = panel.createVolatileImage(1280, 768);
 		graphics.start();
 		physics.start();
 	}
