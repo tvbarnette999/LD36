@@ -207,6 +207,8 @@ public class LD36 extends JFrame{
 			case KeyEvent.VK_RIGHT:
 				rightPressed = true;
 				break;
+			case KeyEvent.VK_ESCAPE:
+				if(treeButton.callback != null && techTree.visible)treeButton.callback.actionPerformed(new ActionEvent(treeButton, 0 ,""));
 			}
 		}
 		

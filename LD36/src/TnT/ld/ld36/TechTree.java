@@ -13,7 +13,7 @@ public class TechTree extends Overlay{
 	public static int MAX_COLUMN = 0;
 	public static int MAX_SCROLL = 0;
 	
-	double scroll = 10000;
+	double scroll = 00;
 	static ArrayList<Tech> heads = new ArrayList<Tech>();
 	
 	//instantiate all the techs here, pass them the list of ones they affect
@@ -51,12 +51,12 @@ public class TechTree extends Overlay{
 	static Tech smootherRoads = new Tech("Smoother Roads", "");
 	static Tech ditches = new Tech("Ditches", "");
 	static Tech iron = new Tech("Iron", "");
-	static Tech compass = new Tech("Compass", "");
+//	static Tech compass = new Tech("Compass", "");
 	static Tech cartography = new Tech("Cartography", "");
 	static Tech medicine = new Tech("Medicine", "");
-	static Tech literacy = new Tech("Literacy", "");
+	//static Tech literacy = new Tech("Literacy", "");
 	static Tech steel = new Tech("Steel", "");
-	static Tech steelFarm = new Tech("Steel Farm Equipment", "");
+	//static Tech steelFarm = new Tech("Steel Farm Equipment", "");
 	static Tech math = new Tech("Math", "");
 	static Tech carriage = new Tech("Horse Drawn Carriage", "");
 	static Tech metalRims = new Tech("Metal Rims", "Adds coolness, so horse goes quicker");
@@ -81,7 +81,43 @@ public class TechTree extends Overlay{
 	static Tech method = new Tech("Scientific Method", "");
 	static Tech fossil = new Tech("Fossil Fuels", "");
 	static Tech combustion = new Tech("Combustion Engine", "");
+	static Tech coal = new Tech("Coal", "");
+	static Tech locomotive = new Tech("Locomotive", "");
+	static Tech longTrains = new Tech("Long Trains" , "");
+	static Tech cowCatchers = new Tech("Cow Catchers", "");
+	static Tech electricity = new Tech("Electricity", "");
+	static Tech oil=  new Tech("Oil", "");
+	static Tech asphault = new Tech("Asphault", "");
+	static Tech paved = new Tech("Paved Road", "");
+	static Tech cars = new Tech("Cars", "");
+	static Tech gasoline = new Tech("Gasoline", "");
+	static Tech diesel = new Tech("Diesel", "");
+	static Tech jetFuel = new Tech("Jet Fuel", "");
+	static Tech beams = new Tech("Steel Beams", "");
+	static Tech aerodynamics = new Tech("Aerodynamics", "");
+	static Tech aviation = new Tech("Aviation", "");
+	static Tech airplanes = new Tech("Airplanes", "");
+	static Tech airports = new Tech("Airports", "");
 	
+	static Tech dieselTrain = new Tech("Diesel Locomotive", "");
+	static Tech trucks = new Tech("Trucks", "");
+	static Tech powerLines = new Tech("Power Lines", "");
+	static Tech electricTrain = new Tech("Electric Trains", "");
+	static Tech bulletTrain = new Tech("Bullet Train", "");
+	static Tech battery = new Tech("Batteries", "");
+	static Tech semi = new Tech("Semi-Trailer Truck", "");
+	static Tech electricCar = new Tech("Electric Car", "");
+	
+	static Tech EPA = new Tech("EPA", "");
+	static Tech efficiency= new Tech("Fuel Efficiency", "");
+	
+	static Tech AI = new Tech("AI", "");
+	
+	static Tech selfCar = new Tech("Self Driving Car", "");
+	static Tech selfTrain = new Tech("Self Driving Train", "");
+	static Tech selfPlane = new Tech("AutoPilot", "");
+	
+	static Tech singularity = new Tech("Singularity", "Machines take over. ");
 	//TODO research inflation. you make more monezzz
 	//reseach capitalism
 	//static Tech onagers = new Tech("Onagers", "Increases catapault range by 20%",  Transport.CATAPAULT_RANGE);
@@ -130,7 +166,7 @@ public class TechTree extends Overlay{
 		ditches.row = 2;
 		iron.row = 2;
 		
-		compass.row = 2;
+	//	compass.row = 2;
 		cartography.row = 2;
 		
 		metalRims.row = 1;
@@ -138,32 +174,70 @@ public class TechTree extends Overlay{
 		twoHorse.row = 1;
 		caravan.row = 1;
 		medicine.row = 2;
-		literacy.row = 2;
+		//literacy.row = 2;
 		steel.row = 0;
 		math.row = 2;
 		engineering.row = 2;
-		catapult.row = 3;
-		tension.row = 3;
-		biggerCatapult.row = 3;
-		onager.row = 3;
+		catapult.row = 4;
+		tension.row = 4;
+		biggerCatapult.row = 4;
+		onager.row = 4;
 		
 		steam.row = 1;
 		shaftMining.row = 1;
 		metallurgy.row = 1;
 		engine.row = 1;
 		railroad.row = 0;
-		steelFarm.row = 3;
+	//	steelFarm.row = 3;
 		
-		modernScience.row = 4;
-		medicine.row = 4;
-		steroids.row = 4;
-		horseSteroids.row = 4;
+		modernScience.row = 3;
+		medicine.row = 3;
+		steroids.row = 3;
+		horseSteroids.row = 3;
 		
 		printPress.row = 2;
 		method.row = 2;
 		fossil.row = 2;
+		electricity.row = 2;
+		oil.row = 2;
+		gasoline.row = 2;
+		
 		
 		combustion.row = 1;
+		asphault.row = 1;
+		paved.row = 1;
+		cars.row = 2;
+		diesel.row = 1;
+		powerLines.row = 1;
+		battery.row = 1;
+		AI.row = 1;
+		
+		coal.row = 0;
+		locomotive.row = 0;
+		longTrains.row = 0;
+		cowCatchers.row= 0;
+		dieselTrain.row = 0;
+		bulletTrain.row = 0;
+		electricTrain.row = 0;
+		trucks.row = 2;
+		semi.row = 2;
+		electricCar.row =2;
+		
+		EPA.row = 3;
+		efficiency.row = 3;
+		jetFuel.row = 4;
+		beams.row = 4;
+		aerodynamics.row = 4;
+		aviation.row = 4;
+		airplanes.row = 4;
+		airports.row = 4;
+		
+		
+		selfPlane.row = 4;
+		selfCar.row = 2;
+		selfTrain.row = 0;
+		
+		singularity.row = 2;
 		
 		
 		//add child only after all parents have been added to their parents!
@@ -222,8 +296,7 @@ public class TechTree extends Overlay{
 		smootherRoads.addParent(smithing);
 		ditches.addParent(smootherRoads);
 		iron.addParent(ditches);
-		compass.addParent(iron);
-		cartography.addParent(compass);
+		//compass.addParent(iron);
 		
 		spurs.addParent(carrot);
 		ironHorseShoes.addParent(iron);
@@ -240,9 +313,13 @@ public class TechTree extends Overlay{
 //		steel.addParent(literacy);
 //		math.addParent(steel);
 //		steelFarm.addParent(steel);
-		math.addParent(cartography);
-		engineering.addParent(math);
-		catapult.addParent(engineering);
+		//math.addParent(cartography);
+		math.addParent(iron);
+
+		cartography.addParent(math);//ompass);
+		engineering.addParent(cartography);
+		engineering.addParent(modernScience);
+		catapult.addParent(math);
 		biggerCatapult.addParent(catapult);
 		tension.addParent(biggerCatapult);
 		onager.addParent(tension);
@@ -253,6 +330,10 @@ public class TechTree extends Overlay{
 		engine.addParent(engineering);
 		railroad.addParent(engine);
 		railroad.addParent(steel);
+		coal.addParent(railroad);
+		locomotive.addParent(coal);
+		longTrains.addParent(locomotive);
+		cowCatchers.addParent(longTrains);
 		
 		
 		modernScience.addParent(math);
@@ -269,10 +350,51 @@ public class TechTree extends Overlay{
 		
 		combustion.addParent(engine);
 		combustion.addParent(fossil);
+		electricity.addParent(fossil);
+		oil.addParent(electricity);
+		gasoline.addParent(oil);
+		asphault.addParent(combustion);
+		paved.addParent(asphault);
+		cars.addParent(gasoline);
+		cars.addParent(paved);
 		
+		diesel.addParent(gasoline);
+		jetFuel.addParent(oil);
+		beams.addParent(jetFuel);
+		aerodynamics.addParent(beams);
+		aviation.addParent(aerodynamics);
+		airplanes.addParent(aviation);
+		airports.addParent(airplanes);
+		
+		powerLines.addParent(diesel);
+		
+		dieselTrain.addParent(diesel);
+		dieselTrain.addParent(cowCatchers);
+		electricTrain.addParent(dieselTrain);
+		electricTrain.addParent(powerLines);
+		bulletTrain.addParent(electricTrain);
+		battery.addParent(powerLines);
+		trucks.addParent(cars);
+		semi.addParent(trucks);
+		electricCar.addParent(semi);
+		electricCar.addParent(battery);
 //		System.out.println(weights.depth);
 		
+		EPA.addParent(trucks);
+		efficiency.addParent(EPA);
 		
+		AI.addParent(battery);
+		
+		selfCar.addParent(AI);
+		selfTrain.addParent(AI);
+		selfPlane.addParent(AI);
+		selfCar.addParent(electricCar);
+		selfTrain.addParent(electricTrain);
+		selfPlane.addParent(airports);
+		
+		singularity.addParent(selfCar);
+		singularity.addParent(selfTrain);
+		singularity.addParent(selfPlane);
 	}
 	
 	static{
@@ -291,7 +413,7 @@ public class TechTree extends Overlay{
 		metal.cost = 10000;
 		
 		saddles.cost = 15000;
-		saddleBags.cost = 30000;
+		saddleBags.cost = 30000000d;
 	}
 	
 	public TechTree(){		
