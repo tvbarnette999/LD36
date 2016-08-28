@@ -47,6 +47,11 @@ public class LD36 extends JFrame{
 	
 	OverlayButton addSelected = clearSelection;
 	
+	//TODO return how to display varying sizes of money
+	public static String moneyString(double x){
+		if(x<1000000) return "$"+x;
+		return "$$"+x;
+	}
 	ActionListener addListener = new ActionListener(){
 		public void actionPerformed(ActionEvent e){
 			OverlayButton o = (OverlayButton) e.getSource();

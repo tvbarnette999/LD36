@@ -90,6 +90,7 @@ public class Tech extends OverlayButton implements ActionListener{
 		
 		g.setColor(Color.white);
 		g.drawString(name, (int)(x+5), (int)(y+15));
+		g.drawString(LD36.moneyString(cost),(int)x+5, (int) ((int)y+height -5));
 		//draw path to parents!
 		Stroke os = g.getStroke();
 		g.setStroke(new BasicStroke(4));
