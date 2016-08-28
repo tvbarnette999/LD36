@@ -70,18 +70,25 @@ public class Map {
 	public byte[][] data = new byte[MAP_WIDTH][MAP_HEIGHT]; //this array is done [x][y] to simplify.
 	public ArrayList<Sprite> sprites = new ArrayList<Sprite>();
 	public void mouseClicked(MouseEvent e){
-		System.out.println("map click");
-		System.out.println(getContainingTile(transformToMap(e.getX(), e.getY())));
+		Point tile = getContainingTile(transformToMap(e.getX(), e.getY()));
+		
 	}
 	Point mouseLoc = null;
 	public void mousePressed(MouseEvent e){
 		mouseLoc = e.getPoint();
 	}
 	public void mouseDragged(MouseEvent e) {
-		transX -= mouseLoc.x - e.getX();
-		transY -= mouseLoc.y - e.getY();
-		restrictScroll();
-		mouseLoc = e.getPoint();
+		if ((e.getModifiers()&4) != 0) {
+			// right click
+			transX -= mouseLoc.x - e.getX();
+			transY -= mouseLoc.y - e.getY();
+			restrictScroll();
+			mouseLoc = e.getPoint();
+		}
+		if ((e.getModifiers()&16) != 0) {
+			// left click
+			// do track drawing
+		}
 	}
 	public void mouseWheelMoved(MouseWheelEvent e) {
 		double oz = zoom;
@@ -136,7 +143,6 @@ public class Map {
 	public Point getContainingTile(double x, double y) {
 		if (x / MAX_WIDTH * 4 % 3 >= 1) {
 			// middle section
-			System.out.println("middle");
 			x /= MAX_WIDTH*.75;
 			if (x % 2 >= 1) {
 				return new Point((int) x, (int) Math.floor(y/MAX_HEIGHT-.5));
@@ -145,14 +151,29 @@ public class Map {
 			}
 		} else {
 			// overlap section
+			double xm = x % (MAX_WIDTH*.75);
+			double ym = y % (MAX_HEIGHT/2);
+			int xd = (int) (x/(MAX_WIDTH*.75));
+			int yd = (int) (y/MAX_HEIGHT);
+			double slope = Math.tan(Math.PI/3);
 			if (x / (MAX_WIDTH*.75) % 2 >= 1) {
-				System.out.println("odd");
+				if (y / (MAX_HEIGHT/2) % 2 >= 1) {
+					if (xm*slope > MAX_HEIGHT/2-ym) return new Point(xd, yd);
+					else return new Point(xd-1, yd);
+				} else {
+					if (xm*slope > ym) return new Point(xd, yd-1);
+					else return new Point(xd-1, yd);
+				}
 			} else {
-				System.out.println("even");
+				if (y / (MAX_HEIGHT/2) % 2 >= 1) {
+					if (xm*slope > ym) return new Point(xd, yd);
+					else return new Point(xd-1, yd);
+				} else {
+					if (xm*slope > MAX_HEIGHT/2-ym) return new Point(xd, yd);
+					else return new Point(xd-1, yd-1);
+				}
 			}
-			System.out.println("overlap");
 		}
-		return null;
 	}
 	double zoom = 1;
 	double transX = 0, transY = 0;
