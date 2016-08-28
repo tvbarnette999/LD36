@@ -9,7 +9,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 public class Tech extends OverlayButton implements ActionListener{
-	public static final int WIDTH = 70;//250;
+	public static final int WIDTH = 150;
 	public static final int HEIGHT = 100;
 	
 	ArrayList<Tech> parents = new ArrayList<Tech>();
@@ -18,11 +18,11 @@ public class Tech extends OverlayButton implements ActionListener{
 	int cost = 1;
 	boolean researched = false;
 	//int x, y;//manual location/rendering?
-	Transport[] targets;
+	Object[] targets;
 	public double value;
 	int depth = 0; //calculated
 	int row = 0;
-	public Tech(String name, String description, Transport ...targets ){
+	public Tech(String name, String description, Object ...targets ){
 		super(name);
 		this.background = Color.blue;
 		this.removedBackground = Color.blue;
@@ -48,8 +48,13 @@ public class Tech extends OverlayButton implements ActionListener{
 	}
 	public void research(){
 		researched = true;
-		for(Transport t : targets){
-			t.scalar *= value;
+		for(Object o : targets){
+			if(o instanceof Transport){
+				((Transport)o).scalar *= value;
+			}
+			if(o instanceof Road){
+				((Road)o).unlocked = true;
+			}
 		}
 		LD36.theLD.money-=cost;
 		

@@ -13,7 +13,7 @@ public class TechTree extends Overlay{
 	public static int MAX_COLUMN = 0;
 	public static int MAX_SCROLL = 0;
 	
-	double scroll = 0;
+	double scroll = 10000;
 	static ArrayList<Tech> heads = new ArrayList<Tech>();
 	
 	//instantiate all the techs here, pass them the list of ones they affect
@@ -38,8 +38,52 @@ public class TechTree extends Overlay{
 	static Tech horseShoes = new Tech("Horseshoes", "Increases horse speed by 10%", Transport.HORSE, Transport.CARRIAGE, Transport.CARAVAN);
 	static Tech wheel = new Tech("The Wheel", "");
 	static Tech weights = new Tech("Weight Training", "");
+	static Tech breeding = new Tech("Enhanced Breeding", "");
+	static Tech dirtRoad = new Tech("Dirt Roads", "", Road.DIRT);
 	
 	
+	static Tech olympics = new Tech("Olympics", "");
+	static Tech relays = new Tech("Relays", "");
+	static Tech carrot = new Tech("Carrot on a Stick", "");
+	static Tech spurs = new Tech("Spurs", "Better control of horses");
+	static Tech ironHorseShoes = new Tech("Iron Horse Shoes", "");
+	static Tech smithing = new Tech("Smithing", "");
+	static Tech smootherRoads = new Tech("Smoother Roads", "");
+	static Tech ditches = new Tech("Ditches", "");
+	static Tech iron = new Tech("Iron", "");
+	static Tech compass = new Tech("Compass", "");
+	static Tech cartography = new Tech("Cartography", "");
+	static Tech medicine = new Tech("Medicine", "");
+	static Tech literacy = new Tech("Literacy", "");
+	static Tech steel = new Tech("Steel", "");
+	static Tech steelFarm = new Tech("Steel Farm Equipment", "");
+	static Tech math = new Tech("Math", "");
+	static Tech carriage = new Tech("Horse Drawn Carriage", "");
+	static Tech metalRims = new Tech("Metal Rims", "Adds coolness, so horse goes quicker");
+	static Tech lighterCarriage = new Tech("Lighter Carriage", "");
+	static Tech twoHorse = new Tech("Two Horse Carriage", "");
+	static Tech caravan = new Tech("Caravan", "");
+	//static Tech lanterns = new Tech("Lanterns", "");
+	static Tech steam = new Tech("Steam", "");
+	static Tech engineering = new Tech("Engineering", "");
+	static Tech catapult = new Tech("Catapult", "");
+	static Tech biggerCatapult = new Tech("BIGGER Catapult", "Bigger is better");
+	static Tech tension = new Tech("High Tension Rope", "");
+	static Tech onager = new Tech("Onager", "");
+	static Tech shaftMining = new Tech("Shaft Mining", "");
+	static Tech metallurgy = new Tech("Metallurgy", "");
+	static Tech engine = new Tech("Engine", "");
+	static Tech railroad = new Tech("Rail Roads", "", Road.RAIL);
+	static Tech modernScience = new Tech("Modern Science", "");
+	static Tech steroids= new Tech("Steroids", "");
+	static Tech horseSteroids = new Tech("Horse Steroids", "");
+	static Tech printPress = new Tech("Printing Press", "");
+	static Tech method = new Tech("Scientific Method", "");
+	static Tech fossil = new Tech("Fossil Fuels", "");
+	static Tech combustion = new Tech("Combustion Engine", "");
+	
+	//TODO research inflation. you make more monezzz
+	//reseach capitalism
 	//static Tech onagers = new Tech("Onagers", "Increases catapault range by 20%",  Transport.CATAPAULT_RANGE);
 	
 	static{
@@ -52,6 +96,8 @@ public class TechTree extends Overlay{
 		protein.row = 0;
 		gym.row = 0;
 		weights.row = 0;
+		olympics.row = 0;
+		relays.row = 0;
 		
 		agriculture.row = 1;
 		paper.row = 1;
@@ -68,8 +114,56 @@ public class TechTree extends Overlay{
 		horseFood.row = 2;
 		horseShoes.row = 2;
 		
+		breeding.row = 2;
+		carrot.row = 3;
+		spurs.row = 2;
+		ironHorseShoes.row = 2;
 		
+		dirtRoad.row = 1;
+		smithing.row = 2;
+		carriage.row = 1;
 		
+		spurs.row = 3;
+		ironHorseShoes.row = 3;
+		
+		smootherRoads.row = 2;
+		ditches.row = 2;
+		iron.row = 2;
+		
+		compass.row = 2;
+		cartography.row = 2;
+		
+		metalRims.row = 1;
+		lighterCarriage.row =1;
+		twoHorse.row = 1;
+		caravan.row = 1;
+		medicine.row = 2;
+		literacy.row = 2;
+		steel.row = 0;
+		math.row = 2;
+		engineering.row = 2;
+		catapult.row = 3;
+		tension.row = 3;
+		biggerCatapult.row = 3;
+		onager.row = 3;
+		
+		steam.row = 1;
+		shaftMining.row = 1;
+		metallurgy.row = 1;
+		engine.row = 1;
+		railroad.row = 0;
+		steelFarm.row = 3;
+		
+		modernScience.row = 4;
+		medicine.row = 4;
+		steroids.row = 4;
+		horseSteroids.row = 4;
+		
+		printPress.row = 2;
+		method.row = 2;
+		fossil.row = 2;
+		
+		combustion.row = 1;
 		
 		
 		//add child only after all parents have been added to their parents!
@@ -83,6 +177,8 @@ public class TechTree extends Overlay{
 		mining.addParent(leather);
 		metal.addParent(mining);
 		wheel.addParent(metal);
+		dirtRoad.addParent(wheel);
+		
 		
 		
 		shoes.addParent(sandals);
@@ -93,6 +189,8 @@ public class TechTree extends Overlay{
 		gym.addParent(protein);
 		weights.addParent(gym);
 		weights.addParent(metal);
+		olympics.addParent(weights);
+		relays.addParent(olympics);
 		
 		
 		
@@ -105,14 +203,95 @@ public class TechTree extends Overlay{
 		horseFood.addParent(saddleBags);
 		horseShoes.addParent(horseFood);
 		horseShoes.addParent(metal);
+		breeding.addParent(horseShoes);
+		carrot.addParent(breeding);
+		
+		carriage.addParent(breeding);
+		carriage.addParent(dirtRoad);
+		smithing.addParent(breeding);
+		smithing.addParent(dirtRoad);
 		
 		
 		
+		metalRims.addParent(smithing);
+		metalRims.addParent(carriage);
+		lighterCarriage.addParent(metalRims);
+		twoHorse.addParent(lighterCarriage);
+		caravan.addParent(twoHorse);
 		
+		smootherRoads.addParent(smithing);
+		ditches.addParent(smootherRoads);
+		iron.addParent(ditches);
+		compass.addParent(iron);
+		cartography.addParent(compass);
+		
+		spurs.addParent(carrot);
+		ironHorseShoes.addParent(iron);
+		ironHorseShoes.addParent(spurs);
+		
+		caravan.addParent(iron);
+		
+		steam.addParent(caravan);
+		shaftMining.addParent(steam);
+		metallurgy.addParent(shaftMining);
+		
+		
+//		literacy.addParent(medicine);
+//		steel.addParent(literacy);
+//		math.addParent(steel);
+//		steelFarm.addParent(steel);
+		math.addParent(cartography);
+		engineering.addParent(math);
+		catapult.addParent(engineering);
+		biggerCatapult.addParent(catapult);
+		tension.addParent(biggerCatapult);
+		onager.addParent(tension);
+		
+
+		steel.addParent(metallurgy);
+		engine.addParent(metallurgy);
+		engine.addParent(engineering);
+		railroad.addParent(engine);
+		railroad.addParent(steel);
+		
+		
+		modernScience.addParent(math);
+		medicine.addParent(modernScience);
+		steroids.addParent(medicine);
+		horseSteroids.addParent(steroids);
+		
+		
+		//Train steroids?
+		
+		printPress.addParent(engineering);
+		method.addParent(printPress);
+		fossil.addParent(method);
+		
+		combustion.addParent(engine);
+		combustion.addParent(fossil);
 		
 //		System.out.println(weights.depth);
 		
 		
+	}
+	
+	static{
+		sandals.cost = 10;
+		shoeLaces.cost = 100;
+		shoes.cost = 500;
+		
+		agriculture.cost = 50;
+		paper.cost = 100;
+		ink.cost = 300;
+		husbandry.cost = 1000;
+
+		leather.cost = 2000;
+		horses.cost = 5000;
+		mining.cost = 8000;
+		metal.cost = 10000;
+		
+		saddles.cost = 15000;
+		saddleBags.cost = 30000;
 	}
 	
 	public TechTree(){		
