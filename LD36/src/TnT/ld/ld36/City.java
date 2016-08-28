@@ -8,6 +8,7 @@ public class City extends Point{
 	int ID;
 	String name; //preload a bunch of rando city names
 	double population = 1; //double?
+	static double literacy = .1;
 	boolean airport = false;
 	//divide transport.scalar by path length for #/time
 	public City(String name){

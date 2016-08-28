@@ -25,7 +25,7 @@ public class Tech extends OverlayButton implements ActionListener{
 	public double value;
 	int depth = 0; //calculated
 	int row = 0;
-	public Tech(String name, String description, Object ...targets ){
+	public Tech(String name, String description, double value, Object ...targets ){
 		super(name);
 		this.background = Color.blue;
 		this.removedBackground = Color.blue;
@@ -37,6 +37,7 @@ public class Tech extends OverlayButton implements ActionListener{
 		width = WIDTH;
 		height = HEIGHT;
 		this.enabled = false;
+	    this.value = value;
 		setActionListener(this);
 	}
 	public boolean available(){
@@ -62,9 +63,12 @@ public class Tech extends OverlayButton implements ActionListener{
 				((Road)o).unlocked = true;
 			}
 			if(o instanceof Transport[]){ //DEFINITELY UNTESTED!
-				((Transport[]) o) [ ((Integer) targets[i+1]).intValue() ]  =  (Transport) targets[i+2];
-				i+=2;
+				((Transport[]) o) [ (int) value ]  =  (Transport) targets[i+1];
+				i++;
 				continue;
+			}
+			if(o == City.class){
+				City.literacy *= value;
 			}
 		}
 		LD36.theLD.money-=cost;
