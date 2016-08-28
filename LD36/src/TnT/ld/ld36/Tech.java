@@ -119,7 +119,7 @@ public class Tech extends OverlayButton implements ActionListener{
 		for(String s : split){
 			if(fm.stringWidth(s) >= (x+width) - sx ){
 				//next line
-				sy += fm.getHeight();
+				sy += 3.0*fm.getHeight()/4.0;
 				sx = (int) (this.x+5);
 			}
 			g.drawString(s, sx, sy);
