@@ -163,6 +163,7 @@ public class Map {
 		}
 		selectRemove[r.key] += selectAdd[r.key];
 		selectAdd[r.key] = 0;
+		recalcFlag = true;
 	}
 	public void sellSelection(Road r) {
 		for (int i = 0; i < selection.size(); i++) {
@@ -173,6 +174,7 @@ public class Map {
 		}
 		selectAdd[r.key] += selectRemove[r.key];
 		selectRemove[r.key] = 0;
+		recalcFlag = true;
 	}
 	public void mouseWheelMoved(MouseWheelEvent e) {
 		double oz = zoom;
@@ -208,7 +210,9 @@ public class Map {
 		c.ID = cities.size();
 		for (int i = 0; i < cities.size(); i++) c.addCity();
 		cities.add(c);
+		recalcFlag = true;
 	}
+	boolean recalcFlag = true;
 	public void calculateAllPaths() {
 		for (int i = 0; i < cities.size(); i++) {
 			City a = cities.get(i);
@@ -219,6 +223,7 @@ public class Map {
 						cities.get(i).paths.get(j-(j>i?1:0))[t] = findPath(a.x, a.y, b.x, b.y, Transport.baseUnits[t]);
 				}
 		}
+		recalcFlag = false;
 	}
 	public boolean hasCity(int x, int y){
 		return (data[x][y] & CITY_BIT) > 0;

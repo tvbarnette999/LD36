@@ -1,26 +1,26 @@
 package TnT.ld.ld36;
 
 import java.awt.Point;
-import java.awt.geom.Path2D;
 import java.util.ArrayList;
 import java.util.Arrays;
 
 public class City extends Point{
 	int ID;
 	String name; //preload a bunch of rando city names
-	int population = 1; //double?
+	double population = 1; //double?
 	boolean airport = false;
-	int x, y;
 	//divide transport.scalar by path length for #/time
 	public City(String name){
 		this.name = name;
 	}
 	ArrayList<Path[]> paths = new ArrayList<Path[]>();
-	ArrayList<Double> rateCapacity = new ArrayList<Double>();
-	ArrayList<Double> desiredRate = new ArrayList<Double>();
+	ArrayList<java.lang.Double> rateCapacity = new ArrayList<java.lang.Double>();
+	ArrayList<java.lang.Double> desiredRate = new ArrayList<java.lang.Double>();
 	
 	public void addCity() {
 		paths.add(new Path[Transport.baseUnits.length]);
+		rateCapacity.add(0d);
+		desiredRate.add(0d);
 	}
 	
 	public String printPaths() {
