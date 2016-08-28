@@ -320,7 +320,7 @@ public class LD36 extends JFrame{
 		
 		treeButton.setRect(10, buffer.getHeight() - 100, 200, 50);
 		
-		techTree.setRect(0, 0, buffer.getWidth(), buffer.getHeight());
+		techTree.height = buffer.getHeight();//setRect(0, 0, buffer.getWidth(), buffer.getHeight());
 		double BY = buffer.getHeight() - 100;
 		double BW = 50;
 		double GAP = 25;

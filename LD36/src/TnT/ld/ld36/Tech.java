@@ -4,16 +4,18 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Stroke;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
-public class Tech extends OverlayButton{
-	public static final int WIDTH = 100;//250;
+public class Tech extends OverlayButton implements ActionListener{
+	public static final int WIDTH = 70;//250;
 	public static final int HEIGHT = 100;
 	
 	ArrayList<Tech> parents = new ArrayList<Tech>();
 	String name;
 	String description;
-	int cost;
+	int cost = 1;
 	boolean researched = false;
 	//int x, y;//manual location/rendering?
 	Transport[] targets;
@@ -31,6 +33,7 @@ public class Tech extends OverlayButton{
 		width = WIDTH;
 		height = HEIGHT;
 		this.enabled = false;
+		setActionListener(this);
 	}
 	public boolean available(){
 		for(int i=0; i<parents.size(); i++){
@@ -41,13 +44,14 @@ public class Tech extends OverlayButton{
 		return true;
 	}
 	public boolean canAfford(){
-		return false;
+		return LD36.theLD.money>cost;
 	}
 	public void research(){
 		researched = true;
 		for(Transport t : targets){
 			t.scalar *= value;
 		}
+		LD36.theLD.money-=cost;
 		
 	}
 	public void addParent(Tech t){
@@ -64,7 +68,10 @@ public class Tech extends OverlayButton{
 		
 		
 		Color oc = g.getColor();
-		if(available()){
+		if(researched){
+			g.setColor(Color.BLUE);
+		}
+		else if(available()){
 			enabled = true;
 			if(canAfford()){
 				g.setColor(Color.GREEN);
@@ -82,16 +89,57 @@ public class Tech extends OverlayButton{
 		Stroke os = g.getStroke();
 		g.setStroke(new BasicStroke(4));
 		for(Tech p : parents){
+			
+			double x = this.x;
+			double y = this.y;
+			double row = this.row;
+			double depth = this.depth-1;
+			if(row < p.row){
+				g.drawArc((int)(x-TechTree.X_GAP/2),(int)( y+height/2), TechTree.X_GAP, TechTree.X_GAP, 90, 90); //R to D
+				drawLine(g, x-TechTree.X_GAP/2, y+height, x-TechTree.X_GAP/2, y+height+TechTree.Y_GAP);
+				row++;
+				//go down height+gap
+				for(;row < p.row; row++, y+=height+TechTree.Y_GAP){
+					drawLine(g, x-TechTree.X_GAP/2, y+height+TechTree.Y_GAP, x-TechTree.X_GAP/2, y+2*(height+TechTree.Y_GAP));					
+				}
+				g.drawArc((int)(x-3*TechTree.X_GAP/2),(int)( y+TechTree.Y_GAP+height/2), TechTree.X_GAP, TechTree.X_GAP, 270, 90); // T to L
+				y+=(height + TechTree.Y_GAP);
+				x-=TechTree.X_GAP;
+			}
+			else if(row > p.row){
+				g.drawArc((int)(x-TechTree.X_GAP/2),(int)( y-height/2), TechTree.X_GAP, TechTree.X_GAP, 180, 90); //r to u
+				drawLine(g, x-TechTree.X_GAP/2, y, x-TechTree.X_GAP/2, y-TechTree.Y_GAP);//up gap
+				row--;
+				for(;row > p.row; row--, y-=height+TechTree.Y_GAP){
+					drawLine(g, x-TechTree.X_GAP/2, y-TechTree.Y_GAP, x-TechTree.X_GAP/2, y-height-2*TechTree.Y_GAP);
+				}
+				g.drawArc((int)(x-3*TechTree.X_GAP/2),(int)( y-height/2 -TechTree.Y_GAP), TechTree.X_GAP, TechTree.X_GAP, 0, 90);//b to l
+				y-=(height +TechTree.Y_GAP);
+				x-=TechTree.X_GAP;
+				
+			}else{
+				drawLine(g, x, y+height/2, x-TechTree.X_GAP, y+height/2);
+				x-=TechTree.X_GAP;
+			}
+			for(;depth > p.depth;depth--, x-= (TechTree.X_GAP+WIDTH)){
+				drawLine(g, x, y+height/2,x-TechTree.X_GAP-WIDTH, y+height/2);
+			}
+			
+			if(1==1)continue; //dead code to copy paste for connections
 			drawLine(g, x, y+height/2, x-TechTree.X_GAP, y+height/2);
 			g.drawArc((int)(x-TechTree.X_GAP/2),(int)( y+height/2), TechTree.X_GAP, TechTree.X_GAP, 90, 90);//r to d
-			drawLine(g, x-TechTree.X_GAP/2, y+height, x-TechTree.X_GAP/2, y+height+TechTree.Y_GAP);
+			drawLine(g, x-TechTree.X_GAP/2, y+height, x-TechTree.X_GAP/2, y+height+TechTree.Y_GAP);//down gap
 			g.drawArc((int)(x-TechTree.X_GAP/2),(int)( y-height/2), TechTree.X_GAP, TechTree.X_GAP, 180, 90); //r to u
-			drawLine(g, x-TechTree.X_GAP/2, y, x-TechTree.X_GAP/2, y-TechTree.Y_GAP);
+			drawLine(g, x-TechTree.X_GAP/2, y, x-TechTree.X_GAP/2, y-TechTree.Y_GAP);//up gap
 			g.drawArc((int)(x-3*TechTree.X_GAP/2),(int)( y-height/2 -TechTree.Y_GAP), TechTree.X_GAP, TechTree.X_GAP, 0, 90);//b to l
-			//g.drawArc((int)(x-3*TechTree.X_GAP/2),(int)( y+height/2 +TechTree.Y_GAP), TechTree.X_GAP, TechTree.X_GAP, 270, 359);//t to l
+			g.drawArc((int)(x-3*TechTree.X_GAP/2),(int)( y+TechTree.Y_GAP+height/2), TechTree.X_GAP, TechTree.X_GAP, 270, 90);//t to l
 		}
 		g.setStroke(os);
 		g.setColor(oc);
+	}
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if(available() && canAfford())research();
 	}
 	
 }

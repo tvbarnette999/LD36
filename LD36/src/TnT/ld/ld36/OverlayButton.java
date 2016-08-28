@@ -54,6 +54,7 @@ public class OverlayButton extends Overlay {
 		if(callback!=null){
 			callback.actionPerformed(new ActionEvent(this, 0, "", 0, e.getModifiers()));
 		}
+		e.consume();
 	}
 	public void setActionListener(ActionListener al){
 		callback = al;

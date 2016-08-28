@@ -2,6 +2,7 @@ package TnT.ld.ld36;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.event.MouseEvent;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 
@@ -9,8 +10,10 @@ public class TechTree extends Overlay{
 
 	public static final int X_GAP = Tech.HEIGHT; //squares!
 	public static final int Y_GAP = 30;
-	public static int MAX_COLUMN = 100;
+	public static int MAX_COLUMN = 0;
+	public static int MAX_SCROLL = 0;
 	
+	double scroll = 0;
 	static ArrayList<Tech> heads = new ArrayList<Tech>();
 	
 	//instantiate all the techs here, pass them the list of ones they affect
@@ -87,7 +90,7 @@ public class TechTree extends Overlay{
 		snacks.addParent(shoeLaces);
 		exercise.addParent(snacks);
 		protein.addParent(exercise);
-		gym.addParent(exercise);
+		gym.addParent(protein);
 		weights.addParent(gym);
 		weights.addParent(metal);
 		
@@ -120,6 +123,7 @@ public class TechTree extends Overlay{
 					Tech t = (Tech) f.get(null);
 					t.x = X_GAP + (t.depth * (X_GAP + Tech.WIDTH));
 					t.y = Y_GAP + (t.row * (Y_GAP + Tech.HEIGHT));
+					MAX_COLUMN = Math.max(MAX_COLUMN, t.depth);
 					this.addChild(t);
 					System.out.println(t.name+":"+t.x+", "+t.y);
 				} catch (Exception e){
@@ -127,26 +131,59 @@ public class TechTree extends Overlay{
 				}
 			}
 		}
+		
+		
+		this.width = (MAX_COLUMN+1)*(X_GAP+Tech.WIDTH)+X_GAP;
+//		height = LD36.theLD.buffer.getHeight();
 //		System.out.println(elements.size());
 	}
 	
+	long lastTime = -1;
+	long current = -1;
 	public void draw(Graphics2D g){
+
+		MAX_SCROLL = (int) (this.width - LD36.theLD.buffer.getWidth());
+		long current = System.nanoTime();
+		if (lastTime > 0) {
+			double dt = 500 * (current-lastTime) * 1e-9 ;
+			if (LD36.rightPressed) scroll += dt;
+			if (LD36.left) scroll -= dt;
+			if(scroll<0)scroll = 0;
+			if(scroll > MAX_SCROLL)scroll = MAX_SCROLL;
+		}
+		lastTime = current;
+		
+		g.translate(-scroll,0);
 		super.draw(g);
 		Color oc = g.getColor();
 		g.setColor(Color.white);
-		for(int y = 0; y < LD36.theLD.buffer.getHeight(); y+=Tech.HEIGHT + Y_GAP){
-			g.drawLine(0, y, MAX_COLUMN*(Tech.WIDTH+X_GAP), y);
-			g.drawLine(0, y+Y_GAP, MAX_COLUMN*(Tech.WIDTH+X_GAP), y+Y_GAP);
-			
-		}
-		
-		for(int x = 0; x < MAX_COLUMN * (Tech.WIDTH+X_GAP); x+=Tech.WIDTH+X_GAP){
-			g.drawLine(x, 0, x, LD36.theLD.buffer.getHeight());
-			g.drawLine(x+X_GAP, 0,x+X_GAP , LD36.theLD.buffer.getHeight());
-			
-		}
+//		for(int y = 0; y < LD36.theLD.buffer.getHeight(); y+=Tech.HEIGHT + Y_GAP){
+//			g.drawLine(0, y, MAX_COLUMN*(Tech.WIDTH+X_GAP), y);
+//			g.drawLine(0, y+Y_GAP, MAX_COLUMN*(Tech.WIDTH+X_GAP), y+Y_GAP);
+//			
+//		}
+//		
+//		for(int x = 0; x < MAX_COLUMN * (Tech.WIDTH+X_GAP); x+=Tech.WIDTH+X_GAP){
+//			g.drawLine(x, 0, x, LD36.theLD.buffer.getHeight());
+//			g.drawLine(x+X_GAP, 0,x+X_GAP , LD36.theLD.buffer.getHeight());
+//			
+//		}
 		g.setColor(oc);
+		g.translate(scroll, 0);
 		
+	}
+	
+	public void mouseMoved(MouseEvent e){
+		super.mouseMoved(new MouseEvent(e.getComponent(), e.getID(), e.getWhen(), e.getModifiers(), e.getX()+(int)scroll, e.getY(), e.getXOnScreen(), e.getYOnScreen(), e.getClickCount(), e.isPopupTrigger(), e.getButton()));
+	}
+	public void mousePressed(MouseEvent e){
+		super.mousePressed(new MouseEvent(e.getComponent(), e.getID(), e.getWhen(), e.getModifiers(), e.getX()+(int)scroll, e.getY(), e.getXOnScreen(), e.getYOnScreen(), e.getClickCount(), e.isPopupTrigger(), e.getButton()));
+	}
+	public void mouseReleased(MouseEvent e){
+		super.mouseReleased(new MouseEvent(e.getComponent(), e.getID(), e.getWhen(), e.getModifiers(), e.getX()+(int)scroll, e.getY(), e.getXOnScreen(), e.getYOnScreen(), e.getClickCount(), e.isPopupTrigger(), e.getButton()));
+	}
+	public void mouseClicked(MouseEvent e){
+		super.mouseClicked(new MouseEvent(e.getComponent(), e.getID(), e.getWhen(), e.getModifiers(), e.getX()+(int)scroll, e.getY(), e.getXOnScreen(), e.getYOnScreen(), e.getClickCount(), e.isPopupTrigger(), e.getButton()));
 	}
 	
 }
