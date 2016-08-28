@@ -15,6 +15,9 @@ import java.awt.geom.Point2D;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.PriorityQueue;
 import java.util.Vector;
 
 public class Map {
@@ -196,9 +199,34 @@ public class Map {
 	private int round(double d){
 		return (int) Math.round(d);
 	}
-	public void findPath(int x1, int y1, int x2, int y2, Transport type){
-		//TODO use canUse method above for pathfinder. pass it transport type.
-		
+	public boolean canUse(Transport type, Point tile) {
+		return (data[tile.x][tile.y]&type.bits) != 0;
+	}
+	public Path findPath(int x1, int y1, int x2, int y2, Transport type){
+		HashSet<Point> visited = new HashSet<Point>();
+		PriorityQueue<SearchNode> open = new PriorityQueue<SearchNode>(20, compare);
+		Point2D.Double endLoc = getTileLocation(x2, y2);
+		Point start = new Point(x1, y1);
+		open.add(new SearchNode(start));
+		visited.add(start);
+		while (!open.isEmpty()) {
+			SearchNode current = open.remove();
+			for (Point n : getNeighbors(current.tile)) {
+				if (n.x==x2 && n.y==y2) {
+					Path path = new Path();
+					path.points.add(n);
+					while (current.parent != null) {
+						path.points.addFirst(current.tile);
+						current = current.parent;
+					}
+					return path;
+				} else if (!visited.contains(n) && canUse(type, n)) {
+					visited.add(n);
+					open.add(new SearchNode(n, endLoc.distance(getTileLocation(n)), current));
+				}
+			}
+		}
+		return null;
 	}
 	public void setTile(int xi, int yi, byte bit, boolean v){
 		if(v)data[xi][yi] |= bit;
@@ -218,6 +246,9 @@ public class Map {
 	}
 	public Point2D.Double transformToMap(double x, double y) {
 		return new Point2D.Double((x-transX)/zoom, (y-transY)/zoom);
+	}
+	public Point[] getNeighbors(Point p) {
+		return getNeighbors(p.x, p.y);
 	}
 	public Point[] getNeighbors(int x, int y) {
 		return new Point[] {new Point(x, y+1), new Point(x, y-1), new Point(x-1, y-1+(x&1)), 
@@ -370,4 +401,36 @@ public class Map {
 		g.scale(1/zoom, 1/zoom);
 		g.translate(-transX, -transY);
 	}
+	
+	/**
+	 * A* search node
+	 */
+	private class SearchNode {
+		SearchNode parent;
+		double weight;
+		double pathLength;
+		Point tile;
+		
+		/**
+		 * Makes start node
+		 */
+		public SearchNode(Point tile) {
+			this.tile = tile;
+		}
+		
+		/**
+		 * Search node with parent
+		 */
+		public SearchNode(Point tile, double dist, SearchNode parent) {
+			this.tile = tile;
+			pathLength = parent.pathLength + MAX_HEIGHT;
+			weight = pathLength + dist;
+			this.parent = parent;
+		}
+	}
+	Comparator<SearchNode> compare = new Comparator<SearchNode>() {
+		public int compare(SearchNode a, SearchNode b) {
+			return (int) Math.signum(a.weight-b.weight);
+		}
+	};
 }

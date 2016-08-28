@@ -314,14 +314,18 @@ public class LD36 extends JFrame{
 	public Thread physics = new Thread(){
 		public void run(){
 			while(true){
-				
+				if (gameState == TnT.ld.ld36.State.GAME) {
+					Path p = map.findPath(3, 2, 7, 6, Transport.RUNNER);
+					if (p != null) System.out.println(p);
+					else System.out.println("no path");
+					try { Thread.sleep(500); } catch (Exception e) {}
+				}
 			}
 		}
 	};
 	
 	public void startGame(){
 		map = Map.generate();
-		gameState = State.GAME;
 		
 		treeButton.setRect(10, buffer.getHeight() - 100, 200, 50);
 		
@@ -383,6 +387,7 @@ public class LD36 extends JFrame{
 		techTree.addChild(treeButton);
 		techTree.visible = false;
 		
+		gameState = State.GAME;
 	}
 
 }
