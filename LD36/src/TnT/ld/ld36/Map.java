@@ -1,10 +1,11 @@
 package TnT.ld.ld36;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
-import java.awt.Polygon;
+import java.awt.Stroke;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.geom.AffineTransform;
@@ -13,9 +14,7 @@ import java.awt.geom.Path2D.Double;
 import java.awt.geom.Point2D;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Random;
-
-import javax.swing.JPanel;
+import java.util.Vector;
 
 public class Map {
 	public static Image test;
@@ -52,6 +51,8 @@ public class Map {
 	public static final byte TRACK_BIT = 16;
 	//bit for impassable?
 	
+	Vector<Point> selection = new Vector<Point>();
+	
 	// make tile poly
 	static Path2D.Double tilePoly;
 	static AffineTransform tDown = AffineTransform.getTranslateInstance(0, MAX_HEIGHT);
@@ -65,6 +66,20 @@ public class Map {
 		tilePoly.lineTo(MAX_WIDTH/4, MAX_HEIGHT);
 		tilePoly.closePath();
 	}
+	static Path2D.Double insetPoly;
+	static {
+		insetPoly = new Path2D.Double();
+		insetPoly.moveTo(0, MAX_HEIGHT/2);
+		insetPoly.lineTo(MAX_WIDTH/4, 0);
+		insetPoly.lineTo(MAX_WIDTH*3/4, 0);
+		insetPoly.lineTo(MAX_WIDTH, MAX_HEIGHT/2);
+		insetPoly.lineTo(MAX_WIDTH*3/4, MAX_HEIGHT);
+		insetPoly.lineTo(MAX_WIDTH/4, MAX_HEIGHT);
+		insetPoly.closePath();
+		insetPoly.transform(AffineTransform.getTranslateInstance(-MAX_WIDTH/2, -MAX_HEIGHT/2));
+		insetPoly.transform(AffineTransform.getScaleInstance(.9, .9));
+		insetPoly.transform(AffineTransform.getTranslateInstance(MAX_WIDTH/2, MAX_HEIGHT/2));
+	}
 
 	
 	public byte[][] data = new byte[MAP_WIDTH][MAP_HEIGHT]; //this array is done [x][y] to simplify.
@@ -76,18 +91,26 @@ public class Map {
 	Point mouseLoc = null;
 	public void mousePressed(MouseEvent e){
 		mouseLoc = e.getPoint();
+		mouseDragged(e);
 	}
 	public void mouseDragged(MouseEvent e) {
-		if ((e.getModifiers()&4) != 0) {
+		if ((e.getModifiers()&8) != 0) {
 			// right click
 			transX -= mouseLoc.x - e.getX();
 			transY -= mouseLoc.y - e.getY();
 			restrictScroll();
 			mouseLoc = e.getPoint();
 		}
+		Point tile = getContainingTile(transformToMap(e.getX(), e.getY()));
 		if ((e.getModifiers()&16) != 0) {
 			// left click
-			// do track drawing
+			// add to selection
+			if (!selection.contains(tile)) selection.add(tile);
+		}
+		if ((e.getModifiers()&4) != 0) {
+			// right click
+			// remove from selection
+			selection.remove(tile);
 		}
 	}
 	public void mouseWheelMoved(MouseWheelEvent e) {
@@ -104,9 +127,6 @@ public class Map {
 	}
 	public static Map generate(){
 		Map m = new Map();
-		Random r = new Random();
-		for (int i = 0; i < MAP_WIDTH; i++)
-			r.nextBytes(m.data[i]);
 		m.setTile(3,2,CITY_BIT, true);//m.data[3][2] |= CITY_BIT;
 		m.data[7][6] |= CITY_BIT;
 		m.data[11][3] |= CITY_BIT;
@@ -130,6 +150,9 @@ public class Map {
 		int yi = 0;
 		if(v)data[xi][yi] |= bit;
 		else data[xi][yi] &= ~bit;
+	}
+	public Point2D.Double getTileLocation(Point p) {
+		return getTileLocation(p.x, p.y);
 	}
 	public Point2D.Double getTileLocation(int x, int y) {
 		return new Point2D.Double(x * MAX_WIDTH * .75, (y + (x%2==1?.5:0)) * MAX_HEIGHT);
@@ -178,7 +201,19 @@ public class Map {
 	double zoom = 1;
 	double transX = 0, transY = 0;
 	static final double MIN_ZOOM = .5;
+	long lastTime = -1;
 	public void draw(Graphics2D g){
+		long current = System.nanoTime();
+		if (lastTime > 0) {
+			double dt = 500 * (current-lastTime) * 1e-9;
+			if (LD36.up) transY += dt;
+			if (LD36.down) transY -= dt;
+			if (LD36.rightPressed) transX -= dt;
+			if (LD36.left) transX += dt;
+			restrictScroll();
+		}
+		lastTime = current;
+		
 		final double zoom = this.zoom, transX = this.transX, transY = this.transY;
 		g.translate(transX, transY);
 		g.scale(zoom, zoom);
@@ -241,41 +276,24 @@ public class Map {
 			loc.x += MAX_WIDTH * .75;
 		}
 		
+		//draw selected tiles
+		if (selection.size() > 0) {
+			g.setColor(Color.green);
+			Stroke s = g.getStroke();
+			g.setStroke(new BasicStroke(3));
+			
+			tile = (Double) insetPoly.clone();
+			loc = new Point2D.Double();
+			for (int i = 0; i < selection.size(); i++) {
+				Point2D.Double p = getTileLocation(selection.get(i));
+				tile.transform(AffineTransform.getTranslateInstance(p.x-loc.x, p.y-loc.y));
+				loc = p;
+				
+				g.draw(tile);
+			}
+			g.setStroke(s);
+		}
 		
-//		final double x1 = MAX_WIDTH/4.0;
-//		final double x2 = 3 * x1;
-//		final double y1 = MAX_HEIGHT / 2.0;
-//		//TODO do this properly.
-//		int xi = 0;
-//		int yi = 0;
-//		for(double y = 0; y < 100; y+=MAX_HEIGHT){
-//			for(double x = 0; x < 100; ){
-////				g.drawRect(x, y, MAX_WIDTH, MAX_HEIGHT);
-//				for(int i = 0; i < 2; i++){
-//					drawLine(g, x+x1, y, x+x2, y);
-//					drawLine(g, x+x2, y, x+MAX_WIDTH, y+y1);
-//					drawLine(g, x+MAX_WIDTH, y+y1, x+x2, y+MAX_HEIGHT);
-//					drawLine(g, x+x1,  y+MAX_HEIGHT, x+x2, y+MAX_HEIGHT);
-//					drawLine(g, x, y+y1, x+x1, y+MAX_HEIGHT);
-//					drawLine(g, x,y+ y1, x+x1, y);
-//					g.drawString(xi+","+yi, (int)(x+x1),(int) (y+y1));
-//					if(hasCity(xi,yi)){
-//						g.setColor(Color.RED);
-//						g.fillRect((int)(x+x1),(int)(y+ y1+10),20, 20);
-//						g.setColor(Color.BLACK);
-//					}
-//					g.drawImage(test,(int)( x+x1+10),(int)( y+5),null);
-//					//to display diff path types, just & with bits
-//					
-//					y+=y1;
-//					x+=x2;
-//					xi++;
-//				}
-//				y-=y1*2;
-//			}
-//			xi = 0;
-//			yi++;
-//		}
 		
 		g.scale(1/zoom, 1/zoom);
 		g.translate(-transX, -transY);

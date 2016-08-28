@@ -9,6 +9,8 @@ import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
@@ -159,6 +161,52 @@ public class LD36 extends JFrame{
 			}
 		}
 	};
+	
+	static boolean up, down, left, rightPressed;
+	KeyAdapter keyAdapter = new KeyAdapter() {
+		public void keyPressed(KeyEvent e) {
+			switch (e.getKeyCode()) {
+			case KeyEvent.VK_A:
+			case KeyEvent.VK_LEFT:
+				left = true;
+				break;
+			case KeyEvent.VK_W:
+			case KeyEvent.VK_UP:
+				up = true;
+				break;
+			case KeyEvent.VK_S:
+			case KeyEvent.VK_DOWN:
+				down = true;
+				break;
+			case KeyEvent.VK_D:
+			case KeyEvent.VK_RIGHT:
+				rightPressed = true;
+				break;
+			}
+		}
+		
+		public void keyReleased(KeyEvent e) {
+			switch (e.getKeyCode()) {
+			case KeyEvent.VK_A:
+			case KeyEvent.VK_LEFT:
+				left = false;
+				break;
+			case KeyEvent.VK_W:
+			case KeyEvent.VK_UP:
+				up = false;
+				break;
+			case KeyEvent.VK_S:
+			case KeyEvent.VK_DOWN:
+				down = false;
+				break;
+			case KeyEvent.VK_D:
+			case KeyEvent.VK_RIGHT:
+				rightPressed = false;
+				break;
+			}
+		}
+	};
+	
 	public static void main(String[] args) {
 		theLD = new LD36();
 		theLD.initGUI();		
@@ -168,7 +216,9 @@ public class LD36 extends JFrame{
 		//Fullscreen?
 		panel.setPreferredSize(new Dimension(1280, 768));
 //		buffer = new BufferedImage(1280, 768, BufferedImage.TYPE_4BYTE_ABGR);
-		System.out.println(buffer);
+		panel.setFocusable(true);
+		panel.grabFocus();
+		panel.addKeyListener(keyAdapter);
 		panel.addMouseListener(adapter);
 		panel.addMouseMotionListener(adapter);
 		panel.addMouseWheelListener(adapter);
