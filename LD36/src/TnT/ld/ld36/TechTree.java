@@ -18,7 +18,7 @@ public class TechTree extends Overlay{
 	
 	//instantiate all the techs here, pass them the list of ones they affect
 	static Tech sandals = new Tech("Sandals", "Increase Runner speed by 10%.", Transport.RUNNER);
-	static Tech shoeLaces = new Tech("Shoe Laces", "");
+	static Tech shoeLaces = new Tech("Shoe Laces", "", Transport.currentUnits, 3, Transport.TRAIN);
 	static Tech shoes = new Tech("Shoes", "Increases Runner Speed by 10%.", Transport.RUNNER);
 	static Tech agriculture = new Tech("Agriculture", "");
 	static Tech paper = new Tech("Paper", "");
