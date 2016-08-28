@@ -13,18 +13,13 @@ public class Tech extends OverlayButton{
 	boolean researched = false;
 	int x, y;//manual location/rendering?
 	Transport[] targets;
-	public static final int ADD = 1;
-	public static final int MUL = 2;
-	public int op;
 	public double value;
 	int depth = 0; //calculated
 	int row = 0;
-	public Tech(String name, String description, int cost, int op, double value, Transport ...targets ){
+	public Tech(String name, String description, Transport ...targets ){
+		super(name);
 		this.name = name;
 		this.description = description;
-		this.cost = cost;
-		this.op = op;
-		this.value = value;
 		this.targets = targets;
 	}
 	public boolean available(){
@@ -40,21 +35,14 @@ public class Tech extends OverlayButton{
 	}
 	public void research(){
 		researched = true;
-		if(op == ADD){
-			for(Transport t: targets){
-				t.scalar += value;
-			}
-		}
-		else if(op == MUL){
-			for(Transport t: targets){
-				t.scalar*=value;
-			}
+		for(Transport t : targets){
+			t.scalar *= value;
 		}
 		
 	}
 	public void addParent(Tech t){
 		parents.add(t);
-		depth = Math.max(depth,  t.depth);
+		depth = Math.max(depth,  t.depth + 1);
 	}
 
 }
