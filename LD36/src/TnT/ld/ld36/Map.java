@@ -14,13 +14,18 @@ import java.awt.geom.Path2D.Double;
 import java.awt.geom.Point2D;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Vector;
 
 public class Map {
-	public static Image test;
+	public static Image grass;
+	public static Image rock;
+	public static Image tents;
 	static{
 		try {
-			test = Resources.getImage("soldier.png");
+			grass = Resources.getImage("grass.png");
+			rock = Resources.getImage("mountainpeak.png");
+			tents = Resources.getImage("tents.png");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -49,9 +54,11 @@ public class Map {
 	public static final byte DIRT_ROAD_BIT = 4;
 	public static final byte PAVED_ROAD_BIT = 8;
 	public static final byte TRACK_BIT = 16;
-	//bit for impassable?
+	public static final byte IMPASS_BIT = 32;
 	
 	Vector<Point> selection = new Vector<Point>();
+	int[] selectAdd = new int[Road.roads.length];
+	int[] selectRemove = new int[Road.roads.length];
 	
 	// make tile poly
 	static Path2D.Double tilePoly;
@@ -77,7 +84,7 @@ public class Map {
 		insetPoly.lineTo(MAX_WIDTH/4, MAX_HEIGHT);
 		insetPoly.closePath();
 		insetPoly.transform(AffineTransform.getTranslateInstance(-MAX_WIDTH/2, -MAX_HEIGHT/2));
-		insetPoly.transform(AffineTransform.getScaleInstance(.9, .9));
+		insetPoly.transform(AffineTransform.getScaleInstance(.85, .85));
 		insetPoly.transform(AffineTransform.getTranslateInstance(MAX_WIDTH/2, MAX_HEIGHT/2));
 	}
 
@@ -102,15 +109,45 @@ public class Map {
 			mouseLoc = e.getPoint();
 		}
 		Point tile = getContainingTile(transformToMap(e.getX(), e.getY()));
-		if ((e.getModifiers()&16) != 0) {
+		if ((e.getModifiers()&16) != 0 && tile.x >= 0 && tile.x < MAP_WIDTH && tile.y >= 0 && tile.y < MAP_HEIGHT) {
 			// left click
 			// add to selection
-			if (!selection.contains(tile)) selection.add(tile);
+			if (!selection.contains(tile)) {
+				selection.add(tile);
+				byte d = data[tile.x][tile.y];
+				// if not city or impassible
+				if ((d&(CITY_BIT|IMPASS_BIT))==0) {
+					for (Road r : Road.roads) {
+						if ((d&r.mask)==0) selectAdd[r.key]++;
+						else selectRemove[r.key]++;
+					}
+				}
+			}
 		}
-		if ((e.getModifiers()&4) != 0) {
+		if ((e.getModifiers()&4) != 0 && tile.x >= 0 && tile.x < MAP_WIDTH && tile.y >= 0 && tile.y < MAP_HEIGHT) {
 			// right click
 			// remove from selection
-			selection.remove(tile);
+			if (selection.contains(tile)) {
+				selection.remove(tile);
+				byte d = data[tile.x][tile.y];
+				// if not city or impassible
+				if ((d&(CITY_BIT|IMPASS_BIT))==0) {
+					for (Road r : Road.roads) {
+						if ((d&r.mask)==0) selectAdd[r.key]--;
+						else selectRemove[r.key]--;
+					}
+				}
+			}
+		}
+		System.out.println("selection: "+selection);
+		System.out.println("can add: "+Arrays.toString(selectAdd));
+		System.out.println("can remove: "+Arrays.toString(selectRemove));
+	}
+	public void clearSelection() {
+		selection.clear();
+		for (int i = 0; i < selectAdd.length; i++) {
+			selectAdd[i] = 0;
+			selectRemove[i] = 0;
 		}
 	}
 	public void mouseWheelMoved(MouseWheelEvent e) {
@@ -155,7 +192,7 @@ public class Map {
 		return getTileLocation(p.x, p.y);
 	}
 	public Point2D.Double getTileLocation(int x, int y) {
-		return new Point2D.Double(x * MAX_WIDTH * .75, (y + (x%2==1?.5:0)) * MAX_HEIGHT);
+		return new Point2D.Double(x * MAX_WIDTH * .75, (y + ((x&1)==1?.5:0)) * MAX_HEIGHT);
 	}
 	public Point2D.Double transformToMap(double x, double y) {
 		return new Point2D.Double((x-transX)/zoom, (y-transY)/zoom);
@@ -198,6 +235,9 @@ public class Map {
 			}
 		}
 	}
+	public void drawTileImage(Graphics2D g, Image img, Point2D.Double loc) {
+		g.drawImage(img, (int)loc.x-1, (int)loc.y-1, (int)MAX_WIDTH+2, (int)MAX_HEIGHT+2, null);
+	}
 	double zoom = 1;
 	double transX = 0, transY = 0;
 	static final double MIN_ZOOM = .5;
@@ -219,15 +259,16 @@ public class Map {
 		g.scale(zoom, zoom);
 		
 		g.setColor(Color.BLACK);
+		g.setStroke(new BasicStroke(2));
 		
-		int startX = (int) (-transX / zoom / (MAX_WIDTH*3/4)) - 1;
-		int endX = startX + (int) (FRAME_WIDTH / zoom / (MAX_WIDTH*3/4)) + 2;
-		if (startX < 0) startX = 0;
-		if (endX >= MAP_WIDTH) endX = MAP_WIDTH-1;
-		int startY = (int) (-transY / zoom / MAX_HEIGHT) - 1;
-		int endY = startY + (int) (FRAME_HEIGHT / zoom / MAX_HEIGHT) + 2;
-		if (startY < 0) startY = 0;
-		if (endY >= MAP_HEIGHT) endY = MAP_HEIGHT-1;
+		int startX = (int) Math.floor(-transX / zoom / (MAX_WIDTH*3/4)) - 1;
+		int endX = startX + (int) Math.floor(FRAME_WIDTH / zoom / (MAX_WIDTH*3/4)) + 2;
+//		if (startX < 0) startX = 0;
+//		if (endX >= MAP_WIDTH) endX = MAP_WIDTH-1;
+		int startY = (int) Math.floor(-transY / zoom / MAX_HEIGHT) - 1;
+		int endY = startY + (int) Math.floor(FRAME_HEIGHT / zoom / MAX_HEIGHT) + 2;
+//		if (startY < 0) startY = 0;
+//		if (endY >= MAP_HEIGHT) endY = MAP_HEIGHT-1;
 		
 		Path2D.Double tile = (Double) tilePoly.clone();
 		Point2D.Double loc = getTileLocation(startX, startY);
@@ -238,30 +279,35 @@ public class Map {
 		AffineTransform tlup = AffineTransform.getTranslateInstance(MAX_WIDTH * .75, lup);
 		for (int x = startX; x <= endX; x++) {
 			for (int y = startY; y <= endY; y++) {
-				//TODO draw stuff in tile (corner at tx, ty)
-				if ((data[x][y]&CITY_BIT) != 0) {
-					g.setColor(Color.MAGENTA);
-					g.fill(tile);
-				}
-				if ((data[x][y]&DIRT_ROAD_BIT) != 0) {
-					g.setColor(Color.yellow.darker().darker());
-					g.fillRect((int)loc.x + 20, (int) (loc.y + 20), 20, 20);
-				}
-				if ((data[x][y]&FOOT_PATH_BIT) != 0) {
-					g.setColor(Color.GREEN);
-					g.fillRect((int)loc.x + 60, (int)loc.y + 20, 20, 20);
-				}
-				if ((data[x][y]&PAVED_ROAD_BIT) != 0) {
-					g.setColor(Color.black);
-					g.fillRect((int)loc.x + 20, (int)loc.y + 60, 20, 20);
-				}
-				if ((data[x][y]&TRACK_BIT) != 0) {
-					g.setColor(Color.red);
-					g.fillRect((int)loc.x + 60, (int)loc.y + 60, 20, 20);
-				}
+				//TODO draw stuff in tile (corner at loc)
+				if (x >= 0 && x < MAP_WIDTH && y >= 0 && y < MAP_HEIGHT) {
+					if ((data[x][y]&IMPASS_BIT) != 0) {
+						drawTileImage(g, rock, loc);
+					} else {
+						drawTileImage(g, grass, loc);
+					}
+					if ((data[x][y]&CITY_BIT) != 0) {
+						drawTileImage(g, tents, loc);
+					}
+					if ((data[x][y]&DIRT_ROAD_BIT) != 0) {
+						g.setColor(Color.yellow.darker().darker());
+						g.fillRect((int)loc.x + 20, (int) (loc.y + 20), 20, 20);
+					}
+					if ((data[x][y]&FOOT_PATH_BIT) != 0) {
+						g.setColor(Color.GREEN);
+						g.fillRect((int)loc.x + 60, (int)loc.y + 20, 20, 20);
+					}
+					if ((data[x][y]&PAVED_ROAD_BIT) != 0) {
+						g.setColor(Color.black);
+						g.fillRect((int)loc.x + 20, (int)loc.y + 60, 20, 20);
+					}
+					if ((data[x][y]&TRACK_BIT) != 0) {
+						g.setColor(Color.red);
+						g.fillRect((int)loc.x + 60, (int)loc.y + 60, 20, 20);
+					}
+				} else drawTileImage(g, grass, loc);
 				
 				// draw tile outline
-				g.setColor(Color.black);
 				g.draw(tile);
 				tile.transform(tDown);
 				loc.y += MAX_HEIGHT;
@@ -280,7 +326,7 @@ public class Map {
 		if (selection.size() > 0) {
 			g.setColor(Color.green);
 			Stroke s = g.getStroke();
-			g.setStroke(new BasicStroke(3));
+			g.setStroke(new BasicStroke(5));
 			
 			tile = (Double) insetPoly.clone();
 			loc = new Point2D.Double();

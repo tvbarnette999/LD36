@@ -37,28 +37,37 @@ public class LD36 extends JFrame{
 	Overlay bottom = new Overlay();
 	Overlay right = new Overlay();
 	OverlayButton treeButton = new OverlayButton("Technology Tree");
-	OverlayButton addNothing = new OverlayButton("Nothing");
+	OverlayButton clearSelection = new OverlayButton("Clear");
 	OverlayButton addFootPath = new OverlayButton("Footpath");
 	OverlayButton addDirtRoad = new OverlayButton("Dirt Road");
 	OverlayButton addRailRoad = new OverlayButton("Railroad");
 	OverlayButton addPavedRoad = new OverlayButton("Paved Road");
-	OverlayButton addCatapault = new OverlayButton("Catapault");
+	OverlayButton addCatapalt = new OverlayButton("Catapalt");
 	OverlayButton addAirport = new OverlayButton("Airport");
 	
-	OverlayButton addSelected = addNothing;
+	OverlayButton addSelected = clearSelection;
 	
 	ActionListener addListener = new ActionListener(){
 		public void actionPerformed(ActionEvent e){
-			if(addSelected != e.getSource()){
-				addSelected.selected = false;
+			OverlayButton o = (OverlayButton) e.getSource();
+			Road road = null;
+			if (o==addFootPath) road = Road.FOOTPATH;
+			if (o==addDirtRoad) road = Road.DIRT;
+			if (o==addPavedRoad) road = Road.PAVED;
+			if (o==addRailRoad) road = Road.RAIL;
+			if (road != null) {
+				
+			} else if (o==addCatapalt) {
+				
+			} else if (o==addAirport) {
+				
 			}
-			addSelected = (OverlayButton) e.getSource();
-			addSelected.selected = true;
 		}
 	};
 	
 	TechTree techTree = new TechTree();
 	ArrayList<Overlay> activeOverlays = new ArrayList<Overlay>();
+	public double money = 1e9;
 	
 	MouseAdapter adapter = new MouseAdapter(){
 		public void mouseClicked(MouseEvent e){
@@ -240,11 +249,12 @@ public class LD36 extends JFrame{
 			while(true){
 				Graphics2D g = buffer.createGraphics();
 				g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-				g.setColor(Color.WHITE);
+				g.setColor(Color.BLACK);
 				g.fillRect(0, 0, buffer.getWidth(), buffer.getHeight());
 				g.setColor(Color.BLACK);
 				switch(gameState){
 					case MAIN:
+						g.setColor(Color.white);
 						g.drawString("Click To Start", 400, 400);
 						break;
 					case GAME:
@@ -305,10 +315,10 @@ public class LD36 extends JFrame{
 		double GAP = 25;
 
 		double BX = buffer.getWidth() - 7*GAP - 7*BW;
-		addNothing.setRect(BX, BY, BW, BW);
+		clearSelection.setRect(BX, BY, BW, BW);
 		addFootPath.setRect(BX+BW+GAP, BY, BW, BW);
 		addDirtRoad.setRect(BX+2*BW+2*GAP, BY, BW, BW);
-		addCatapault.setRect(BX+3*BW+3*GAP, BY, BW, BW);
+		addCatapalt.setRect(BX+3*BW+3*GAP, BY, BW, BW);
 		addRailRoad.setRect(BX+4*BW+4*GAP,  BY, BW, BW);
 		addPavedRoad.setRect(BX+5*BW+5*GAP,BY,BW,BW);
 		addAirport.setRect(BX+6*BW+6*GAP, BY, BW, BW);
@@ -333,18 +343,18 @@ public class LD36 extends JFrame{
 		});
 		
 		
-		bottom.addChild(addNothing);
+		bottom.addChild(clearSelection);
 		bottom.addChild(addFootPath);
 		bottom.addChild(addDirtRoad);
-		bottom.addChild(addCatapault);
+		bottom.addChild(addCatapalt);
 		bottom.addChild(addRailRoad);
 		bottom.addChild(addPavedRoad);
 		bottom.addChild(addAirport);
 		
-		addNothing.setActionListener(addListener);
+		clearSelection.setActionListener(addListener);
 		addFootPath.setActionListener(addListener);
 		addDirtRoad.setActionListener(addListener);
-		addCatapault.setActionListener(addListener);
+		addCatapalt.setActionListener(addListener);
 		addRailRoad.setActionListener(addListener);
 		addPavedRoad.setActionListener(addListener);
 		addAirport.setActionListener(addListener);
