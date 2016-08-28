@@ -2,8 +2,11 @@ package TnT.ld.ld36;
 
 import java.util.ArrayList;
 
-public class Tech {
-	ArrayList<Tech> parents;
+public class Tech extends OverlayButton{
+	public static final int WIDTH = 350;
+	public static final int HEIGHT = 120;
+	
+	ArrayList<Tech> parents = new ArrayList<Tech>();
 	String name;
 	String description;
 	int cost;
@@ -14,6 +17,8 @@ public class Tech {
 	public static final int MUL = 2;
 	public int op;
 	public double value;
+	int depth = 0; //calculated
+	int row = 0;
 	public Tech(String name, String description, int cost, int op, double value, Transport ...targets ){
 		this.name = name;
 		this.description = description;
@@ -49,6 +54,7 @@ public class Tech {
 	}
 	public void addParent(Tech t){
 		parents.add(t);
+		depth = Math.max(depth,  t.depth);
 	}
 
 }

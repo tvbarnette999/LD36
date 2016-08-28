@@ -7,6 +7,8 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.RenderingHints;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
@@ -32,6 +34,28 @@ public class LD36 extends JFrame{
 	VolatileImage buffer;
 	Overlay bottom = new Overlay();
 	Overlay right = new Overlay();
+	OverlayButton treeButton = new OverlayButton("Technology Tree");
+	OverlayButton addNothing = new OverlayButton("Nothing");
+	OverlayButton addFootPath = new OverlayButton("Footpath");
+	OverlayButton addDirtRoad = new OverlayButton("Dirt Road");
+	OverlayButton addRailRoad = new OverlayButton("Railroad");
+	OverlayButton addPavedRoad = new OverlayButton("Paved Road");
+	OverlayButton addCatapault = new OverlayButton("Catapault");
+	OverlayButton addAirport = new OverlayButton("Airport");
+	
+	OverlayButton addSelected = addNothing;
+	
+	ActionListener addListener = new ActionListener(){
+		public void actionPerformed(ActionEvent e){
+			if(addSelected != e.getSource()){
+				addSelected.selected = false;
+			}
+			addSelected = (OverlayButton) e.getSource();
+			addSelected.selected = true;
+		}
+	};
+	
+	TechTree techTree = new TechTree();
 	ArrayList<Overlay> activeOverlays = new ArrayList<Overlay>();
 	
 	MouseAdapter adapter = new MouseAdapter(){
@@ -174,6 +198,11 @@ public class LD36 extends JFrame{
 						g.drawString("Click To Start", 400, 400);
 						break;
 					case GAME:
+						if(techTree.visible){
+							techTree.draw(g);
+							
+							break;
+						}
 						map.draw(g);
 						
 						//draw everything above the map
@@ -218,12 +247,64 @@ public class LD36 extends JFrame{
 		map = Map.generate();
 		gameState = State.GAME;
 		
-		OverlayButton treeButton = new OverlayButton();
 		treeButton.setRect(10, buffer.getHeight() - 100, 200, 50);
-		treeButton.text = "Tech Tree";
+		
+		techTree.setRect(0, 0, buffer.getWidth(), buffer.getHeight());
+		double BY = buffer.getHeight() - 100;
+		double BW = 50;
+		double GAP = 25;
+
+		double BX = buffer.getWidth() - 7*GAP - 7*BW;
+		addNothing.setRect(BX, BY, BW, BW);
+		addFootPath.setRect(BX+BW+GAP, BY, BW, BW);
+		addDirtRoad.setRect(BX+2*BW+2*GAP, BY, BW, BW);
+		addCatapault.setRect(BX+3*BW+3*GAP, BY, BW, BW);
+		addRailRoad.setRect(BX+4*BW+4*GAP,  BY, BW, BW);
+		addPavedRoad.setRect(BX+5*BW+5*GAP,BY,BW,BW);
+		addAirport.setRect(BX+6*BW+6*GAP, BY, BW, BW);
+		
 		bottom.addChild(treeButton);
+		treeButton.setActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				if(techTree.visible){
+					techTree.visible = false;
+					bottom.visible = true;
+					right.visible = true;
+					treeButton.text = "Technology Tree";
+				} else{
+					techTree.visible = true;
+					bottom.visible = false;
+					right.visible = false;
+					treeButton.text = "Close";
+				}
+			}
+		});
+		
+		
+		bottom.addChild(addNothing);
+		bottom.addChild(addFootPath);
+		bottom.addChild(addDirtRoad);
+		bottom.addChild(addCatapault);
+		bottom.addChild(addRailRoad);
+		bottom.addChild(addPavedRoad);
+		bottom.addChild(addAirport);
+		
+		addNothing.setActionListener(addListener);
+		addFootPath.setActionListener(addListener);
+		addDirtRoad.setActionListener(addListener);
+		addCatapault.setActionListener(addListener);
+		addRailRoad.setActionListener(addListener);
+		addPavedRoad.setActionListener(addListener);
+		addAirport.setActionListener(addListener);
+		
+		
 		activeOverlays.add(bottom);
 		activeOverlays.add(right);
+		activeOverlays.add(techTree);
+	
+		techTree.addChild(treeButton);
+		techTree.visible = false;
+		
 	}
 
 }
