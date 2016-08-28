@@ -48,12 +48,19 @@ public class Tech extends OverlayButton implements ActionListener{
 	}
 	public void research(){
 		researched = true;
-		for(Object o : targets){
+		Object o = null;
+		for(int i = 0; i < targets.length; i++){
+			o = targets[i];
 			if(o instanceof Transport){
 				((Transport)o).scalar *= value;
 			}
 			if(o instanceof Road){
 				((Road)o).unlocked = true;
+			}
+			if(o instanceof Transport[]){ //DEFINITELY UNTESTED!
+				((Transport[]) o) [ ((Integer) targets[i+1]).intValue() ]  =  (Transport) targets[i+2];
+				i+=2;
+				continue;
 			}
 		}
 		LD36.theLD.money-=cost;
