@@ -59,7 +59,7 @@ public class TechTree extends Overlay{
 	//static Tech steelFarm = new Tech("Steel Farm Equipment", "");
 	static Tech math = new Tech("Math", "");
 	static Tech carriage = new Tech("Horse Drawn Carriage", "");
-	static Tech metalRims = new Tech("Metal Rims", "Adds coolness, so horse goes quicker");
+	static Tech metalRims = new Tech("Metal Rims", "Adds coolness, so increases carriage speed by 10%");
 	static Tech lighterCarriage = new Tech("Lighter Carriage", "");
 	static Tech twoHorse = new Tech("Two Horse Carriage", "");
 	static Tech caravan = new Tech("Caravan", "");
@@ -389,7 +389,7 @@ public class TechTree extends Overlay{
 		selfTrain.addParent(AI);
 		selfPlane.addParent(AI);
 		selfCar.addParent(electricCar);
-		selfTrain.addParent(electricTrain);
+		selfTrain.addParent(bulletTrain);
 		selfPlane.addParent(airports);
 		
 		singularity.addParent(selfCar);

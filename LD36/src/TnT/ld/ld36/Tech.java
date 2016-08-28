@@ -2,6 +2,8 @@ package TnT.ld.ld36;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.Stroke;
 import java.awt.event.ActionEvent;
@@ -9,12 +11,13 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 public class Tech extends OverlayButton implements ActionListener{
-	public static final int WIDTH = 150;
+	public static final int WIDTH = 200;
 	public static final int HEIGHT = 100;
 	
 	ArrayList<Tech> parents = new ArrayList<Tech>();
 	String name;
 	String description;
+	String[] split;
 	double cost = 1;
 	boolean researched = false;
 	//int x, y;//manual location/rendering?
@@ -29,6 +32,7 @@ public class Tech extends OverlayButton implements ActionListener{
 		this.enteredBackground = Color.CYAN;
 		this.name = name;
 		this.description = description;
+		split = this.description.split(" ");
 		this.targets = targets;
 		width = WIDTH;
 		height = HEIGHT;
@@ -86,7 +90,7 @@ public class Tech extends OverlayButton implements ActionListener{
 		else if(available()){
 			enabled = true;
 			if(canAfford()){
-				g.setColor(Color.GREEN);
+				g.setColor(Color.GREEN.darker().darker());
 			} else{
 				g.setColor(Color.RED);
 			}
@@ -96,8 +100,28 @@ public class Tech extends OverlayButton implements ActionListener{
 		g.fill(this);
 		
 		g.setColor(Color.white);
-		g.drawString(name, (int)(x+5), (int)(y+15));
+
+		Font of = g.getFont();
+		g.setFont(of.deriveFont(20f));
+	
+		g.drawString(name, (int)(x+5), (int)(y+20));
 		if(!researched)g.drawString(LD36.moneyString(cost),(int)x+5, (int) ((int)y+height -5));
+
+		g.setFont(of.deriveFont(14f));
+		
+		int sx = (int) (x+5);
+		int sy = (int) (y+40);
+		FontMetrics fm = g.getFontMetrics();
+		for(String s : split){
+			if(fm.stringWidth(s) >= (x+width) - sx ){
+				//next line
+				sy += fm.getHeight();
+				sx = (int) (this.x+5);
+			}
+			g.drawString(s, sx, sy);
+			sx += fm.stringWidth(s+" ");
+		}
+		//g.drawString(description, (int)(x+5), (int)(y+30));
 		//draw path to parents!
 		Stroke os = g.getStroke();
 		g.setStroke(new BasicStroke(4));
@@ -147,6 +171,7 @@ public class Tech extends OverlayButton implements ActionListener{
 			g.drawArc((int)(x-3*TechTree.X_GAP/2),(int)( y-height/2 -TechTree.Y_GAP), TechTree.X_GAP, TechTree.X_GAP, 0, 90);//b to l
 			g.drawArc((int)(x-3*TechTree.X_GAP/2),(int)( y+TechTree.Y_GAP+height/2), TechTree.X_GAP, TechTree.X_GAP, 270, 90);//t to l
 		}
+		g.setFont(of);
 		g.setStroke(os);
 		g.setColor(oc);
 	}

@@ -84,7 +84,7 @@ public class LD36 extends JFrame{
 	
 	TechTree techTree = new TechTree();
 	ArrayList<Overlay> activeOverlays = new ArrayList<Overlay>();
-	public double money = 1e9;
+	public double money = 1e5;
 	
 	MouseAdapter adapter = new MouseAdapter(){
 		public void mouseClicked(MouseEvent e){
