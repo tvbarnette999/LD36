@@ -14,9 +14,12 @@ public class OverlayButton extends Overlay {
 	public boolean selectable = false;
 	public boolean selected = false;
 	public ActionListener callback = null;
+	public Color enteredBackground = background.brighter();
+	public Color removedBackground;
 	public OverlayButton(String text, boolean selectable){
 		this.background = Color.lightGray;
 		this.text = text;
+		this.removedBackground = background;
 	}
 	public OverlayButton(String text){
 		this(text,false);
@@ -35,14 +38,16 @@ public class OverlayButton extends Overlay {
 		g.drawString(text,(int)( x+width/2 - g.getFontMetrics().stringWidth(text)/2.0),(int)(y+ height/2.0));
 		g.setColor(oc);
 		g.setFont(of);
+//		System.out.println("OB"+x+","+y);
 	}
 	
 	public void mouseEntered(MouseEvent e){
-		this.background = Color.LIGHT_GRAY.brighter();
+		System.out.println("ENTER "+text);
+		this.background = enteredBackground;
 		e.consume();
 	}
 	public void mouseExited(MouseEvent e){
-		this.background = Color.LIGHT_GRAY;
+		this.background = removedBackground;
 		e.consume();
 	}
 	public void mouseClicked(MouseEvent e){
