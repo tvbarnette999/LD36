@@ -50,13 +50,24 @@ public class LD36 extends JFrame{
 	ActionListener addListener = new ActionListener(){
 		public void actionPerformed(ActionEvent e){
 			OverlayButton o = (OverlayButton) e.getSource();
+			if (o==clearSelection) {
+				map.clearSelection();
+				return;
+			}
 			Road road = null;
 			if (o==addFootPath) road = Road.FOOTPATH;
 			if (o==addDirtRoad) road = Road.DIRT;
 			if (o==addPavedRoad) road = Road.PAVED;
 			if (o==addRailRoad) road = Road.RAIL;
 			if (road != null) {
-				
+				System.out.println(e.getModifiers());
+				if (e.getModifiers()==16 && money > road.cost * map.selectAdd[road.key]) {
+					map.buildSelection(road);
+					map.clearSelection();
+				} else if (e.getModifiers()==4) {
+					map.sellSelection(road);
+					map.clearSelection();
+				}
 			} else if (o==addCatapalt) {
 				
 			} else if (o==addAirport) {

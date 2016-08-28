@@ -150,6 +150,25 @@ public class Map {
 			selectRemove[i] = 0;
 		}
 	}
+	public void buildSelection(Road r) {
+		for (int i = 0; i < selection.size(); i++) {
+			Point tile = selection.get(i);
+			if ((data[tile.x][tile.y]&(CITY_BIT|IMPASS_BIT|r.mask))==0)
+				data[tile.x][tile.y] |= r.mask;
+		}
+		selectRemove[r.key] += selectAdd[r.key];
+		selectAdd[r.key] = 0;
+	}
+	public void sellSelection(Road r) {
+		for (int i = 0; i < selection.size(); i++) {
+			Point tile = selection.get(i);
+			byte d = data[tile.x][tile.y];
+			if ((d&(CITY_BIT|IMPASS_BIT))==0 && (d&r.mask)!=0)
+				data[tile.x][tile.y] ^= r.mask;
+		}
+		selectAdd[r.key] += selectRemove[r.key];
+		selectRemove[r.key] = 0;
+	}
 	public void mouseWheelMoved(MouseWheelEvent e) {
 		double oz = zoom;
 		zoom *= Math.pow(1.125, -e.getPreciseWheelRotation());
@@ -308,6 +327,7 @@ public class Map {
 				} else drawTileImage(g, grass, loc);
 				
 				// draw tile outline
+				g.setColor(Color.black);
 				g.draw(tile);
 				tile.transform(tDown);
 				loc.y += MAX_HEIGHT;

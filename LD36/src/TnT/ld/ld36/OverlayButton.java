@@ -52,7 +52,7 @@ public class OverlayButton extends Overlay {
 	}
 	public void mouseClicked(MouseEvent e){
 		if(callback!=null){
-			callback.actionPerformed(new ActionEvent(this, 0, "", 0, 0));
+			callback.actionPerformed(new ActionEvent(this, 0, "", 0, e.getModifiers()));
 		}
 	}
 	public void setActionListener(ActionListener al){

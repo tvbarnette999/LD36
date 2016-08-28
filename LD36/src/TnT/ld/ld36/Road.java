@@ -10,11 +10,13 @@ public class Road {
 	static {
 		for (int i = 0; i < roads.length; i++)
 			roads[i].key = i;
+		FOOTPATH.unlocked = true;
 	}
 	
 	public double cost;
 	public byte mask;
 	public int key;
+	public boolean unlocked;
 	private Road(double cost, byte mask) {
 		this.cost = cost;
 		this.mask = mask;
