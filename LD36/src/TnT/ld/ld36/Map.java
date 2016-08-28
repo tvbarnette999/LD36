@@ -60,6 +60,8 @@ public class Map {
 	int[] selectAdd = new int[Road.roads.length];
 	int[] selectRemove = new int[Road.roads.length];
 	
+	ArrayList<City> cities = new ArrayList<City>();
+	
 	// make tile poly
 	static Path2D.Double tilePoly;
 	static AffineTransform tDown = AffineTransform.getTranslateInstance(0, MAX_HEIGHT);
@@ -196,6 +198,7 @@ public class Map {
 	}
 	public void findPath(int x1, int y1, int x2, int y2, Transport type){
 		//TODO use canUse method above for pathfinder. pass it transport type.
+		
 	}
 	public void setTile(int xi, int yi, byte bit, boolean v){
 		if(v)data[xi][yi] |= bit;
@@ -215,6 +218,10 @@ public class Map {
 	}
 	public Point2D.Double transformToMap(double x, double y) {
 		return new Point2D.Double((x-transX)/zoom, (y-transY)/zoom);
+	}
+	public Point[] getNeighbors(int x, int y) {
+		return new Point[] {new Point(x, y+1), new Point(x, y-1), new Point(x-1, y-1+(x&1)), 
+				new Point(x+1, y-1+(x&1)), new Point(x-1, y+(x&1)), new Point(x+1, y+(x&1))};
 	}
 	public Point getContainingTile(Point2D.Double p) {
 		return getContainingTile(p.x, p.y);
@@ -359,7 +366,6 @@ public class Map {
 			}
 			g.setStroke(s);
 		}
-		
 		
 		g.scale(1/zoom, 1/zoom);
 		g.translate(-transX, -transY);
