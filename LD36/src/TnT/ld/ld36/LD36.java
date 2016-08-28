@@ -317,13 +317,24 @@ public class LD36 extends JFrame{
 		public void run(){
 			while(true){
 				if (gameState.equals(TnT.ld.ld36.State.GAME)) {
-					long t = System.nanoTime();
-					Path p = map.findPath(3, 2, 7, 6, Transport.RUNNER);
-					System.out.println((System.nanoTime()-t)*1e-9);
-					if (p != null) System.out.println(p);
-					else System.out.println("no path");
-					try { Thread.sleep(500); } catch (Exception e) {}
+					// calculate rate capacities for each city
+					for (int i = 0; i < map.cities.size(); i++) {
+						City c = map.cities.get(i);
+						for (int j = 0; j < c.paths.size()-1; j++) {
+							double cap = 0;
+							Path[] paths = c.paths.get(j);
+							for (int t = 0; t < Transport.baseUnits.length; t++) {
+								Transport current = Transport.currentUnits[t];
+								if (current != null) {
+									cap += current.scalar / paths[t].length();
+								}
+							}
+						}
+					}
 				}
+				try {
+					Thread.sleep(10);
+				} catch (Exception e) {}
 			}
 		}
 	};

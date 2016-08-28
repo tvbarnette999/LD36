@@ -144,9 +144,9 @@ public class Map {
 				}
 			}
 		}
-		System.out.println("selection: "+selection);
-		System.out.println("can add: "+Arrays.toString(selectAdd));
-		System.out.println("can remove: "+Arrays.toString(selectRemove));
+//		System.out.println("selection: "+selection);
+//		System.out.println("can add: "+Arrays.toString(selectAdd));
+//		System.out.println("can remove: "+Arrays.toString(selectRemove));
 	}
 	public void clearSelection() {
 		selection.clear();
@@ -188,10 +188,37 @@ public class Map {
 	}
 	public static Map generate(){
 		Map m = new Map();
-		m.setTile(3,2,CITY_BIT, true);//m.data[3][2] |= CITY_BIT;
-		m.data[7][6] |= CITY_BIT;
-		m.data[11][3] |= CITY_BIT;
+		m.addCity(3, 2);
+		m.addCity(7, 6);
+		m.addCity(11, 3);
+		m.addCity((int)(Math.random()*30), (int)(Math.random()*30));
+		m.addCity((int)(Math.random()*30), (int)(Math.random()*30));
+		m.addCity((int)(Math.random()*30), (int)(Math.random()*30));
 		return m;
+	}
+	public void addCity(int x, int y) {
+		data[x][y] = 0x1f;
+		
+		//expand path arrays for all existing cities
+		for (City c : cities) c.addCity();
+		
+		City c = new City("Auschwitz");
+		c.x = x;
+		c.y = y;
+		c.ID = cities.size();
+		for (int i = 0; i < cities.size(); i++) c.addCity();
+		cities.add(c);
+	}
+	public void calculateAllPaths() {
+		for (int i = 0; i < cities.size(); i++) {
+			City a = cities.get(i);
+			for (int j = 0; j < cities.size(); j++)
+				if (i != j) {
+					City b = cities.get(j);
+					for (int t = 0; t < Transport.baseUnits.length; t++)
+						cities.get(i).paths.get(j-(j>i?1:0))[t] = findPath(a.x, a.y, b.x, b.y, Transport.baseUnits[t]);
+				}
+		}
 	}
 	public boolean hasCity(int x, int y){
 		return (data[x][y] & CITY_BIT) > 0;
@@ -200,6 +227,7 @@ public class Map {
 		return (int) Math.round(d);
 	}
 	public boolean canUse(Transport type, Point tile) {
+		if (tile.x < 0 || tile.x >= MAP_WIDTH || tile.y < 0 || tile.y >= MAP_HEIGHT) return false;
 		return (data[tile.x][tile.y]&type.bits) != 0;
 	}
 	public Path findPath(int x1, int y1, int x2, int y2, Transport type){
@@ -297,7 +325,7 @@ public class Map {
 	}
 	double zoom = 1;
 	double transX = 0, transY = 0;
-	static final double MIN_ZOOM = .5;
+	static final double MIN_ZOOM = .25;
 	long lastTime = -1;
 	public void draw(Graphics2D g){
 		long current = System.nanoTime();
