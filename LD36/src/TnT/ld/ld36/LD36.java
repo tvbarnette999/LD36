@@ -15,7 +15,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
-import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.VolatileImage;
 import java.util.ArrayList;
@@ -317,23 +316,37 @@ public class LD36 extends JFrame{
 	public Thread physics = new Thread(){
 		public void run(){
 			while(true){
-				System.out.println(Arrays.toString(Transport.currentUnits));
-//				if (gameState.equals(TnT.ld.ld36.State.GAME)) {
-//					// calculate rate capacities for each city
-//					for (int i = 0; i < map.cities.size(); i++) {
-//						City c = map.cities.get(i);
-//						for (int j = 0; j < c.paths.size()-1; j++) {
-//							double cap = 0;
-//							Path[] paths = c.paths.get(j);
-//							for (int t = 0; t < Transport.baseUnits.length; t++) {
-//								Transport current = Transport.currentUnits[t];
-//								if (current != null) {
-//									cap += current.scalar / paths[t].length();
-//								}
-//							}
-//						}
-//					}
-//				}
+				if (gameState.equals(TnT.ld.ld36.State.GAME)) {
+					if (map.recalcFlag) map.calculateAllPaths();
+					
+					// calculate rate capacities for each city
+					for (int i = 0; i < map.cities.size(); i++) {
+						City c = map.cities.get(i);
+						for (int j = 0; j < c.paths.size()-1; j++) {
+							double cap = 0;
+							Path[] paths = c.paths.get(j);
+							for (int t = 0; t < Transport.baseUnits.length; t++) {
+								Transport current = Transport.currentUnits[t];
+								if (current != null && paths[t] != null) {
+									cap += current.scalar / paths[t].length();
+								}
+							}
+							c.rateCapacity.set(j, cap);
+						}
+					}
+					
+					//calculate desired rate for each city
+					int totalPop = 0;
+					for (int i = 0; i < map.cities.size(); i++) totalPop += map.cities.get(i).population;
+					for (int i = 0; i < map.cities.size(); i++) {
+						City c = map.cities.get(i);
+						for (int j = 0; j < c.desiredRate.size(); j++) {
+							c.desiredRate.set(j, (double) (c.population/(totalPop-c.population)*map.cities.get(j+(j>=i?1:0)).population));
+						}
+					}
+					System.out.println(map.cities.get(0).rateCapacity);
+					System.out.println(map.cities.get(0).desiredRate);
+				}
 				try {
 					Thread.sleep(10);
 				} catch (Exception e) {}
