@@ -70,6 +70,8 @@ public class Map {
 	Vector<Point> selection = new Vector<Point>();
 	int[] selectAdd = new int[Road.roads.length];
 	int[] selectRemove = new int[Road.roads.length];
+	
+	ArrayList<HelpPopup> helps = new ArrayList<HelpPopup>();
 
 	ArrayList<City> cities = new ArrayList<City>();
 
@@ -101,7 +103,10 @@ public class Map {
 		insetPoly.transform(AffineTransform.getTranslateInstance(MAX_WIDTH/2, MAX_HEIGHT/2));
 	}
 
-
+	Point2D.Double scrollPoint = null;
+	double scrollRate = 0;
+	boolean graphicsStall;
+	
 	public byte[][] data = new byte[MAP_WIDTH][MAP_HEIGHT]; //this array is done [x][y] to simplify.
 	public ArrayList<Sprite> sprites = new ArrayList<Sprite>();
 	public void mouseClicked(MouseEvent e){
@@ -115,6 +120,7 @@ public class Map {
 	}
 	public void mouseDragged(MouseEvent e) {
 		if ((e.getModifiers()&8) != 0) {
+			if (this.isScrolling()) return;
 			// right click
 			transX -= mouseLoc.x - e.getX();
 			transY -= mouseLoc.y - e.getY();
@@ -125,17 +131,18 @@ public class Map {
 		if ((e.getModifiers()&16) != 0 && tile.x >= 0 && tile.x < MAP_WIDTH && tile.y >= 0 && tile.y < MAP_HEIGHT) {
 			// left click
 			// add to selection
-			if (!selection.contains(tile)) {
-				selection.add(tile);
-				byte d = data[tile.x][tile.y];
-				// if not city or impassible
-				if ((d&CITY_BIT) !=0 ) {
-					for (City c : cities) {
-						if (c.getX() == tile.x && c.getY() == tile.y) {
-							LD36.theLD.setSelectedCity(c);
-						}
+			byte d = data[tile.x][tile.y];
+			if ((d&CITY_BIT) !=0 ) {
+				for (City c : cities) {
+					if (c.getX() == tile.x && c.getY() == tile.y) {
+						LD36.theLD.setSelectedCity(c);
 					}
 				}
+			}
+			if (!selection.contains(tile)) {
+				selection.add(tile);
+				// if not city or impassible
+				
 				if ((d&(CITY_BIT|IMPASS_BIT))==0) {
 					for (Road r : Road.roads) {
 						if ((d&r.mask)==0) selectAdd[r.key]++;
@@ -192,6 +199,7 @@ public class Map {
 		recalcFlag = true;
 	}
 	public void mouseWheelMoved(MouseWheelEvent e) {
+		if (this.isScrolling()) return;
 		double oz = zoom;
 		zoom *= Math.pow(1.125, -e.getPreciseWheelRotation());
 		zoom = Math.max(MIN_ZOOM, Math.min(1, zoom));
@@ -202,6 +210,26 @@ public class Map {
 	public void restrictScroll() {
 		transX = Math.min(0, Math.max(FRAME_WIDTH-MAP_PIXEL_WIDTH*zoom, transX));
 		transY = Math.min(0, Math.max(FRAME_HEIGHT-MAP_PIXEL_HEIGHT*zoom, transY));
+	}
+	public void gotoPoint(Point2D.Double p) {
+		Point2D.Double off = getOffsetToCenterPoint(p.x, p.y);
+		transX = off.x;
+		transY = off.y;
+	}
+	public void scrollTo(Point2D.Double p) {
+		if (this.isScrolling()) return;
+		scrollPoint = getOffsetToCenterPoint(p.x, p.y);
+		scrollRate = 0;
+	}
+	public boolean isScrolling() {
+		return scrollPoint != null;
+	}
+	public Point2D.Double getOffsetToCenterPoint(double x, double y) {
+		double tx = FRAME_WIDTH/2 - x*zoom;
+		double ty = FRAME_HEIGHT/2 - y*zoom;
+		tx = Math.min(0, Math.max(FRAME_WIDTH-MAP_PIXEL_WIDTH*zoom, tx));
+		ty = Math.min(0, Math.max(FRAME_HEIGHT-MAP_PIXEL_HEIGHT*zoom, ty));
+		return new Point2D.Double(tx, ty);
 	}
 	public static Map generate(){
 		Map m = new Map();
@@ -215,12 +243,33 @@ public class Map {
 			p1.y += Math.signum(p2.y - p1.y);
 			m.setTile(p1, Map.FOOT_PATH_BIT, true);
 		}
-		m.transX = -3845.1374634499984;
-		m.transY = -4744.822160499997;
+		m.gotoPoint(m.getTileCenter((int)(MAP_WIDTH/2), (int)(MAP_HEIGHT/2)));
 		m.recalcFlag = true;
+		p1 = m.cities.get(0).getLocation();
+		p2 = m.cities.get(1).getLocation();
+		//generate some mountain ranges
+		Point p3;
+		Random r = new Random();
+		d:for (int i = 0; i < 15; i++) {
+			p3 = new Point(r.nextInt(m.data.length), r.nextInt(m.data[0].length));
+			int count = 0;
+			while ((Math.random() < .965 && count++ < 20) || count < 4) {
+				if (m.data[p3.x][p3.y] == 0) {
+					m.data[p3.x][p3.y] |= IMPASS_BIT;
+				}
+				if (Math.random() < .5) {
+					p3.x += Math.signum(Math.random() - .25);
+				} else {
+					p3.y += Math.signum(Math.random() - .25);
+				}
+				if (p3.x >= m.data.length || p3.x < 0 || p3.y >= m.data[0].length || p3.y < 0) {
+					continue d;
+				}
+			}
+		}
 		return m;
 	}
-	public void addCity(int x, int y) {
+	public City addCity(int x, int y) {
 		data[x][y] = 0x1f;
 
 		//expand path arrays for all existing cities
@@ -233,6 +282,7 @@ public class Map {
 		for (int i = 0; i < cities.size(); i++) c.addCity();
 		cities.add(c);
 		recalcFlag = true;
+		return c;
 	}
 	boolean recalcFlag = true;
 	public void calculateAllPaths() {
@@ -249,9 +299,6 @@ public class Map {
 	}
 	public boolean hasCity(int x, int y){
 		return (data[x][y] & CITY_BIT) > 0;
-	}
-	private int round(double d){
-		return (int) Math.round(d);
 	}
 	public boolean canUse(Transport type, Point tile) {
 		if (tile.x < 0 || tile.x >= MAP_WIDTH || tile.y < 0 || tile.y >= MAP_HEIGHT) return false;
@@ -295,6 +342,12 @@ public class Map {
 	}
 	public Point2D.Double getTileLocation(int x, int y) {
 		return new Point2D.Double(x * MAX_WIDTH * .75, (y + ((x&1)==1?.5:0)) * MAX_HEIGHT);
+	}
+	public Point2D.Double getTileCenter(Point p) {
+		return getTileCenter(p.x, p.y);
+	}
+	public Point2D.Double getTileCenter(int x, int y) {
+		return new Point2D.Double(x * MAX_WIDTH * .75 + MAX_WIDTH/2, (y + ((x&1)==1?.5:0)) * MAX_HEIGHT + MAX_HEIGHT/2);
 	}
 	public Point2D.Double transformToMap(double x, double y) {
 		return new Point2D.Double((x-transX)/zoom, (y-transY)/zoom);
@@ -353,16 +406,40 @@ public class Map {
 	long lastTime = -1;
 	public void draw(Graphics2D g){
 		long current = System.nanoTime();
-		if (lastTime > 0) {
-			double dt = 500 * (current-lastTime) * 1e-9;
-			if (LD36.up) transY += dt;
-			if (LD36.down) transY -= dt;
-			if (LD36.rightPressed) transX -= dt;
-			if (LD36.left) transX += dt;
-			restrictScroll();
+		double dt = (current-lastTime) * 1e-9;
+		if (lastTime > 0 && !graphicsStall) {
+			if (this.isScrolling()) {
+				System.out.println("scrolling "+transX+",  "+transY+" to "+scrollPoint);
+				double dist = scrollPoint.distance(transX, transY);
+				if (dist < 1) {
+					transX = scrollPoint.x;
+					transY = scrollPoint.y;
+					scrollPoint = null;
+					scrollRate = 0;
+					System.out.println("stopped");
+				} else {
+					scrollRate = Math.min(scrollRate + 2000*dt, Math.min(dist*5, 1e9));
+					System.out.println(scrollRate);
+					double dx = (scrollPoint.x-transX) * scrollRate / dist;
+					double dy = (scrollPoint.y-transY) * scrollRate / dist;
+					transX += dx * dt;
+					transY += dy * dt;
+				}
+			} else {
+				double rate = 500;
+				if (LD36.up) transY += rate*dt;
+				if (LD36.down) transY -= rate*dt;
+				if (LD36.rightPressed) transX -= rate*dt;
+				if (LD36.left) transX += rate*dt;
+				restrictScroll();
+			}
+		} else {
+			dt = 0;
 		}
+		
 		//		System.out.println(transX + ", " + transY);
 		lastTime = current;
+		graphicsStall = false;
 
 		final double zoom = this.zoom, transX = this.transX, transY = this.transY;
 		g.translate(transX, transY);
@@ -387,7 +464,8 @@ public class Map {
 		double lup = sup - MAX_HEIGHT;
 		AffineTransform tsup = AffineTransform.getTranslateInstance(MAX_WIDTH * .75, sup);
 		AffineTransform tlup = AffineTransform.getTranslateInstance(MAX_WIDTH * .75, lup);
-		for (City c : cities) {
+		for (int i = 0; i < cities.size(); i++) {
+			City c = cities.get(i);
 			int pop = (int) Math.max(Math.min(cityImages.length - 1, Math.log10(c.population)), 0);
 			drawTileImage(g, grass, getTileLocation(c));
 			drawTileImage(g, cityImages[pop], getTileLocation(c));
@@ -460,6 +538,15 @@ public class Map {
 			}
 			g.setStroke(s);
 		}
+		for (int i = 0; i < helps.size(); i++) {
+			helps.get(i).draw(g);
+			helps.get(i).ticks -= dt;
+			System.out.println("dt: " + dt);
+			System.out.println(helps.get(i).ticks);
+			if (helps.get(i).ticks < 0) {
+				helps.remove(i--);
+			}
+		}
 
 		g.scale(1/zoom, 1/zoom);
 		g.translate(-transX, -transY);
@@ -497,19 +584,29 @@ public class Map {
 		}
 	};
 	Random r = new Random();
-	public void addNewRandomCity() {
+	public City addNewRandomCity() {
 		Point p = new Point();
-		boolean b = true;
+		boolean b = true, bb = true;;
 		do {
 			p.x = r.nextInt(MAP_WIDTH - 4) + 2;
 			p.y = r.nextInt(MAP_HEIGHT - 4) + 2;
+			if (data[p.x][p.y] != 0) continue; //it must be on a grass tile
 			b = true;
+			bb = false;
 			for (City c : cities) {
-				if (p.distance(c) < 6) {
+				if (p.distance(c) < 4) { //cannot be closer than this
 					b = false;
+					continue;
+				}
+				if (p.distance(c) < 8) { //must have at least one this close
+					bb = true;
+					continue;
 				}
 			}
-		} while (!b);
-		addCity(p.x, p.y);
+		} while (!(b&&bb));
+		return addCity(p.x, p.y);
+	}
+	public void addHelp(HelpPopup helpPopup) {
+		helps.add(helpPopup);
 	}
 }

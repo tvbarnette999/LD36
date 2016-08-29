@@ -53,6 +53,11 @@ public class LD36 extends JFrame{
 
 	OverlayButton cityName = new OverlayButton("Name: ");
 	Overlay cityPopulation = new Overlay("Pop: ");
+	
+	String initHelpText = "A new city was founded to take\nadvantage of your great mail system.\n"
+			+ "Consider adding it to your other\ncities to generate more mail!";
+	String initHelpText2 = "To connect this city, select tiles to form a path\nand then select the path type at the bottom.\nOver time you will need to upgrade!";
+	boolean shownHelp = false;
 	boolean boosted = true;
 	OverlayButton increase = new OverlayButton("Write Mail for City") {
 		@Override
@@ -62,6 +67,10 @@ public class LD36 extends JFrame{
 		@Override
 		public void mouseReleased(MouseEvent e) {
 			boosted = false;
+		}
+		@Override
+		public void mouseExited(MouseEvent e) {
+			mouseReleased(e);
 		}
 	};
 
@@ -331,12 +340,17 @@ public class LD36 extends JFrame{
 			case KeyEvent.VK_RIGHT:
 				rightPressed = true;
 				break;
+			case KeyEvent.VK_SPACE:
+				if (gameState==State.GAME) map.scrollTo(map.getTileCenter(0, 0));
+				break;
 			case KeyEvent.VK_ESCAPE:
 				if(treeButton.callback != null && techTree.visible)treeButton.callback.actionPerformed(new ActionEvent(treeButton, 0 ,""));
+				else map.clearSelection();
 			}
 		}
 
 		public void keyReleased(KeyEvent e) {
+			System.out.println(e.getKeyCode());
 			switch (e.getKeyCode()) {
 			case KeyEvent.VK_A:
 			case KeyEvent.VK_LEFT:
@@ -354,6 +368,16 @@ public class LD36 extends JFrame{
 			case KeyEvent.VK_RIGHT:
 				rightPressed = false;
 				break;
+			case KeyEvent.VK_PAUSE:
+				if (e.isShiftDown()) {
+					money *= 2;
+				}
+				break;
+			case KeyEvent.VK_PRINTSCREEN:
+				if (e.isShiftDown()) {
+					generateCity();
+				}
+				break;
 			}
 		}
 	};
@@ -363,6 +387,15 @@ public class LD36 extends JFrame{
 		theLD.initGUI();		
 	}
 
+	protected void generateCity() {
+		City c;
+		map.scrollTo(map.getTileCenter(c = map.addNewRandomCity()));
+		if (!shownHelp) {
+			map.addHelp(new HelpPopup(map, c.x, c.y - 1, initHelpText));
+			map.addHelp(new HelpPopup(map, c.x, c.y + 1, initHelpText2));
+			shownHelp = true;
+		}
+	}
 	public void initGUI() {
 		//Fullscreen?
 		panel.setPreferredSize(new Dimension(1280, 768));
@@ -404,6 +437,7 @@ public class LD36 extends JFrame{
 						if(sp.visible){
 							sp.draw(g);
 							bottom.draw(g);
+							map.graphicsStall = true;
 							break;
 						}
 						map.draw(g);
@@ -429,6 +463,7 @@ public class LD36 extends JFrame{
 						g.drawString(Arrays.toString(Transport.currentUnits), 200, 15);
 						g.drawString(Arrays.toString(Transport.debug()), 200, 30);
 						g.drawString("lit:"+City.literacy, 100,15);
+						g.drawString("lifetime: " + moneyString(lifeTimeEarnings), 100, 40);
 					}
 					
 					g.dispose();
@@ -503,7 +538,7 @@ public class LD36 extends JFrame{
 					lifeTimeEarnings += totalMail;
 
 					if (lifeTimeEarnings > Math.pow(10, map.cities.size() * 2)) {
-						map.addNewRandomCity(); //TODO can we make it scroll to this city?
+						generateCity();
 					}
 					//					System.out.println("Money: " + moneyString(money));
 				}
