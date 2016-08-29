@@ -3,6 +3,7 @@ package TnT.ld.ld36;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -21,6 +22,10 @@ public class OverlayButton extends Overlay {
 		this.text = text;
 		this.removedBackground = background;
 	}
+	public OverlayButton(Image icon){
+		this.img = icon;
+	}
+	public Image img = null;
 	public OverlayButton(String text){
 		this(text,false);
 	}
@@ -29,6 +34,10 @@ public class OverlayButton extends Overlay {
 	}
 	public void draw(Graphics2D g){
 		super.draw(g);
+		if(img != null){
+			g.drawImage(img,(int)x,(int)y,(int)width,(int)height,null);
+			return;
+		}
 		Color oc = g.getColor();
 		Font of = g.getFont();
 		g.setColor(selected?Color.RED :Color.blue);
