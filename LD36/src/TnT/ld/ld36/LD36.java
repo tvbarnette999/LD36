@@ -49,8 +49,8 @@ public class LD36 extends JFrame{
 
 	OverlayButton addSelected = clearSelection;
 
-	private static final DecimalFormat smallFormat = new DecimalFormat("###,###,###.##");
-	private static final DecimalFormat longFormat = new DecimalFormat("###.#");
+	private static final DecimalFormat smallFormat = new DecimalFormat("$###,###,###.##");
+	private static final DecimalFormat longFormat = new DecimalFormat("$###.#");
 	private static final String[] small = new String[] {"m", "b", "tr", "quadr", "quint", "sext", "sept", "oct", "non", "dec"};
 	private static final String[] ones = new String[] { "un", "duo", "tre", "quattuor", "quinqua", "se", "septe", "octo", "nove"};
 	private static final String[] tens = new String[] { "deci", "viginti", "triginta", "quadraginta", "quinquaginta", "sexaginta", "septuaginta", "octoginta", "nonaginta"};
@@ -63,6 +63,9 @@ public class LD36 extends JFrame{
 	private static final String[] septeNoveSpecialHundreds = new String[]{"n", "n", "n", "n", "n", "n", "n", "m", ""};
 	//TODO return how to display varying sizes of money
 	public static String moneyString(double x){
+		if (x == Double.POSITIVE_INFINITY || x == Double.NaN) {
+			return "$ ∞";
+		}
 		if (x < 1000000) {
 			return smallFormat.format(x);
 		}
