@@ -132,7 +132,7 @@ public class Map {
 				if ((d&CITY_BIT) !=0 ) {
 					for (City c : cities) {
 						if (c.getX() == tile.x && c.getY() == tile.y) {
-							LD36.theLD.selectedCity = c;
+							LD36.theLD.setSelectedCity(c);
 						}
 					}
 				}
