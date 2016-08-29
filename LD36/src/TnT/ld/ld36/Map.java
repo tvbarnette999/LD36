@@ -396,11 +396,13 @@ public class Map {
 			for (Point n : getNeighbors(current.tile)) {
 				if (n.x == x2 && n.y == y2) {
 					Path path = new Path();
-					path.points.add(n);
 					while (current.parent != null) {
 						path.points.addFirst(current.tile);
+						path.reversePoints.addLast(current.tile);
 						current = current.parent;
 					}
+					path.points.addLast(n);
+					path.reversePoints.addLast(start);
 					return path;
 				} else if (!visited.contains(n) && canUse(type, n)) {
 					visited.add(n);
