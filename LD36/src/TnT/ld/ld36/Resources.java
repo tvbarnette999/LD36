@@ -41,7 +41,14 @@ public class Resources {
 		return in;
 	}
 	
-	public static Image getImage(String name) throws IOException{
-		return ImageIO.read(getInputStream(name));
+	public static Image getImage(String name){
+		try {
+			return ImageIO.read(getInputStream(name));
+		} catch (Exception e) {
+			System.err.println("YA DONE MESSED UP A A RON");
+			System.err.println(name);
+			System.exit(0);
+			return null;
+		}
 	}
 }

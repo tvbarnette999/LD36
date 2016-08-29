@@ -25,13 +25,9 @@ public class Map {
 	public static Image rock;
 	public static Image tents;
 	static{
-		try {
-			grass = Resources.getImage("grass.png");
-			rock = Resources.getImage("mountainpeak.png");
-			tents = Resources.getImage("tents.png");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		grass = Resources.getImage("grass.png");
+		rock = Resources.getImage("mountainpeak.png");
+		tents = Resources.getImage("tents.png");
 	}
 	public static final int MAP_WIDTH = 100;
 	public static final int MAP_HEIGHT = 100;
@@ -344,7 +340,7 @@ public class Map {
 			if (LD36.left) transX += dt;
 			restrictScroll();
 		}
-//		System.out.println(transX + ", " + transY);
+		//		System.out.println(transX + ", " + transY);
 		lastTime = current;
 
 		final double zoom = this.zoom, transX = this.transX, transY = this.transY;

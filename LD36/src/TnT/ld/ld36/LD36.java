@@ -3,6 +3,7 @@ package TnT.ld.ld36;//TODO TnTWizard.ld.ld36? or TnT.wizard.ld.ld36?
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -24,6 +25,7 @@ import java.util.Arrays;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 
 
@@ -40,17 +42,31 @@ public class LD36 extends JFrame{
 	Overlay right = new Overlay();
 	OverlayButton treeButton = new OverlayButton("Technology Tree");
 	OverlayButton clearSelection = new OverlayButton("Clear");
-	OverlayButton addFootPath = new OverlayButton("icon_footpath.png");
-	OverlayButton addDirtRoad = new OverlayButton("Dir");
-	OverlayButton addRailRoad = new OverlayButton("Railroad");
-	OverlayButton addPavedRoad = new OverlayButton("Paved Road");
-	OverlayButton addCatapalt = new OverlayButton("Catapalt");
-	OverlayButton addAirport = new OverlayButton("Airport");
+	OverlayButton addFootPath = new OverlayButton(Resources.getImage("icon_footpath.png"));
+	OverlayButton addDirtRoad = new OverlayButton(Resources.getImage("icon_dirtroad.png"));
+	OverlayButton addRailRoad = new OverlayButton(Resources.getImage("icon_traintrack.png"));
+	OverlayButton addPavedRoad = new OverlayButton(Resources.getImage("icon_road.png"));
+	OverlayButton addCatapalt = new OverlayButton(Resources.getImage("icon_catapult.png"));
+	OverlayButton addAirport = new OverlayButton(Resources.getImage("icon_airport.png"));
+	
+	private static final Font moneyFont = new Font("Courier", Font.BOLD, 24);
+	
+	Overlay moneyOverlay = new Overlay() {
+		@Override
+		public void draw(Graphics2D g) {
+			Font f = g.getFont();
+			g.setFont(moneyFont);
+			Color c = g.getColor();
+			g.setColor(Color.black);
+			g.drawString(moneyString(money), (int) x, (int) (y + moneyFont.getSize() * 1.5));
+			g.setColor(c);
+			g.setFont(f);
+		}
+	};
 
 	OverlayButton addSelected = clearSelection;
 
 	private static final DecimalFormat smallFormat = new DecimalFormat("$###,###,###.##");
-	private static final DecimalFormat longFormat = new DecimalFormat("$###.#");
 	private static final String[] small = new String[] {"m", "b", "tr", "quadr", "quint", "sext", "sept", "oct", "non", "dec"};
 	private static final String[] ones = new String[] { "un", "duo", "tre", "quattuor", "quinqua", "se", "septe", "octo", "nove"};
 	private static final String[] tens = new String[] { "deci", "viginti", "triginta", "quadraginta", "quinquaginta", "sexaginta", "septuaginta", "octoginta", "nonaginta"};
@@ -127,7 +143,7 @@ public class LD36 extends JFrame{
 		if (endsEven(start)){
 			start = start.substring(0, start.length() - 1);
 		}
-		return longFormat.format(x / Math.pow(10, initlog * 3 + 3)) + start + "illion";
+		return "$" + String.format("%1$.5f", x / Math.pow(10, initlog * 3 + 3)).substring(0, 5) + start + "illion";
 	}
 	/**
 	 * Does not include o bc reasons
@@ -153,6 +169,7 @@ public class LD36 extends JFrame{
 			if (road != null) {
 //				System.out.println(e.getModifiers());
 				if (e.getModifiers()==16 && money > road.cost * map.selectAdd[road.key]) {
+					money -= road.cost * map.selectAdd[road.key];
 					map.buildSelection(road);
 					map.clearSelection();
 				} else if (e.getModifiers()==4) {
@@ -364,7 +381,7 @@ public class LD36 extends JFrame{
 				case GAME:
 					if(techTree.visible){
 						techTree.draw(g);
-
+						bottom.draw(g);
 						break;
 					}
 					map.draw(g);
@@ -450,10 +467,10 @@ public class LD36 extends JFrame{
 	public void startGame(){
 		map = Map.generate();
 
-		treeButton.setRect(10, buffer.getHeight() - 100, 200, 50);
+		treeButton.setRect(10, buffer.getHeight() - 70, 200, 50);
 
-		techTree.height = buffer.getHeight();//setRect(0, 0, buffer.getWidth(), buffer.getHeight());
-		double BY = buffer.getHeight() - 100;
+		techTree.height = buffer.getHeight() - Overlay.BOTTOM_HEIGHT;//setRect(0, 0, buffer.getWidth(), buffer.getHeight());
+		double BY = treeButton.getY();
 		double BW = 50;
 		double GAP = 25;
 
@@ -465,22 +482,21 @@ public class LD36 extends JFrame{
 		addRailRoad.setRect(BX+4*BW+4*GAP,  BY, BW, BW);
 		addPavedRoad.setRect(BX+5*BW+5*GAP,BY,BW,BW);
 		addAirport.setRect(BX+6*BW+6*GAP, BY, BW, BW);
+		moneyOverlay.setRect(220, BY, BX-10, BY);
 
 		bottom.addChild(treeButton);
 		treeButton.setActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
 				if(techTree.visible){
 					techTree.visible = false;
-					bottom.visible = true;
+					//bottom.visible = true;
 					right.visible = true;
 					treeButton.text = "Technology Tree";
-					treeButton.y-=30;
 				} else{
 					techTree.visible = true;
-					bottom.visible = false;
+					//bottom.visible = false;
 					right.visible = false;
 					treeButton.text = "Close";
-					treeButton.y+=30;
 				}
 			}
 		});
@@ -493,6 +509,7 @@ public class LD36 extends JFrame{
 		bottom.addChild(addRailRoad);
 		bottom.addChild(addPavedRoad);
 		bottom.addChild(addAirport);
+		bottom.addChild(moneyOverlay);
 
 		clearSelection.setActionListener(addListener);
 		addFootPath.setActionListener(addListener);
@@ -507,7 +524,8 @@ public class LD36 extends JFrame{
 		activeOverlays.add(right);
 		activeOverlays.add(techTree);
 
-		techTree.addChild(treeButton);
+		//techTree.addChild(treeButton);
+		techTree.addChild(moneyOverlay);
 		techTree.visible = false;
 
 		gameState = State.GAME;

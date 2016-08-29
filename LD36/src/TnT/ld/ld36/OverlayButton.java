@@ -35,7 +35,7 @@ public class OverlayButton extends Overlay {
 	public void draw(Graphics2D g){
 		super.draw(g);
 		if(img != null){
-			g.drawImage(img,(int)x,(int)y,(int)width,(int)height,null);
+			g.drawImage(img,(int)x+1,(int)y+1,(int)width-2,(int)height-2,null);
 			return;
 		}
 		Color oc = g.getColor();

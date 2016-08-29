@@ -9,7 +9,7 @@ import java.util.ArrayList;
 public class TechTree extends Overlay{
 
 	public static final int X_GAP = Tech.HEIGHT; //squares!
-	public static final int Y_GAP = 30;
+	public static final int Y_GAP = 20;
 	public static int MAX_COLUMN = 0;
 	public static int MAX_SCROLL = 0;
 	
