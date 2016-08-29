@@ -449,7 +449,7 @@ public class LD36 extends JFrame{
 			while(true){
 				if (gameState.equals(TnT.ld.ld36.State.GAME)) {
 					if (map.recalcFlag) map.calculateAllPaths();
-
+					double litFactor = Math.pow(City.literacy + 1, 2.75);
 					// calculate rate capacities for each city
 					for (int i = 0; i < map.cities.size(); i++) {
 						City c = map.cities.get(i);
@@ -468,14 +468,13 @@ public class LD36 extends JFrame{
 									cap += current.scalar / paths[t].length();
 								}
 							}
-							c.rateCapacity.set(j, (c == selectedCity && boosted ? 1.2 : 1) * cap);
+							c.rateCapacity.set(j, (c == selectedCity && boosted ? 1.2 : 1) * cap * litFactor);
 						}
 					}
 
 					//calculate desired rate for each city
 					int totalPop = 0;
 					for (int i = 0; i < map.cities.size(); i++) totalPop += map.cities.get(i).population;
-					double litFactor = Math.pow(City.literacy + 1, 2.75);
 					for (int i = 0; i < map.cities.size(); i++) {
 						City c = map.cities.get(i);
 						for (int j = 0; j < c.desiredRate.size(); j++) {
