@@ -394,10 +394,12 @@ public class LD36 extends JFrame {
 					map.scrollTo(map.getTileCenter((int) (Map.MAP_WIDTH / 2), (int) (Map.MAP_HEIGHT / 2)));
 				break;
 			case KeyEvent.VK_ESCAPE:
-				if (treeButton.callback != null && techTree.visible)
+				if (treeButton.callback != null && sp.visible) {
 					treeButton.callback.actionPerformed(new ActionEvent(treeButton, 0, ""));
-				else
+				} else {
 					map.clearSelection();
+				}
+				break;
 			}
 		}
 
