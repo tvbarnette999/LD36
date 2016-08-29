@@ -1,6 +1,7 @@
 package TnT.ld.ld36;
 
 import java.awt.Image;
+import java.awt.image.BufferedImage;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -41,7 +42,7 @@ public class Resources {
 		return in;
 	}
 	
-	public static Image getImage(String name){
+	public static BufferedImage getImage(String name){
 		try {
 			return ImageIO.read(getInputStream(name));
 		} catch (Exception e) {

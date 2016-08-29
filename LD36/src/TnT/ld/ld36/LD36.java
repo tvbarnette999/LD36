@@ -8,6 +8,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.RenderingHints;
+import java.awt.color.ColorSpace;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -17,6 +18,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.image.BufferedImage;
+import java.awt.image.ColorConvertOp;
 import java.awt.image.VolatileImage;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -53,6 +55,8 @@ public class LD36 extends JFrame{
 
 	OverlayButton cityName = new OverlayButton("Name: ");
 	Overlay cityPopulation = new Overlay("Pop: ");
+	
+	static ColorConvertOp grayOp = new ColorConvertOp(ColorSpace.getInstance(ColorSpace.CS_GRAY), null);
 	
 	String initHelpText = "A new city was founded to take\nadvantage of your great mail system.\n"
 			+ "Consider adding it to your other\ncities to generate more mail!";
@@ -194,7 +198,7 @@ public class LD36 extends JFrame{
 			if (o==addPavedRoad) road = Road.PAVED;
 			if (o==addRailRoad) road = Road.RAIL;
 			if (road != null) {
-				//				System.out.println(e.getModifiers());
+				if (!road.unlocked) return;
 				if (e.getModifiers()==16 && money > road.cost * map.selectAdd[road.key]) {
 					money -= road.cost * map.selectAdd[road.key];
 					map.buildSelection(road);
@@ -213,7 +217,7 @@ public class LD36 extends JFrame{
 
 	TechTree techTree = new TechTree();
 	ArrayList<Overlay> activeOverlays = new ArrayList<Overlay>();
-	public double money = 0;
+	public double money = Double.POSITIVE_INFINITY;
 	public double lifeTimeEarnings = 0;
 
 	MouseAdapter adapter = new MouseAdapter(){
@@ -574,6 +578,13 @@ public class LD36 extends JFrame{
 		addPavedRoad.setRect(BX+5*BW+5*GAP,BY,BW,BW);
 		addAirport.setRect(BX+6*BW+6*GAP, BY, BW, BW);
 		moneyOverlay.setRect(220, BY, BX-10, BY);
+		
+		addFootPath.setRoad(Road.FOOTPATH);
+		addDirtRoad.setRoad(Road.DIRT);
+		addRailRoad.setRoad(Road.RAIL);
+		addPavedRoad.setRoad(Road.PAVED);
+		addAirport.setRoad(Road.AIRPORT);
+		addCatapalt.setCatapult();
 
 		cityName.setRect(RX, 0, Overlay.RIGHT_WIDTH, 100);
 		cityPopulation.setRect(RX, 110, Overlay.RIGHT_WIDTH, 80);

@@ -66,7 +66,7 @@ public class TechTree extends Overlay{
 	//static Tech lanterns = new Tech("Lanterns", "");
 	static Tech steam = new Tech("Steam", "Energy source for science", 1.2, City.class);
 	static Tech engineering = new Tech("Engineering", "Build really cool stuff", 1.1, City.class);
-	static Tech catapult = new Tech("Catapult", "Wheeeeeeeeeeee!", 1.01, City.class); //TODO CATAPULTS!*******************************************************
+	static Tech catapult = new Tech("Catapult", "Wheeeeeeeeeeee!", Transport.CATAPULT_TYPE, Transport.currentUnits, Transport.CATAPAULT); //TODO CATAPULTS!*******************************************************
 	static Tech biggerCatapult = new Tech("BIGGER Catapult", "Bigger is better", 1.5, Transport.CATAPAULT);
 	static Tech tension = new Tech("High Tension Rope", "Shoot further", 2, Transport.CATAPAULT_RANGE);
 	static Tech onager = new Tech("Onager", "Bigger payload and higher distance", 2, Transport.CATAPAULT_RANGE, Transport.CATAPAULT);
@@ -97,7 +97,7 @@ public class TechTree extends Overlay{
 	static Tech aerodynamics = new Tech("Aerodynamics", "Speeds up cars and trains by 10%.",1.1, Transport.CAR, Transport.TRAIN, Transport.SEMI, Transport.TRUCK);
 	static Tech aviation = new Tech("Aviation", "Flying looks cool",1.2, City.class);
 	static Tech airplanes = new Tech("Airplanes", "Flying is fun!",1.2, City.class);
-	static Tech airports = new Tech("Airports", "Unlocks Airports. Can only be built in cities.",1.2, City.class);
+	static Tech airports = new Tech("Airports", "Unlocks Airports. Can only be built in cities.",1, Road.AIRPORT);
 	
 	static Tech dieselTrain = new Tech("Diesel Locomotive", "Faster by 10%",1.1, Transport.TRAIN);
 	static Tech trucks = new Tech("Trucks", "Haul twice as much as cars",Transport.CAR_TYPE, Transport.currentUnits, Transport.TRUCK);

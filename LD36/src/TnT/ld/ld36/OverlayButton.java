@@ -7,6 +7,7 @@ import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
 
 import javax.swing.JOptionPane;
 
@@ -17,15 +18,16 @@ public class OverlayButton extends Overlay {
 	public Color enteredBackground = background.brighter();
 	public Color removedBackground;
 	public Road road;
+	public boolean catapult;
 	public OverlayButton(String text, boolean selectable){
 		this.background = Color.lightGray;
 		this.text = text;
 		this.removedBackground = background;
 	}
-	public OverlayButton(Image icon){
+	public OverlayButton(BufferedImage icon){
 		this.img = icon;
 	}
-	public Image img = null;
+	public BufferedImage img = null;
 	public OverlayButton(String text){
 		this(text,false);
 	}
@@ -35,12 +37,10 @@ public class OverlayButton extends Overlay {
 	public void draw(Graphics2D g){
 		super.draw(g);
 		if(img != null){
-			g.drawImage(img,(int)x+1,(int)y+1,(int)width-2,(int)height-2,null);
-			if (road != null && !road.unlocked) {
-				Color c = g.getColor();
-				g.setColor(new Color(.5f, .5f, .5f, .5f));
-				g.fillRect((int)x+1,(int)y+1,(int)width-2,(int)height-2);
-				g.setColor(c);
+			if (road != null && !road.unlocked || catapult && Transport.currentUnits[Transport.CATAPULT_TYPE]==null) {
+				g.drawImage(LD36.grayOp.filter(img, null),(int)x+1,(int)y+1,(int)width-2,(int)height-2,null);
+			} else {
+				g.drawImage(img,(int)x+1,(int)y+1,(int)width-2,(int)height-2,null);
 			}
 			return;
 		}
@@ -57,6 +57,9 @@ public class OverlayButton extends Overlay {
 	}
 	public void setRoad(Road road) {
 		this.road = road;
+	}
+	public void setCatapult() {
+		catapult = true;
 	}
 	public void mouseEntered(MouseEvent e){
 		System.out.println("ENTER "+text);

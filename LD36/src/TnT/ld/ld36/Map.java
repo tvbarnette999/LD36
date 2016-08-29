@@ -66,6 +66,7 @@ public class Map {
 	public static final byte PAVED_ROAD_BIT = 8;
 	public static final byte TRACK_BIT = 16;
 	public static final byte IMPASS_BIT = 32;
+	public static final byte AIRPORT_BIT = 64;
 
 	Vector<Point> selection = new Vector<Point>();
 	int[] selectAdd = new int[Road.roads.length];

@@ -21,13 +21,15 @@ public class Transport {
 	
 	// units used for pathfinding
 	public static final Transport[] baseUnits = {RUNNER, HORSE, CARRIAGE, CAR, TRAIN};
-	public static Transport[] currentUnits = {RUNNER, null, null, null, null};
+	public static Transport[] currentUnits = {RUNNER, null, null, null, null, null, null};
 	
 	public static final int RUNNER_TYPE = 0;
 	public static final int HORSE_TYPE = 1;
 	public static final int CARRIAGE_TYPE = 2;
 	public static final int CAR_TYPE = 3;
 	public static final int TRAIN_TYPE = 4;
+	public static final int CATAPULT_TYPE = 4;
+	public static final int PLANE_TYPE = 4;
 	
 	
 	public double scalar;
