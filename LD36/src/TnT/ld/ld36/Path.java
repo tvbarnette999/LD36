@@ -38,4 +38,8 @@ public class Path {
 	public Iterator<Point> iterator() {
 		return points.iterator();
 	}
+
+	public Iterator<Point> getBackIt() {
+		return null;
+	}
 }

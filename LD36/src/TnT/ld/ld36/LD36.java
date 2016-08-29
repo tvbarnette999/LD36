@@ -14,6 +14,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
+import java.awt.image.BufferedImage;
 import java.awt.image.ColorConvertOp;
 import java.awt.image.VolatileImage;
 import java.text.DecimalFormat;
@@ -39,14 +40,21 @@ public class LD36 extends JFrame {
 	Overlay bottom = new Overlay();
 	Overlay right = new Overlay();
 	OverlayScrollPane sp = new OverlayScrollPane();
+	public static final BufferedImage footPath = Resources.getImage("icon_footpath.png");
+	public static final BufferedImage dirtRoad = Resources.getImage("icon_dirtroad.png");
+	public static final BufferedImage trainTrack = Resources.getImage("icon_traintrack.png");
+	public static final BufferedImage road = Resources.getImage("icon_road.png");
+	public static final BufferedImage catapult = Resources.getImage("icon_catapult.png");
+	public static final BufferedImage airport = Resources.getImage("icon_airport.png");
 	OverlayButton treeButton = new OverlayButton("Technology Tree");
 	OverlayButton clearSelection = new OverlayButton("Clear");
-	OverlayButton addFootPath = new OverlayButton(Resources.getImage("icon_footpath.png"));
-	OverlayButton addDirtRoad = new OverlayButton(Resources.getImage("icon_dirtroad.png"));
-	OverlayButton addRailRoad = new OverlayButton(Resources.getImage("icon_traintrack.png"));
-	OverlayButton addPavedRoad = new OverlayButton(Resources.getImage("icon_road.png"));
-	OverlayButton addCatapalt = new OverlayButton(Resources.getImage("icon_catapult.png"));
-	OverlayButton addAirport = new OverlayButton(Resources.getImage("icon_airport.png"));
+	OverlayButton addFootPath = new OverlayButton(footPath);
+	OverlayButton addDirtRoad = new OverlayButton(dirtRoad);
+	OverlayButton addRailRoad = new OverlayButton(trainTrack);
+	OverlayButton addPavedRoad = new OverlayButton(road);
+	OverlayButton addCatapalt = new OverlayButton(catapult);
+	OverlayButton addAirport = new OverlayButton(airport);
+	
 
 	OverlayButton cityName = new OverlayButton("Name: ");
 	Overlay cityPopulation = new Overlay("Pop: ");

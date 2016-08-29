@@ -48,6 +48,10 @@ public class Sprite {
 		ticks++;
 		x = (int) (src.x + (dest.x - src.x) * ((double) (ticks % miniTicks) / miniTicks));
 		y = (int) (src.y + (dest.y - src.y) * ((double) (ticks % miniTicks) / miniTicks));
+		if (ticks % miniTicks == 0 && ticks > maxTicks - miniTicks) {
+			src = dest;
+			it = p.getBackIt();
+		}
 		if (ticks % miniTicks == 0 && it.hasNext()) {
 			src = dest;
 			dest = m.getTileCenter(it.next());
@@ -55,6 +59,6 @@ public class Sprite {
 	}
 
 	public boolean isDone() {
-		return ticks > maxTicks;
+		return ticks > maxTicks * 2;
 	}
 }

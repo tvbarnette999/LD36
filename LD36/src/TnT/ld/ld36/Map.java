@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
+import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
@@ -500,7 +501,12 @@ public class Map {
 	}
 
 	public void drawTileImage(Graphics2D g, Image img, Point2D.Double loc) {
+		Shape s = g.getClip();
+		Path2D.Double clip = ((Path2D.Double) tilePoly.clone());
+		clip.transform(AffineTransform.getTranslateInstance(loc.x, loc.y));
+		g.setClip(clip);
 		g.drawImage(img, (int) loc.x - 1, (int) loc.y - 1, (int) MAX_WIDTH + 2, (int) MAX_HEIGHT + 2, null);
+		g.setClip(s);
 	}
 
 	double zoom = 1;
@@ -596,20 +602,24 @@ public class Map {
 					// drawTileImage(g, tents, loc);
 					// }
 					if ((data[x][y] & DIRT_ROAD_BIT) != 0) {
-						g.setColor(Color.yellow.darker().darker());
-						g.fillRect((int) loc.x + 20, (int) (loc.y + 20), 20, 20);
+//						g.setColor(Color.yellow.darker().darker());
+//						g.fillRect((int) loc.x + 20, (int) (loc.y + 20), 20, 20);
+						drawTileImage(g, LD36.dirtRoad, loc);
 					}
 					if ((data[x][y] & FOOT_PATH_BIT) != 0) {
-						g.setColor(Color.GREEN);
-						g.fillRect((int) loc.x + 60, (int) loc.y + 20, 20, 20);
+//						g.setColor(Color.GREEN);
+//						g.fillRect((int) loc.x + 60, (int) loc.y + 20, 20, 20);
+						drawTileImage(g, LD36.footPath, loc);
 					}
 					if ((data[x][y] & PAVED_ROAD_BIT) != 0) {
-						g.setColor(Color.black);
-						g.fillRect((int) loc.x + 20, (int) loc.y + 60, 20, 20);
+//						g.setColor(Color.black);
+//						g.fillRect((int) loc.x + 20, (int) loc.y + 60, 20, 20);
+						drawTileImage(g, LD36.road, loc);
 					}
 					if ((data[x][y] & TRACK_BIT) != 0) {
-						g.setColor(Color.red);
-						g.fillRect((int) loc.x + 60, (int) loc.y + 60, 20, 20);
+//						g.setColor(Color.red);
+//						g.fillRect((int) loc.x + 60, (int) loc.y + 60, 20, 20);
+						drawTileImage(g, LD36.trainTrack, loc);
 					}
 				} else
 					drawTileImage(g, grass, loc);
