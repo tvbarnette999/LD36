@@ -203,14 +203,20 @@ public class LD36 extends JFrame{
 					money -= road.cost * map.selectAdd[road.key];
 					map.buildSelection(road);
 					map.clearSelection();
-				} else if (e.getModifiers()==4) {
-					map.sellSelection(road);
+				}// else if (e.getModifiers()==4) {
+//					map.sellSelection(road);
+//					map.clearSelection();
+//				}
+			} else if (o==addCatapalt) {
+				if (money > Transport.CATAPULT_COST*map.selectAddCatapult) {
+					map.buildCatapults();
 					map.clearSelection();
 				}
-			} else if (o==addCatapalt) {
-				
 			} else if (o==addAirport) {
-
+				if (money > Road.AIRPORT.cost * map.selectAddAirport) {
+					map.buildAirports();
+					map.clearSelection();
+				}
 			}
 		}
 	};

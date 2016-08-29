@@ -35,6 +35,7 @@ public class Transport {
 	public static final int CATAPULT_TYPE = 5;
 	public static final int PLANE_TYPE = 6;
 	
+	public static double CATAPULT_COST = 10000;
 	
 	public double scalar;
 	public byte bits;

@@ -223,6 +223,20 @@ public class Map {
 		selectRemove[r.key] = 0;
 		recalcFlag = true;
 	}
+	public void buildAirports() {
+		for (int i = 0; i < cities.size(); i++) {
+			if (!cities.get(i).airport && selection.contains(cities.get(i))) {
+				cities.get(i).airport = true;
+			}
+		}
+	}
+	public void buildCatapults() {
+		for (int i = 0; i < cities.size(); i++) {
+			if (selection.contains(cities.get(i))) {
+				cities.get(i).catapults++;
+			}
+		}
+	}
 	public void mouseWheelMoved(MouseWheelEvent e) {
 		if (this.isScrolling()) return;
 		double oz = zoom;
