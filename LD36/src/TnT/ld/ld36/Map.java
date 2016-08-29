@@ -242,9 +242,31 @@ public class Map {
 		}
 		m.gotoPoint(m.getTileCenter((int)(MAP_WIDTH/2), (int)(MAP_HEIGHT/2)));
 		m.recalcFlag = true;
+		p1 = m.cities.get(0).getLocation();
+		p2 = m.cities.get(1).getLocation();
+		//generate some mountain ranges
+		Point p3;
+		Random r = new Random();
+		d:for (int i = 0; i < 15; i++) {
+			p3 = new Point(r.nextInt(m.data.length), r.nextInt(m.data[0].length));
+			int count = 0;
+			while ((Math.random() < .965 && count++ < 20) || count < 4) {
+				if (m.data[p3.x][p3.y] == 0) {
+					m.data[p3.x][p3.y] |= IMPASS_BIT;
+				}
+				if (Math.random() < .5) {
+					p3.x += Math.signum(Math.random() - .25);
+				} else {
+					p3.y += Math.signum(Math.random() - .25);
+				}
+				if (p3.x >= m.data.length || p3.x < 0 || p3.y >= m.data[0].length || p3.y < 0) {
+					continue d;
+				}
+			}
+		}
 		return m;
 	}
-	public void addCity(int x, int y) {
+	public City addCity(int x, int y) {
 		data[x][y] = 0x1f;
 
 		//expand path arrays for all existing cities
@@ -257,6 +279,7 @@ public class Map {
 		for (int i = 0; i < cities.size(); i++) c.addCity();
 		cities.add(c);
 		recalcFlag = true;
+		return c;
 	}
 	boolean recalcFlag = true;
 	public void calculateAllPaths() {
@@ -434,7 +457,8 @@ public class Map {
 		double lup = sup - MAX_HEIGHT;
 		AffineTransform tsup = AffineTransform.getTranslateInstance(MAX_WIDTH * .75, sup);
 		AffineTransform tlup = AffineTransform.getTranslateInstance(MAX_WIDTH * .75, lup);
-		for (City c : cities) {
+		for (int i = 0; i < cities.size(); i++) {
+			City c = cities.get(i);
 			int pop = (int) Math.max(Math.min(cityImages.length - 1, Math.log10(c.population)), 0);
 			drawTileImage(g, grass, getTileLocation(c));
 			drawTileImage(g, cityImages[pop], getTileLocation(c));
@@ -544,19 +568,26 @@ public class Map {
 		}
 	};
 	Random r = new Random();
-	public void addNewRandomCity() {
+	public City addNewRandomCity() {
 		Point p = new Point();
-		boolean b = true;
+		boolean b = true, bb = true;;
 		do {
 			p.x = r.nextInt(MAP_WIDTH - 4) + 2;
 			p.y = r.nextInt(MAP_HEIGHT - 4) + 2;
+			if (data[p.x][p.y] != 0) continue; //it must be on a grass tile
 			b = true;
+			bb = false;
 			for (City c : cities) {
-				if (p.distance(c) < 6) {
+				if (p.distance(c) < 4) { //cannot be closer than this
 					b = false;
+					continue;
+				}
+				if (p.distance(c) < 10) { //must have at least one this close
+					bb = true;
+					continue;
 				}
 			}
-		} while (!b);
-		addCity(p.x, p.y);
+		} while (!(b&&bb));
+		return addCity(p.x, p.y);
 	}
 }
