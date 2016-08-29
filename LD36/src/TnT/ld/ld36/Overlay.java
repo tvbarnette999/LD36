@@ -33,7 +33,9 @@ public class Overlay extends Rectangle2D.Double implements MouseListener, MouseM
 		
 	}
 	public void draw(Graphics2D g){
-		if(!visible)return;
+		if(!visible){
+			return;
+		}
 		Color oc = g.getColor();
 		g.setColor(enabled?background:disabledBackground);
 		g.fill(this);

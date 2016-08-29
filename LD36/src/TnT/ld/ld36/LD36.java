@@ -597,9 +597,11 @@ public class LD36 extends JFrame{
 		
 //		techTree.addChild(ttScroll);
 		//techTree.addChild(treeButton);
+
+		TechTree.MAX_SCROLL = (int) (techTree.width - buffer.getWidth());
 		sp.setMaxHorizontalScroll(TechTree.MAX_SCROLL);
 		techTree.addChild(moneyOverlay);
-		techTree.visible = false;
+//		techTree.visible = false;
 		sp.visible = false;
 		sp.inner = techTree;
 

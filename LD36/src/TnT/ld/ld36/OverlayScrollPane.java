@@ -10,7 +10,7 @@ public class OverlayScrollPane extends Overlay{
 	Overlay inner;
 	boolean hactive = false;
 	int hoffset = 0;
-	int hscroll = 0;
+	double hscroll = 0;
 	int hmaxscroll = 0;
 	public OverlayScrollPane(){
 		hbar.height = 15;
@@ -25,26 +25,40 @@ public class OverlayScrollPane extends Overlay{
 			hactive = true;
 			hoffset = (int) (e.getX() -hbar.x);
 			return;
+		} else{
+			inner.mousePressed(new MouseEvent(e.getComponent(), e.getID(), e.getWhen(), e.getModifiers(), e.getX()+(int)hscroll, e.getY(), e.getXOnScreen(), e.getYOnScreen(), e.getClickCount(), e.isPopupTrigger(), e.getButton()));
+			
 		}
-		super.mousePressed(e);
 		
+	}
+	public void addChild(Overlay c){
+		throw new RuntimeException("Dont Add stuff to ScrollPanes!!!! Use .inner!");
 	}
 	public void mouseReleased(MouseEvent e){
 		if(hactive){
 			hactive = false;
 			return;
+		} else{
+			inner.mouseReleased(new MouseEvent(e.getComponent(), e.getID(), e.getWhen(), e.getModifiers(), e.getX()+(int)hscroll, e.getY(), e.getXOnScreen(), e.getYOnScreen(), e.getClickCount(), e.isPopupTrigger(), e.getButton()));
+			
 		}
-		super.mouseReleased(e);
+	}
+	public void mouseClicked(MouseEvent e){
+		if(inner!=null)inner.mouseClicked(new MouseEvent(e.getComponent(), e.getID(), e.getWhen(), e.getModifiers(), e.getX()+(int)hscroll, e.getY(), e.getXOnScreen(), e.getYOnScreen(), e.getClickCount(), e.isPopupTrigger(), e.getButton()));
 	}
 	public void mouseDragged(MouseEvent e){
-		System.out.println(e.getX());
+		System.out.println(hscroll+" of "+hmaxscroll+":"+(hbar.x/(this.width-hbar.width)));
 		if(hactive){
 			//do the stuff
 			hbar.x = e.getX()-hoffset;
-			hscroll = (int) (hmaxscroll * ((this.width-hbar.width)/hbar.x));
+			hscroll =  (hmaxscroll * (hbar.x/(this.width-hbar.width)));
 			return;
 		}
-		super.mouseDragged(e);
+		inner.mouseDragged(e);
+		
+	}
+	public void mouseMoved(MouseEvent e){
+		inner.mouseMoved(new MouseEvent(e.getComponent(), e.getID(), e.getWhen(), e.getModifiers(), e.getX()+(int)hscroll, e.getY(), e.getXOnScreen(), e.getYOnScreen(), e.getClickCount(), e.isPopupTrigger(), e.getButton()));
 		
 	}
 	public Dimension innerSize(){
@@ -53,6 +67,9 @@ public class OverlayScrollPane extends Overlay{
 	public void draw(Graphics2D g){
 		Color oc = g.getColor();
 		
+		//hideclass oe in case it changes
+		double hscroll = this.hscroll;
+		double vscroll;
 		g.translate(-hscroll, 0);
 		super.draw(g);
 //		System.out.println(height+":"+hbar.x+","+hbar.y+","+hbar.width+","+hbar.height);
