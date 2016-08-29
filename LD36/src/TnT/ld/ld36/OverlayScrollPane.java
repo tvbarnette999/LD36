@@ -52,6 +52,12 @@ public class OverlayScrollPane extends Overlay{
 		if(hactive){
 			//do the stuff
 			hbar.x = e.getX()-hoffset;
+			if(hbar.x<0){
+				hbar.x=0;
+			}
+			if(hbar.x>hmaxscroll-hbar.width){
+				hbar.x = hmaxscroll-hbar.width;
+			}
 			calculateScroll();
 			return;
 		}
@@ -63,7 +69,6 @@ public class OverlayScrollPane extends Overlay{
 		
 	}
 	public void calculateScroll(){
-
 		hscroll =  (hmaxscroll * (hbar.x/(this.width-hbar.width)));
 	}
 	public Dimension innerSize(){
@@ -71,13 +76,19 @@ public class OverlayScrollPane extends Overlay{
 	}
 	public void draw(Graphics2D g){
 		
-		if(LD36.theLD.rightPressed && !hactive ){
+		if(LD36.rightPressed && !hactive ){
 			hbar.x +=5;
+			if(hbar.x > this.hmaxscroll-hbar.width){
+				hbar.x = this.hmaxscroll - hbar.width;
+			}
 			calculateScroll();
 			
 		}
-		else if(LD36.theLD.left && !hactive){
+		else if(LD36.left && !hactive){
 			hbar.x -=5;
+			if(hbar.x < 0){
+				hbar.x = 0;
+			}
 			calculateScroll();
 		}
 		
