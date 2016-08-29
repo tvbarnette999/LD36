@@ -513,7 +513,9 @@ public class LD36 extends JFrame {
 						right.setRect(buffer.getWidth() - Overlay.RIGHT_WIDTH, 0, Overlay.RIGHT_WIDTH,
 								buffer.getHeight() - Overlay.BOTTOM_HEIGHT);
 						right.draw(g);
+						long t = System.nanoTime();
 						bottom.draw(g);
+						System.out.println((System.nanoTime()-t)*1e-9);
 						// g.setColor(Color.DARK_GRAY);
 
 						// bottom.setBounds(0, 5*(buffer.getHeight()/6),
