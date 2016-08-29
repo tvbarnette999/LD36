@@ -40,8 +40,8 @@ public class LD36 extends JFrame{
 	Overlay right = new Overlay();
 	OverlayButton treeButton = new OverlayButton("Technology Tree");
 	OverlayButton clearSelection = new OverlayButton("Clear");
-	OverlayButton addFootPath = new OverlayButton("Footpath");
-	OverlayButton addDirtRoad = new OverlayButton("Dirt Road");
+	OverlayButton addFootPath = new OverlayButton("icon_footpath.png");
+	OverlayButton addDirtRoad = new OverlayButton("Dir");
 	OverlayButton addRailRoad = new OverlayButton("Railroad");
 	OverlayButton addPavedRoad = new OverlayButton("Paved Road");
 	OverlayButton addCatapalt = new OverlayButton("Catapalt");
@@ -61,7 +61,6 @@ public class LD36 extends JFrame{
 	private static final String[] seSpecialHundreds = new String[]{"x", "", "s", "s", "s", "", "", "x", ""};
 	private static final String[] septeNoveSpecialTens = new String[]{"n", "m", "n", "n", "n", "n", "n", "m", ""};
 	private static final String[] septeNoveSpecialHundreds = new String[]{"n", "n", "n", "n", "n", "n", "n", "m", ""};
-	//TODO return how to display varying sizes of money
 	public static String moneyString(double x){
 		if (x == Double.POSITIVE_INFINITY || x == Double.NaN) {
 			return "$ ∞";
@@ -152,7 +151,7 @@ public class LD36 extends JFrame{
 			if (o==addPavedRoad) road = Road.PAVED;
 			if (o==addRailRoad) road = Road.RAIL;
 			if (road != null) {
-				System.out.println(e.getModifiers());
+//				System.out.println(e.getModifiers());
 				if (e.getModifiers()==16 && money > road.cost * map.selectAdd[road.key]) {
 					map.buildSelection(road);
 					map.clearSelection();
@@ -170,7 +169,7 @@ public class LD36 extends JFrame{
 
 	TechTree techTree = new TechTree();
 	ArrayList<Overlay> activeOverlays = new ArrayList<Overlay>();
-	public double money = 1e5;
+	public double money = 0;
 
 	MouseAdapter adapter = new MouseAdapter(){
 		public void mouseClicked(MouseEvent e){
@@ -400,6 +399,7 @@ public class LD36 extends JFrame{
 			}
 		}
 	};
+	public static double mailValue = .05;
 	public Thread physics = new Thread(){
 		public void run(){
 			while(true){
@@ -409,7 +409,7 @@ public class LD36 extends JFrame{
 					// calculate rate capacities for each city
 					for (int i = 0; i < map.cities.size(); i++) {
 						City c = map.cities.get(i);
-						for (int j = 0; j < c.paths.size()-1; j++) {
+						for (int j = 0; j < c.paths.size(); j++) {
 							double cap = 0;
 							Path[] paths = c.paths.get(j);
 							for (int t = 0; t < Transport.baseUnits.length; t++) {
@@ -431,8 +431,14 @@ public class LD36 extends JFrame{
 							c.desiredRate.set(j, (double) (c.population/(totalPop-c.population)*map.cities.get(j+(j>=i?1:0)).population));
 						}
 					}
-					System.out.println(map.cities.get(0).rateCapacity);
-					System.out.println(map.cities.get(0).desiredRate);
+					double totalMail = 0;
+					for (City city : map.cities) {
+						totalMail += city.getMail();
+					}
+					totalMail *=  mailValue;
+					System.out.println("Mail: " + totalMail);
+					money += totalMail;
+					System.out.println("Money: " + moneyString(money));
 				}
 				try {
 					Thread.sleep(10);

@@ -3,6 +3,7 @@ package TnT.ld.ld36;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 
 public class City extends Point{
 	int ID;
@@ -23,7 +24,15 @@ public class City extends Point{
 		rateCapacity.add(0d);
 		desiredRate.add(0d);
 	}
-	
+	public double getMail() {
+		double tot = 0;
+		Iterator<java.lang.Double> cap = rateCapacity.iterator();
+		Iterator<java.lang.Double> des = desiredRate.iterator();
+		while (cap.hasNext()) {
+			tot += Math.min(cap.next(), des.next());
+		}
+		return tot;
+	}
 	public String printPaths() {
 		String s = "";
 		for (int i = 0; i < paths.size(); i++) {

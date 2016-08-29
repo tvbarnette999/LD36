@@ -30,7 +30,6 @@ public class Map {
 			rock = Resources.getImage("mountainpeak.png");
 			tents = Resources.getImage("tents.png");
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -41,14 +40,14 @@ public class Map {
 	/**The height of a tile at max zoom*/
 	public static final double MAX_HEIGHT = 100;
 	public static final double MAX_WIDTH = (MAX_HEIGHT * RATIO);
-	
+
 	// size of the map section on the screen
 	public static final int FRAME_WIDTH = 1280 - Overlay.RIGHT_WIDTH;
 	public static final int FRAME_HEIGHT = 768 - Overlay.BOTTOM_HEIGHT;
 	// total pixel size of the map
 	public static final double MAP_PIXEL_WIDTH = MAX_WIDTH * (.75*MAP_WIDTH + .25);
 	public static final double MAP_PIXEL_HEIGHT = MAX_HEIGHT * (MAP_HEIGHT + .5);
-	
+
 	//Alternatively, could use first 4 bits to specify city ID, but then limits to 16 cities
 	//to use, just and with the bit you want and check > 0
 	//If cities have everything by default, then just OR each of these with CITY_BIT
@@ -58,13 +57,13 @@ public class Map {
 	public static final byte PAVED_ROAD_BIT = 8;
 	public static final byte TRACK_BIT = 16;
 	public static final byte IMPASS_BIT = 32;
-	
+
 	Vector<Point> selection = new Vector<Point>();
 	int[] selectAdd = new int[Road.roads.length];
 	int[] selectRemove = new int[Road.roads.length];
-	
+
 	ArrayList<City> cities = new ArrayList<City>();
-	
+
 	// make tile poly
 	static Path2D.Double tilePoly;
 	static AffineTransform tDown = AffineTransform.getTranslateInstance(0, MAX_HEIGHT);
@@ -93,12 +92,12 @@ public class Map {
 		insetPoly.transform(AffineTransform.getTranslateInstance(MAX_WIDTH/2, MAX_HEIGHT/2));
 	}
 
-	
+
 	public byte[][] data = new byte[MAP_WIDTH][MAP_HEIGHT]; //this array is done [x][y] to simplify.
 	public ArrayList<Sprite> sprites = new ArrayList<Sprite>();
 	public void mouseClicked(MouseEvent e){
 		Point tile = getContainingTile(transformToMap(e.getX(), e.getY()));
-		
+
 	}
 	Point mouseLoc = null;
 	public void mousePressed(MouseEvent e){
@@ -144,9 +143,9 @@ public class Map {
 				}
 			}
 		}
-//		System.out.println("selection: "+selection);
-//		System.out.println("can add: "+Arrays.toString(selectAdd));
-//		System.out.println("can remove: "+Arrays.toString(selectRemove));
+		//		System.out.println("selection: "+selection);
+		//		System.out.println("can add: "+Arrays.toString(selectAdd));
+		//		System.out.println("can remove: "+Arrays.toString(selectRemove));
 	}
 	public void clearSelection() {
 		selection.clear();
@@ -190,21 +189,27 @@ public class Map {
 	}
 	public static Map generate(){
 		Map m = new Map();
-		m.addCity(3, 2);
-		m.addCity(7, 6);
-		m.addCity(11, 3);
-		m.addCity((int)(Math.random()*30), (int)(Math.random()*30));
-		m.addCity((int)(Math.random()*30), (int)(Math.random()*30));
-		m.addCity((int)(Math.random()*30), (int)(Math.random()*30));
+		m.addCity((int) (MAP_WIDTH / 2.0 - 2), (int) (MAP_HEIGHT / 2.0));
+		m.addCity((int) (MAP_WIDTH / 2.0 + 2), (int) (MAP_HEIGHT / 2.0));
+		Point p1 = m.cities.get(0).getLocation();
+		Point p2 = m.cities.get(1).getLocation();
+		while (!p1.equals(p2)) {
+			p1.x += Math.signum(p2.x - p1.x);
+			p1.y += Math.signum(p2.y - p1.y);
+			m.setTile(p1, Map.FOOT_PATH_BIT, true);
+		}
+		m.transX = -3845.1374634499984;
+		m.transY = -4744.822160499997;
+		m.recalcFlag = true;
 		return m;
 	}
 	public void addCity(int x, int y) {
 		data[x][y] = 0x1f;
-		
+
 		//expand path arrays for all existing cities
 		for (City c : cities) c.addCity();
-		
-		City c = new City("Auschwitz");
+
+		City c = new City("Bablyon");
 		c.x = x;
 		c.y = y;
 		c.ID = cities.size();
@@ -266,10 +271,7 @@ public class Map {
 		else data[xi][yi] &= ~bit;
 	}
 	public void setTile(Point p, byte bit , boolean v){
-		int xi = 0;
-		int yi = 0;
-		if(v)data[xi][yi] |= bit;
-		else data[xi][yi] &= ~bit;
+		setTile(p.x, p.y, bit, v);
 	}
 	public Point2D.Double getTileLocation(Point p) {
 		return getTileLocation(p.x, p.y);
@@ -342,24 +344,25 @@ public class Map {
 			if (LD36.left) transX += dt;
 			restrictScroll();
 		}
+//		System.out.println(transX + ", " + transY);
 		lastTime = current;
-		
+
 		final double zoom = this.zoom, transX = this.transX, transY = this.transY;
 		g.translate(transX, transY);
 		g.scale(zoom, zoom);
-		
+
 		g.setColor(Color.BLACK);
 		g.setStroke(new BasicStroke(2));
-		
+
 		int startX = (int) Math.floor(-transX / zoom / (MAX_WIDTH*3/4)) - 1;
 		int endX = startX + (int) Math.floor(FRAME_WIDTH / zoom / (MAX_WIDTH*3/4)) + 2;
-//		if (startX < 0) startX = 0;
-//		if (endX >= MAP_WIDTH) endX = MAP_WIDTH-1;
+		//		if (startX < 0) startX = 0;
+		//		if (endX >= MAP_WIDTH) endX = MAP_WIDTH-1;
 		int startY = (int) Math.floor(-transY / zoom / MAX_HEIGHT) - 1;
 		int endY = startY + (int) Math.floor(FRAME_HEIGHT / zoom / MAX_HEIGHT) + 2;
-//		if (startY < 0) startY = 0;
-//		if (endY >= MAP_HEIGHT) endY = MAP_HEIGHT-1;
-		
+		//		if (startY < 0) startY = 0;
+		//		if (endY >= MAP_HEIGHT) endY = MAP_HEIGHT-1;
+
 		Path2D.Double tile = (Double) tilePoly.clone();
 		Point2D.Double loc = getTileLocation(startX, startY);
 		tile.transform(AffineTransform.getTranslateInstance(loc.x, loc.y));
@@ -396,7 +399,7 @@ public class Map {
 						g.fillRect((int)loc.x + 60, (int)loc.y + 60, 20, 20);
 					}
 				} else drawTileImage(g, grass, loc);
-				
+
 				// draw tile outline
 				g.setColor(Color.black);
 				g.draw(tile);
@@ -412,29 +415,29 @@ public class Map {
 			}
 			loc.x += MAX_WIDTH * .75;
 		}
-		
+
 		//draw selected tiles
 		if (selection.size() > 0) {
 			g.setColor(Color.green);
 			Stroke s = g.getStroke();
 			g.setStroke(new BasicStroke(5));
-			
+
 			tile = (Double) insetPoly.clone();
 			loc = new Point2D.Double();
 			for (int i = 0; i < selection.size(); i++) {
 				Point2D.Double p = getTileLocation(selection.get(i));
 				tile.transform(AffineTransform.getTranslateInstance(p.x-loc.x, p.y-loc.y));
 				loc = p;
-				
+
 				g.draw(tile);
 			}
 			g.setStroke(s);
 		}
-		
+
 		g.scale(1/zoom, 1/zoom);
 		g.translate(-transX, -transY);
 	}
-	
+
 	/**
 	 * A* search node
 	 */
@@ -443,14 +446,14 @@ public class Map {
 		double weight;
 		double pathLength;
 		Point tile;
-		
+
 		/**
 		 * Makes start node
 		 */
 		public SearchNode(Point tile) {
 			this.tile = tile;
 		}
-		
+
 		/**
 		 * Search node with parent
 		 */
