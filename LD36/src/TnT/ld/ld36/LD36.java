@@ -75,7 +75,7 @@ public class LD36 extends JFrame{
 			g.setColor(Color.black);
 			String mon;
 			g.drawString(mon = moneyString(money), (int) x, (int) (y + moneyFont.getSize() * 1.5));
-			g.drawString(moneyString(moneyPerTick), (int) x + Math.max(g.getFontMetrics().stringWidth(mon) + 50, 150), (int) (y + moneyFont.getSize() * 1.5));
+			g.drawString(moneyString(moneyPerTick * (1000 / PHYSICS_DELAY)) + "/s", (int) x + Math.max((g.getFontMetrics().stringWidth(mon) / 20) * 20 + 50, 150), (int) (y + moneyFont.getSize() * 1.5));
 			g.setColor(c);
 			g.setFont(f);
 		}
@@ -457,7 +457,7 @@ public class LD36 extends JFrame{
 			while(true){
 				if (gameState.equals(TnT.ld.ld36.State.GAME)) {
 					if (map.recalcFlag) map.calculateAllPaths();
-
+					double litFactor = Math.pow(City.literacy + 1, 2.75);
 					// calculate rate capacities for each city
 					for (int i = 0; i < map.cities.size(); i++) {
 						City c = map.cities.get(i);
@@ -476,14 +476,13 @@ public class LD36 extends JFrame{
 									cap += current.scalar / paths[t].length();
 								}
 							}
-							c.rateCapacity.set(j, (c == selectedCity && boosted ? 1.2 : 1) * cap);
+							c.rateCapacity.set(j, (c == selectedCity && boosted ? 1.2 : 1) * cap * litFactor);
 						}
 					}
 
 					//calculate desired rate for each city
 					int totalPop = 0;
 					for (int i = 0; i < map.cities.size(); i++) totalPop += map.cities.get(i).population;
-					double litFactor = Math.pow(City.literacy + 1, 2.75);
 					for (int i = 0; i < map.cities.size(); i++) {
 						City c = map.cities.get(i);
 						for (int j = 0; j < c.desiredRate.size(); j++) {
@@ -506,12 +505,12 @@ public class LD36 extends JFrame{
 					//					System.out.println("Money: " + moneyString(money));
 				}
 				try {
-					Thread.sleep(10);
+					Thread.sleep(PHYSICS_DELAY);
 				} catch (Exception e) {}
 			}
 		}
 	};
-
+	public static final long PHYSICS_DELAY = 10;
 	public void startGame(){
 		map = Map.generate();
 
@@ -537,6 +536,7 @@ public class LD36 extends JFrame{
 		cityName.setRect(RX, 0, Overlay.RIGHT_WIDTH, 100);
 		cityPopulation.setRect(RX, 110, Overlay.RIGHT_WIDTH, 80);
 		increase.setRect(RX, buffer.getHeight() - Overlay.BOTTOM_HEIGHT - 60 , Overlay.RIGHT_WIDTH, 50);
+		increase.enabled = false;
 
 
 		bottom.addChild(treeButton);
@@ -589,7 +589,11 @@ public class LD36 extends JFrame{
 
 		gameState = State.GAME;
 	}
-	City selectedCity = null;
+	private City selectedCity = null;
+	public void setSelectedCity(City c) {
+		selectedCity = c;
+		increase.enabled = true;
+	}
 	public void displayCityData() {
 		if (selectedCity == null) return;
 		City c = selectedCity;

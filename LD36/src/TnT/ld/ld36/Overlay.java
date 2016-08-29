@@ -24,7 +24,7 @@ public class Overlay extends Rectangle2D.Double implements MouseListener, MouseM
 	boolean visible = true;
 	boolean mouseIn = false;
 	boolean enabled = true;
-	Color disabledBackground = Color.darkGray;
+	Color disabledBackground = Color.darkGray.brighter().brighter();
 	public String text;
 	public Overlay(String string) {
 		setText(string);
