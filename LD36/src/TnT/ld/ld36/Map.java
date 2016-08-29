@@ -111,7 +111,6 @@ public class Map {
 	boolean graphicsStall;
 	
 	public byte[][] data = new byte[MAP_WIDTH][MAP_HEIGHT]; //this array is done [x][y] to simplify.
-	public ArrayList<Sprite> sprites = new ArrayList<Sprite>();
 	public void mouseClicked(MouseEvent e){
 		Point tile = getContainingTile(transformToMap(e.getX(), e.getY()));
 
@@ -572,6 +571,9 @@ public class Map {
 				helps.remove(i--);
 			}
 		}
+		for (int i = 0; i < anims.size(); i++) {
+			anims.get(i).draw(g);
+		}
 
 		g.scale(1/zoom, 1/zoom);
 		g.translate(-transX, -transY);
@@ -633,5 +635,8 @@ public class Map {
 	}
 	public void addHelp(HelpPopup helpPopup) {
 		helps.add(helpPopup);
+	}
+	public void addAnimation(Sprite sprite) {
+		anims.add(sprite);
 	}
 }

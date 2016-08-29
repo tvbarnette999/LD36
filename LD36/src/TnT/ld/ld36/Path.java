@@ -1,6 +1,7 @@
 package TnT.ld.ld36;
 import java.awt.Point;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedList;
 public class Path {
 	LinkedList<Point> points = new LinkedList<Point>();
@@ -13,5 +14,22 @@ public class Path {
 		for (Point p : points)
 			s += "("+p.x+", "+p.y+") ";
 		return "[" + s.trim() + "]";
+	}
+	public Point getLast() {
+		try {
+			return points.getLast();
+		} catch (Exception e) {
+			return null; //empty list
+		}
+	}
+	public Point getFirst() {
+		try {
+			return points.getFirst();
+		} catch (Exception e) {
+			return null; //empty list
+		}
+	}
+	public Iterator<Point> iterator() {
+		return points.iterator();
 	}
 }

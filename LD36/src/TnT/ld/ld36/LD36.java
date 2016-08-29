@@ -55,9 +55,9 @@ public class LD36 extends JFrame{
 
 	OverlayButton cityName = new OverlayButton("Name: ");
 	Overlay cityPopulation = new Overlay("Pop: ");
-	
+
 	static ColorConvertOp grayOp = new ColorConvertOp(ColorSpace.getInstance(ColorSpace.CS_GRAY), null);
-	
+
 	String initHelpText = "A new city was founded to take\nadvantage of your great mail system.\n"
 			+ "Consider adding it to your other\ncities to generate more mail!";
 	String initHelpText2 = "To connect this city, select tiles to form a path\nand then select the path type at the bottom.\nOver time you will need to upgrade!";
@@ -208,7 +208,7 @@ public class LD36 extends JFrame{
 					map.clearSelection();
 				}
 			} else if (o==addCatapalt) {
-				
+
 			} else if (o==addAirport) {
 
 			}
@@ -217,7 +217,7 @@ public class LD36 extends JFrame{
 
 	TechTree techTree = new TechTree();
 	ArrayList<Overlay> activeOverlays = new ArrayList<Overlay>();
-	public double money = Double.POSITIVE_INFINITY;
+	public double money = 0;
 	public double lifeTimeEarnings = 0;
 
 	MouseAdapter adapter = new MouseAdapter(){
@@ -470,13 +470,13 @@ public class LD36 extends JFrame{
 						g.drawString("lit:"+City.literacy, 100,15);
 						g.drawString("lifetime: " + moneyString(lifeTimeEarnings), 100, 40);
 					}
-					
+
 					g.dispose();
 					Graphics g2 = panel.getGraphics();
 					g2.drawImage(buffer, 0, 0, null);
 					g2.dispose();
 
-					
+
 					frames++;
 					if(System.currentTimeMillis() - start >= 1000){
 						fps = frames;
@@ -497,72 +497,93 @@ public class LD36 extends JFrame{
 	public static long POP_BUMP = 1000; //every 100 s
 	public Thread physics = new Thread(){
 		public void run(){
-			while(true){
-				if (gameState.equals(TnT.ld.ld36.State.GAME)) {
-					if (map.recalcFlag) map.calculateAllPaths();
-					double litFactor = Math.pow(City.literacy + 1, 2.75);
-					// calculate rate capacities for each city
-					for (int i = 0; i < map.cities.size(); i++) {
-						City c = map.cities.get(i);
-						c.population *= populationGrowth;
-						if (tick++ % POP_BUMP == 0) {
-							for (int v = 0; v < 10; v++) {
-								c.population *= populationGrowth;
-							}
-						}
-						for (int j = 0; j < c.paths.size(); j++) {
-							double cap = 0;
-							Path[] paths = c.paths.get(j);
-							for (int t = 0; t < Transport.baseUnits.length; t++) {
-								Transport current = Transport.currentUnits[t];
-								if (current != null && paths[t] != null) {
-									cap += current.scalar / paths[t].length();
+			try {
+				while(true){
+					if (gameState.equals(TnT.ld.ld36.State.GAME)) {
+						if (map.recalcFlag) map.calculateAllPaths();
+						double litFactor = Math.pow(City.literacy + 1, 2.75);
+						// calculate rate capacities for each city
+						for (int i = 0; i < map.cities.size(); i++) {
+							City c = map.cities.get(i);
+							c.population *= populationGrowth;
+							if (tick++ % POP_BUMP == 0) {
+								for (int v = 0; v < 10; v++) {
+									c.population *= populationGrowth;
 								}
 							}
-							c.rateCapacity.set(j, (c == selectedCity && boosted ? 1.2 : 1) * cap);
+							for (int j = 0; j < c.paths.size(); j++) {
+								double cap = 0;
+								Path[] paths = c.paths.get(j);
+								for (int t = 0; t < Transport.baseUnits.length; t++) {
+									Transport current = Transport.currentUnits[t];
+									if (current != null && paths[t] != null) {
+										cap += current.scalar / paths[t].length();
+									}
+								}
+								c.rateCapacity.set(j, (c == selectedCity && boosted ? 1.2 : 1) * cap);
+							}
 						}
-					}
 
-					//calculate desired rate for each city
-					int totalPop = 0;
-					for (int i = 0; i < map.cities.size(); i++) {
-						totalPop += map.cities.get(i).population;
-					}
-					for (int i = 0; i < map.cities.size(); i++) {
-						City c = map.cities.get(i);
-						for (int j = 0; j < c.desiredRate.size(); j++) {
-							c.desiredRate.set(j, (c == selectedCity && boosted ? 1.2 : 1) * litFactor * (double) (c.population/(totalPop-c.population)*map.cities.get(j+(j>=i?1:0)).population));
+						//calculate desired rate for each city
+						int totalPop = 0;
+						for (int i = 0; i < map.cities.size(); i++) {
+							totalPop += map.cities.get(i).population;
+							for (int j = 0; j < Transport.currentUnits.length && Transport.currentUnits[j] != null; j++) {
+								if (tick % 100 / ((j + 1) * 5) == 0) {
+									ArrayList<Path[]> paths = map.cities.get(i).paths;
+									for (int k = 0; k < paths.size(); k++) {
+										try {
+											paths.get(k)[j].getLast(); //this is really lazy
+										} catch (NullPointerException e) {
+											continue;
+										}
+										map.addAnimation(new Sprite(map, map.cities.get(i), paths.get(k)[j], Transport.images[j]));
+//										System.out.println("Made sprite for " + j + " in " + map.cities.get(i).name);
+									}
+								}
+							}
 						}
-					}
-					//animate sprites
-					
-					for (int i = 0; i < map.anims.size(); i++) {
-						map.anims.get(i).tick();
-						if (map.anims.get(i).isDone()) {
-							map.anims.remove(i--);
+						for (int i = 0; i < map.cities.size(); i++) {
+							City c = map.cities.get(i);
+							for (int j = 0; j < c.desiredRate.size(); j++) {
+								c.desiredRate.set(j, (c == selectedCity && boosted ? 1.2 : 1) * litFactor * (double) (c.population/(totalPop-c.population)*map.cities.get(j+(j>=i?1:0)).population));
+							}
 						}
-					}
-					
-					double totalMail = 0;
-					for (City city : map.cities) {
-						totalMail += city.getMail();
-					}
-					totalMail *=  mailValue;
-					//					System.out.println("Mail: " + totalMail);
-					moneyPerTick = totalMail;
-					money += totalMail;
-					lifeTimeEarnings += totalMail;
+						//animate sprites
 
-					if (lifeTimeEarnings > Math.pow(7, map.cities.size() * 1.5)) {
-						generateCity();
+						for (int i = 0; i < map.anims.size(); i++) {
+							map.anims.get(i).animate();
+							if (map.anims.get(i).isDone()) {
+								map.anims.remove(i--);
+							}
+						}
+
+
+
+						double totalMail = 0;
+						for (City city : map.cities) {
+							totalMail += city.getMail();
+						}
+						totalMail *=  mailValue;
+						//					System.out.println("Mail: " + totalMail);
+						moneyPerTick = totalMail;
+						money += totalMail;
+						lifeTimeEarnings += totalMail;
+
+						if (lifeTimeEarnings > Math.pow(7, map.cities.size() * 1.5)) {
+							generateCity();
+						}
+						//					System.out.println("Money: " + moneyString(money));
 					}
-					//					System.out.println("Money: " + moneyString(money));
+					try {
+						Thread.sleep(PHYSICS_DELAY);
+					} catch (Exception e) {}
 				}
-				try {
-					Thread.sleep(PHYSICS_DELAY);
-				} catch (Exception e) {}
+			} catch(Exception e) {
+				e.printStackTrace();
+				System.exit(0);
 			}
-		}
+		} 
 	};
 	public static final long PHYSICS_DELAY = 10;
 	public void startGame(){
@@ -570,11 +591,11 @@ public class LD36 extends JFrame{
 
 		treeButton.setRect(10, buffer.getHeight() - 70, 200, 50);
 
-//		/*techTree.height*/sp.height = buffer.getHeight() - Overlay.BOTTOM_HEIGHT;//setRect(0, 0, buffer.getWidth(), buffer.getHeight());
-//		sp.width = buffer.getWidth();
+		//		/*techTree.height*/sp.height = buffer.getHeight() - Overlay.BOTTOM_HEIGHT;//setRect(0, 0, buffer.getWidth(), buffer.getHeight());
+		//		sp.width = buffer.getWidth();
 		sp.setRect(0,0,buffer.getWidth(), buffer.getHeight()-Overlay.BOTTOM_HEIGHT);
 		techTree.height = sp.innerSize().getHeight();
-//		System.out.println(techTree.height);
+		//		System.out.println(techTree.height);
 		double BY = treeButton.getY();
 		double BW = 50;
 		double GAP = 25;
@@ -590,7 +611,7 @@ public class LD36 extends JFrame{
 		addPavedRoad.setRect(BX+5*BW+5*GAP,BY,BW,BW);
 		addAirport.setRect(BX+6*BW+6*GAP, BY, BW, BW);
 		moneyOverlay.setRect(220, BY, BX-10, BY);
-		
+
 		addFootPath.setRoad(Road.FOOTPATH);
 		addDirtRoad.setRoad(Road.DIRT);
 		addRailRoad.setRoad(Road.RAIL);
@@ -650,16 +671,16 @@ public class LD36 extends JFrame{
 		activeOverlays.add(right);
 		activeOverlays.add(sp);
 
-//		OverlayScrollBar ttScroll = new OverlayScrollBar();
-//		ttScroll.setRect(20,600,50,15);
-		
-//		techTree.addChild(ttScroll);
+		//		OverlayScrollBar ttScroll = new OverlayScrollBar();
+		//		ttScroll.setRect(20,600,50,15);
+
+		//		techTree.addChild(ttScroll);
 		//techTree.addChild(treeButton);
 
 		TechTree.MAX_SCROLL = (int) (techTree.width - buffer.getWidth());
 		sp.setMaxHorizontalScroll(TechTree.MAX_SCROLL);
 		techTree.addChild(moneyOverlay);
-//		techTree.visible = false;
+		//		techTree.visible = false;
 		sp.visible = false;
 		sp.inner = techTree;
 
