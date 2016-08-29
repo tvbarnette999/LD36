@@ -6,14 +6,14 @@ public class Transport {
 	//take per unit time?
 	public static Transport RUNNER = new Transport("Runner", 2d, 0x1F);
 	public static Transport HORSE = new Transport("Horse", 15, Map.FOOT_PATH_BIT|Map.DIRT_ROAD_BIT | Map.PAVED_ROAD_BIT);;
-	public static Transport CARRIAGE = new Transport("Carriage", 100, Map.DIRT_ROAD_BIT | Map.PAVED_ROAD_BIT);
-	public static Transport CARAVAN = new Transport("Caravan", 1000, Map.DIRT_ROAD_BIT | Map.PAVED_ROAD_BIT);
-	public static Transport CATAPAULT = new Transport("Catapult", 1000, Map.CITY_BIT);
-	public static Transport CAR = new Transport("Car", 10000, Map.PAVED_ROAD_BIT);
-	public static Transport TRUCK = new Transport("Truck",10000 , Map.PAVED_ROAD_BIT);
+	public static Transport CARRIAGE = new Transport("Carriage", 500, Map.DIRT_ROAD_BIT | Map.PAVED_ROAD_BIT);
+	public static Transport CARAVAN = new Transport("Caravan", 2000, Map.DIRT_ROAD_BIT | Map.PAVED_ROAD_BIT);
+	public static Transport CATAPAULT = new Transport("Catapult", 2500, Map.CITY_BIT);
+	public static Transport CAR = new Transport("Car", 40000, Map.PAVED_ROAD_BIT);
+	public static Transport TRUCK = new Transport("Truck",500000 , Map.PAVED_ROAD_BIT);
 	public static Transport SEMI = new Transport("Semi", 1000000, Map.PAVED_ROAD_BIT);
-	public static Transport PLANE = new Transport("Airplane", 10000000, Map.CITY_BIT);
-	public static Transport JET = new Transport("Jumbo Jet", 100000000, Map.CITY_BIT);
+	public static Transport PLANE = new Transport("Airplane", 99000000, Map.CITY_BIT);
+	public static Transport JET = new Transport("Jumbo Jet", 990000000, Map.CITY_BIT);
 	public static Transport VACUUM = new Transport("Vacuum Tube", 10000, 0x1F);//add vaccuum tube? 
 	public static Transport TRAIN = new Transport("Choo Choo", 1000000, Map.TRACK_BIT);
 	

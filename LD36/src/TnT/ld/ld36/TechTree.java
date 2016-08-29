@@ -25,7 +25,7 @@ public class TechTree extends Overlay{
 	static Tech ink = new Tech("Ink", "Ink allows more people to write letters", 2.2, City.class);
 	static Tech husbandry = new Tech("Husbandry", "Allows research into horses", 1.3, City.class);
 	static Tech mining = new Tech("Mining", "Allows aquisition of metal",1.1, City.class);
-	static Tech metal = new Tech("Metal", "Oooooh! Shiny!",1.2, City.class);
+	static Tech metal = new Tech("Metal", "Oooooh! Shiny!",3.2, City.class);
 	static Tech leather = new Tech("Leather", "Better clothing, increases runner payload by 10%",1.1, Transport.RUNNER);
 	static Tech snacks = new Tech("Snacks", "Runners can eat while running, increasing speed by 20%",1.2, Transport.RUNNER);
 	static Tech exercise = new Tech("Exercise", "Training Runners to run faster",1.5, Transport.RUNNER);
@@ -34,20 +34,20 @@ public class TechTree extends Overlay{
 	static Tech horses = new Tech("Horses", "Horses are much faster than Runners!", Transport.HORSE_TYPE, Transport.currentUnits, Transport.HORSE);
 	static Tech saddles = new Tech("Saddles", "Increases horse payload by 200%",3, Transport.HORSE);
 	static Tech saddleBags = new Tech("Saddle Bags", "Double Horse payload",2, Transport.HORSE);
-	static Tech horseFood = new Tech("Horse Food", "Who knew you had to feed them???", 7, Transport.HORSE, Transport.CARRIAGE, Transport.CARAVAN);
+	static Tech horseFood = new Tech("Horse Food", "Who knew you had to feed them???", 70, Transport.HORSE, Transport.CARRIAGE, Transport.CARAVAN);
 	static Tech horseShoes = new Tech("Horseshoes", "Increases horse speed by 30%", 1.3, Transport.HORSE, Transport.CARRIAGE, Transport.CARAVAN);
 	static Tech wheel = new Tech("The Wheel", "They see me rollin'. \n \nThey hatin'.", 1.5, City.class); //so that it does something
 	static Tech weights = new Tech("Weight Training", "Do Runners even lift?. Increase payload by 200%", 3, Transport.RUNNER);
-	static Tech breeding = new Tech("Enhanced Breeding", "Horses are faster and stronger",5, Transport.HORSE, Transport.CARAVAN );
+	static Tech breeding = new Tech("Enhanced Breeding", "Horses are faster and stronger",15, Transport.HORSE, Transport.CARAVAN );
 	static Tech dirtRoad = new Tech("Dirt Roads", "Easier for all units to traverse",1, Road.DIRT);
 	
 	
-	static Tech olympics = new Tech("Olympics", "Competitive Running!", 6.1, Transport.RUNNER );
+	static Tech olympics = new Tech("Olympics", "Competitive Running! \n \nNational Pride!", 2.1, Transport.RUNNER, City.class );
 	static Tech relays = new Tech("Relays", "Runner better at delivering things.", 3.1, Transport.RUNNER);
-	static Tech carrot = new Tech("Carrot on a Stick", "Motivated horses to move faster", 7.27589, Transport.HORSE, Transport.CARRIAGE, Transport.CARAVAN);
+	static Tech carrot = new Tech("Carrot on a Stick", "Motivated horses to move faster", 17.27589, Transport.HORSE, Transport.CARRIAGE, Transport.CARAVAN);
 	static Tech spurs = new Tech("Spurs", "Better control of horses", 1.5, Transport.HORSE);
 	static Tech ironHorseShoes = new Tech("Iron Horse Shoes", "Increase horse speed by 350%", 4.5, Transport.HORSE, Transport.CARRIAGE, Transport.CARAVAN);
-	static Tech smithing = new Tech("Smithing", "Make cool stuff", 1.1, City.class);
+	static Tech smithing = new Tech("Smithing", "Make cool stuff", 2.1, City.class);
 	static Tech smootherRoads = new Tech("Smoother Roads", "Runners and horses dont trip.", 4, Transport.RUNNER, Transport.HORSE, Transport.CARAVAN, Transport.CARRIAGE);
 	static Tech ditches = new Tech("Ditches", "Drier roads, Runners and horses don't get stuck in mud anymore.", 3, Transport.RUNNER, Transport.HORSE, Transport.CARAVAN, Transport.CARRIAGE);
 	static Tech iron = new Tech("Iron", "Make better cool stuff", 2.2, City.class);
