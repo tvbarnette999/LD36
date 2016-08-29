@@ -37,6 +37,7 @@ public class OverlayButton extends Overlay {
 		this("", false);
 	}
 	public void draw(Graphics2D g){
+		
 		super.draw(g);
 		if(img != null){
 			if (road != null && !road.unlocked || catapult && Transport.currentUnits[Transport.CATAPULT_TYPE]==null) {

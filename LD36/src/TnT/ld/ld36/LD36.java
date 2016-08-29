@@ -44,6 +44,7 @@ public class LD36 extends JFrame{
 	Overlay bottom = new Overlay();
 	Overlay right = new Overlay();
 	OverlayScrollPane sp = new OverlayScrollPane();
+	OverlayScrollPane cityPane = new OverlayScrollPane();
 	OverlayButton treeButton = new OverlayButton("Technology Tree");
 	OverlayButton clearSelection = new OverlayButton("Clear");
 	OverlayButton addFootPath = new OverlayButton(Resources.getImage("icon_footpath.png"));
@@ -451,6 +452,7 @@ public class LD36 extends JFrame{
 						//draw everything above the map
 						bottom.setRect(0, buffer.getHeight() - Overlay.BOTTOM_HEIGHT, buffer.getWidth(), Overlay.BOTTOM_HEIGHT);
 						right.setRect(buffer.getWidth() - Overlay.RIGHT_WIDTH, 0, Overlay.RIGHT_WIDTH, buffer.getHeight() - Overlay.BOTTOM_HEIGHT);
+						
 						right.draw(g);
 						bottom.draw(g);
 						//	g.setColor(Color.DARK_GRAY);
@@ -470,6 +472,7 @@ public class LD36 extends JFrame{
 						g.drawString("lit:"+City.literacy, 100,15);
 						g.drawString("lifetime: " + moneyString(lifeTimeEarnings), 100, 40);
 						String s = "";
+						/*
 						for(int i =0;i <bottom.elements.size(); i++){
 							if(bottom.elements.get(i) == null){
 								System.out.println("A");
@@ -479,6 +482,7 @@ public class LD36 extends JFrame{
 							}
 							s+=bottom.elements.get(i).background.getRed()+" ";
 						}
+						*/
 						//g.drawString(s, 400, 700);
 					}
 					
@@ -668,11 +672,14 @@ public class LD36 extends JFrame{
 		//techTree.addChild(treeButton);
 
 		TechTree.MAX_SCROLL = (int) (techTree.width - buffer.getWidth());
-		sp.setMaxHorizontalScroll(TechTree.MAX_SCROLL);
+//		sp.setMaxHorizontalScroll(TechTree.MAX_SCROLL);
 		techTree.addChild(moneyOverlay);
 //		techTree.visible = false;
 		sp.visible = false;
 		sp.inner = techTree;
+		right.setRect(buffer.getWidth() - Overlay.RIGHT_WIDTH, 0, Overlay.RIGHT_WIDTH, buffer.getHeight() - Overlay.BOTTOM_HEIGHT);
+		
+		
 
 		gameState = State.GAME;
 	}
