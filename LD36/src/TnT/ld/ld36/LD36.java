@@ -595,7 +595,7 @@ public class LD36 extends JFrame {
 							totalPop += map.cities.get(i).population;
 							for (int j = 0; j < Transport.currentUnits.length
 									&& Transport.currentUnits[j] != null; j++) {
-								if (tick % 100 / ((j + 1) * 5) == 0) {
+								if (tick % 700 / ((j + 1) * 5) == 0) {
 									ArrayList<Path[]> paths = map.cities.get(i).paths;
 									Point p;
 									for (int k = 0; k < paths.size(); k++) {

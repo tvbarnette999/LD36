@@ -34,7 +34,6 @@ public class Sprite {
 
 	public void draw(Graphics2D g) {
 		double angle = Math.atan2(dest.y - src.y, dest.x - src.x);
-
 		AffineTransform tx = AffineTransform.getRotateInstance(angle, img.getWidth() / 2, img.getHeight() / 2);
 		AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BILINEAR);
 
@@ -44,11 +43,13 @@ public class Sprite {
 		// g.fillRect(x, y, 100, 100);
 	}
 
+	boolean reversed = false;
 	public void animate() {
 		ticks++;
 		x = (int) (src.x + (dest.x - src.x) * ((double) (ticks % miniTicks) / miniTicks));
 		y = (int) (src.y + (dest.y - src.y) * ((double) (ticks % miniTicks) / miniTicks));
-		if (ticks % miniTicks == 0 && ticks > maxTicks - miniTicks) {
+		if (ticks % miniTicks == 0 && ticks > maxTicks - miniTicks && !reversed) {
+			reversed = true; //only do this once
 			src = dest;
 			it = p.getBackIt();
 //			src = m.getTileCenter(it.next());
