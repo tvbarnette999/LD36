@@ -411,6 +411,7 @@ public class LD36 extends JFrame{
 						if(techTree.visible){
 							techTree.draw(g);
 							bottom.draw(g);
+							map.graphicsStall = true;
 							break;
 						}
 						map.draw(g);

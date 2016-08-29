@@ -103,6 +103,7 @@ public class Map {
 
 	Point2D.Double scrollPoint = null;
 	double scrollRate = 0;
+	boolean graphicsStall;
 	
 	public byte[][] data = new byte[MAP_WIDTH][MAP_HEIGHT]; //this array is done [x][y] to simplify.
 	public ArrayList<Sprite> sprites = new ArrayList<Sprite>();
@@ -380,7 +381,7 @@ public class Map {
 	long lastTime = -1;
 	public void draw(Graphics2D g){
 		long current = System.nanoTime();
-		if (lastTime > 0) {
+		if (lastTime > 0 && !graphicsStall) {
 			double dt = (current-lastTime) * 1e-9;
 			if (this.isScrolling()) {
 				System.out.println("scrolling "+transX+",  "+transY+" to "+scrollPoint);
@@ -410,6 +411,7 @@ public class Map {
 		}
 		//		System.out.println(transX + ", " + transY);
 		lastTime = current;
+		graphicsStall = false;
 
 		final double zoom = this.zoom, transX = this.transX, transY = this.transY;
 		g.translate(transX, transY);
