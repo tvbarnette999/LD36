@@ -349,7 +349,7 @@ public class LD36 extends JFrame{
 				if (gameState==State.GAME) map.scrollTo(map.getTileCenter((int)(Map.MAP_WIDTH/2), (int)(Map.MAP_HEIGHT/2)));
 				break;
 			case KeyEvent.VK_ESCAPE:
-				if(treeButton.callback != null && techTree.visible)treeButton.callback.actionPerformed(new ActionEvent(treeButton, 0 ,""));
+				if(treeButton.callback != null && sp.visible)treeButton.callback.actionPerformed(new ActionEvent(treeButton, 0 ,""));
 				else map.clearSelection();
 			}
 		}
@@ -469,6 +469,17 @@ public class LD36 extends JFrame{
 						g.drawString(Arrays.toString(Transport.debug()), 200, 30);
 						g.drawString("lit:"+City.literacy, 100,15);
 						g.drawString("lifetime: " + moneyString(lifeTimeEarnings), 100, 40);
+						String s = "";
+						for(int i =0;i <bottom.elements.size(); i++){
+							if(bottom.elements.get(i) == null){
+								System.out.println("A");
+							}
+							if(bottom.elements.get(i).background == null){
+								System.out.println("B");
+							}
+							s+=bottom.elements.get(i).background.getRed()+" ";
+						}
+						//g.drawString(s, 400, 700);
 					}
 					
 					g.dispose();
@@ -589,7 +600,7 @@ public class LD36 extends JFrame{
 		addRailRoad.setRect(BX+4*BW+4*GAP,  BY, BW, BW);
 		addPavedRoad.setRect(BX+5*BW+5*GAP,BY,BW,BW);
 		addAirport.setRect(BX+6*BW+6*GAP, BY, BW, BW);
-		moneyOverlay.setRect(220, BY, BX-10, BY);
+		moneyOverlay.setRect(220, BY, BX-100, BY);
 		
 		addFootPath.setRoad(Road.FOOTPATH);
 		addDirtRoad.setRoad(Road.DIRT);

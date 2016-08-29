@@ -26,6 +26,8 @@ public class OverlayButton extends Overlay {
 	}
 	public OverlayButton(BufferedImage icon){
 		this.img = icon;
+
+		this.removedBackground = background;
 	}
 	public BufferedImage img = null;
 	public OverlayButton(String text){
@@ -62,11 +64,12 @@ public class OverlayButton extends Overlay {
 		catapult = true;
 	}
 	public void mouseEntered(MouseEvent e){
-		System.out.println("ENTER "+text);
+//		System.out.println("ENTER "+text);
 		this.background = enteredBackground;
 		e.consume();
 	}
 	public void mouseExited(MouseEvent e){
+//		System.out.println("EXIT");
 		this.background = removedBackground;
 		e.consume();
 	}
