@@ -536,7 +536,7 @@ public class LD36 extends JFrame{
 					money += totalMail;
 					lifeTimeEarnings += totalMail;
 
-					if (lifeTimeEarnings > Math.pow(10, map.cities.size() * 2)) {
+					if (lifeTimeEarnings > Math.pow(7, map.cities.size() * 1.5)) {
 						generateCity();
 					}
 					//					System.out.println("Money: " + moneyString(money));
