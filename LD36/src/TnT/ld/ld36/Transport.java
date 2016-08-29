@@ -32,8 +32,8 @@ public class Transport {
 	public static final int CARRIAGE_TYPE = 2;
 	public static final int CAR_TYPE = 3;
 	public static final int TRAIN_TYPE = 4;
-	public static final int CATAPULT_TYPE = 4;
-	public static final int PLANE_TYPE = 4;
+	public static final int CATAPULT_TYPE = 5;
+	public static final int PLANE_TYPE = 6;
 	
 	
 	public double scalar;

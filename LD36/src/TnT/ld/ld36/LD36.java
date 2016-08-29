@@ -304,6 +304,7 @@ public class LD36 extends JFrame{
 					if(!o.visible) continue;
 					if(o.contains(e.getPoint())){
 						o.mouseDragged(e);
+						return;
 					};
 				}
 				map.mouseDragged(e);
@@ -345,7 +346,7 @@ public class LD36 extends JFrame{
 				rightPressed = true;
 				break;
 			case KeyEvent.VK_SPACE:
-				if (gameState==State.GAME) map.scrollTo(map.getTileCenter(0, 0));
+				if (gameState==State.GAME) map.scrollTo(map.getTileCenter((int)(Map.MAP_WIDTH/2), (int)(Map.MAP_HEIGHT/2)));
 				break;
 			case KeyEvent.VK_ESCAPE:
 				if(treeButton.callback != null && techTree.visible)treeButton.callback.actionPerformed(new ActionEvent(treeButton, 0 ,""));
