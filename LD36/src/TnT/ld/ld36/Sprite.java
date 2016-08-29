@@ -8,7 +8,7 @@ import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.util.Iterator;
 
-public class Sprite{
+public class Sprite {
 	Path p;
 	public BufferedImage img;
 	public int x, y;
@@ -19,7 +19,8 @@ public class Sprite{
 	Iterator<Point> it;
 	int on = 0;
 	Map m;
-	public Sprite (Map m, Point src, Path p, BufferedImage img) {
+
+	public Sprite(Map m, Point src, Path p, BufferedImage img) {
 		this.p = p;
 		this.m = m;
 		it = p.iterator();
@@ -30,17 +31,19 @@ public class Sprite{
 		x = (int) p.getFirst().x;
 		y = (int) p.getFirst().y;
 	}
+
 	public void draw(Graphics2D g) {
 		double angle = Math.atan2(dest.y - src.y, dest.x - src.x);
-		
+
 		AffineTransform tx = AffineTransform.getRotateInstance(angle, img.getWidth() / 2, img.getHeight() / 2);
 		AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BILINEAR);
 
 		// Drawing the rotated image at the required drawing locations
-//		System.out.println(angle);
+		// System.out.println(angle);
 		g.drawImage(op.filter(img, null), x, y, null);
-//		g.fillRect(x, y, 100, 100);
+		// g.fillRect(x, y, 100, 100);
 	}
+
 	public void animate() {
 		ticks++;
 		x = (int) (src.x + (dest.x - src.x) * ((double) (ticks % miniTicks) / miniTicks));
@@ -50,6 +53,7 @@ public class Sprite{
 			dest = m.getTileCenter(it.next());
 		}
 	}
+
 	public boolean isDone() {
 		return ticks > maxTicks;
 	}
