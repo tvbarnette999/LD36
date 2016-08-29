@@ -41,6 +41,7 @@ public class LD36 extends JFrame{
 	VolatileImage buffer;
 	Overlay bottom = new Overlay();
 	Overlay right = new Overlay();
+	OverlayScrollPane sp = new OverlayScrollPane();
 	OverlayButton treeButton = new OverlayButton("Technology Tree");
 	OverlayButton clearSelection = new OverlayButton("Clear");
 	OverlayButton addFootPath = new OverlayButton(Resources.getImage("icon_footpath.png"));
@@ -52,6 +53,11 @@ public class LD36 extends JFrame{
 
 	OverlayButton cityName = new OverlayButton("Name: ");
 	Overlay cityPopulation = new Overlay("Pop: ");
+	
+	String initHelpText = "A new city was founded to take\nadvantage of your great mail system.\n"
+			+ "Consider adding it to your other\ncities to generate more mail!";
+	String initHelpText2 = "To connect this city, select tiles to form a path\nand then select the path type at the bottom.\nOver time you will need to upgrade!";
+	boolean shownHelp = false;
 	boolean boosted = true;
 	OverlayButton increase = new OverlayButton("Write Mail for City") {
 		@Override
@@ -61,6 +67,10 @@ public class LD36 extends JFrame{
 		@Override
 		public void mouseReleased(MouseEvent e) {
 			boosted = false;
+		}
+		@Override
+		public void mouseExited(MouseEvent e) {
+			mouseReleased(e);
 		}
 	};
 
@@ -335,6 +345,7 @@ public class LD36 extends JFrame{
 				break;
 			case KeyEvent.VK_ESCAPE:
 				if(treeButton.callback != null && techTree.visible)treeButton.callback.actionPerformed(new ActionEvent(treeButton, 0 ,""));
+				else map.clearSelection();
 			}
 		}
 
@@ -364,7 +375,7 @@ public class LD36 extends JFrame{
 				break;
 			case KeyEvent.VK_PRINTSCREEN:
 				if (e.isShiftDown()) {
-					map.scrollTo(map.getTileCenter(map.addNewRandomCity()));
+					generateCity();
 				}
 				break;
 			}
@@ -376,6 +387,15 @@ public class LD36 extends JFrame{
 		theLD.initGUI();		
 	}
 
+	protected void generateCity() {
+		City c;
+		map.scrollTo(map.getTileCenter(c = map.addNewRandomCity()));
+		if (!shownHelp) {
+			map.addHelp(new HelpPopup(map, c.x, c.y - 1, initHelpText));
+			map.addHelp(new HelpPopup(map, c.x, c.y + 1, initHelpText2));
+			shownHelp = true;
+		}
+	}
 	public void initGUI() {
 		//Fullscreen?
 		panel.setPreferredSize(new Dimension(1280, 768));
@@ -414,8 +434,8 @@ public class LD36 extends JFrame{
 						g.drawString("Click To Start", 400, 400);
 						break;
 					case GAME:
-						if(techTree.visible){
-							techTree.draw(g);
+						if(sp.visible){
+							sp.draw(g);
 							bottom.draw(g);
 							map.graphicsStall = true;
 							break;
@@ -443,6 +463,7 @@ public class LD36 extends JFrame{
 						g.drawString(Arrays.toString(Transport.currentUnits), 200, 15);
 						g.drawString(Arrays.toString(Transport.debug()), 200, 30);
 						g.drawString("lit:"+City.literacy, 100,15);
+						g.drawString("lifetime: " + moneyString(lifeTimeEarnings), 100, 40);
 					}
 					
 					g.dispose();
@@ -517,7 +538,7 @@ public class LD36 extends JFrame{
 					lifeTimeEarnings += totalMail;
 
 					if (lifeTimeEarnings > Math.pow(10, map.cities.size() * 2)) {
-						map.scrollTo(map.getTileCenter(map.addNewRandomCity()));
+						generateCity();
 					}
 					//					System.out.println("Money: " + moneyString(money));
 				}
@@ -533,7 +554,11 @@ public class LD36 extends JFrame{
 
 		treeButton.setRect(10, buffer.getHeight() - 70, 200, 50);
 
-		techTree.height = buffer.getHeight() - Overlay.BOTTOM_HEIGHT;//setRect(0, 0, buffer.getWidth(), buffer.getHeight());
+//		/*techTree.height*/sp.height = buffer.getHeight() - Overlay.BOTTOM_HEIGHT;//setRect(0, 0, buffer.getWidth(), buffer.getHeight());
+//		sp.width = buffer.getWidth();
+		sp.setRect(0,0,buffer.getWidth(), buffer.getHeight()-Overlay.BOTTOM_HEIGHT);
+		techTree.height = sp.innerSize().getHeight();
+//		System.out.println(techTree.height);
 		double BY = treeButton.getY();
 		double BW = 50;
 		double GAP = 25;
@@ -559,13 +584,15 @@ public class LD36 extends JFrame{
 		bottom.addChild(treeButton);
 		treeButton.setActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				if(techTree.visible){
-					techTree.visible = false;
+				if(sp.visible){
+					//techTree.visible = false;
+					sp.visible = false;
 					//bottom.visible = true;
 					right.visible = true;
 					treeButton.text = "Technology Tree";
 				} else{
-					techTree.visible = true;
+					//techTree.visible = true;
+					sp.visible=true;
 					//bottom.visible = false;
 					right.visible = false;
 					treeButton.text = "Close";
@@ -598,11 +625,20 @@ public class LD36 extends JFrame{
 
 		activeOverlays.add(bottom);
 		activeOverlays.add(right);
-		activeOverlays.add(techTree);
+		activeOverlays.add(sp);
 
+//		OverlayScrollBar ttScroll = new OverlayScrollBar();
+//		ttScroll.setRect(20,600,50,15);
+		
+//		techTree.addChild(ttScroll);
 		//techTree.addChild(treeButton);
+
+		TechTree.MAX_SCROLL = (int) (techTree.width - buffer.getWidth());
+		sp.setMaxHorizontalScroll(TechTree.MAX_SCROLL);
 		techTree.addChild(moneyOverlay);
-		techTree.visible = false;
+//		techTree.visible = false;
+		sp.visible = false;
+		sp.inner = techTree;
 
 		gameState = State.GAME;
 	}

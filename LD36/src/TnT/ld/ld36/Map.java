@@ -70,6 +70,8 @@ public class Map {
 	Vector<Point> selection = new Vector<Point>();
 	int[] selectAdd = new int[Road.roads.length];
 	int[] selectRemove = new int[Road.roads.length];
+	
+	ArrayList<HelpPopup> helps = new ArrayList<HelpPopup>();
 
 	ArrayList<City> cities = new ArrayList<City>();
 
@@ -404,8 +406,8 @@ public class Map {
 	long lastTime = -1;
 	public void draw(Graphics2D g){
 		long current = System.nanoTime();
+		double dt = (current-lastTime) * 1e-9;
 		if (lastTime > 0 && !graphicsStall) {
-			double dt = (current-lastTime) * 1e-9;
 			if (this.isScrolling()) {
 				System.out.println("scrolling "+transX+",  "+transY+" to "+scrollPoint);
 				double dist = scrollPoint.distance(transX, transY);
@@ -431,7 +433,10 @@ public class Map {
 				if (LD36.left) transX += rate*dt;
 				restrictScroll();
 			}
+		} else {
+			dt = 0;
 		}
+		
 		//		System.out.println(transX + ", " + transY);
 		lastTime = current;
 		graphicsStall = false;
@@ -533,6 +538,15 @@ public class Map {
 			}
 			g.setStroke(s);
 		}
+		for (int i = 0; i < helps.size(); i++) {
+			helps.get(i).draw(g);
+			helps.get(i).ticks -= dt;
+			System.out.println("dt: " + dt);
+			System.out.println(helps.get(i).ticks);
+			if (helps.get(i).ticks < 0) {
+				helps.remove(i--);
+			}
+		}
 
 		g.scale(1/zoom, 1/zoom);
 		g.translate(-transX, -transY);
@@ -584,12 +598,15 @@ public class Map {
 					b = false;
 					continue;
 				}
-				if (p.distance(c) < 10) { //must have at least one this close
+				if (p.distance(c) < 8) { //must have at least one this close
 					bb = true;
 					continue;
 				}
 			}
 		} while (!(b&&bb));
 		return addCity(p.x, p.y);
+	}
+	public void addHelp(HelpPopup helpPopup) {
+		helps.add(helpPopup);
 	}
 }
