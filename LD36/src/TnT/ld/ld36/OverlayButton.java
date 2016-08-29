@@ -20,6 +20,7 @@ public class OverlayButton extends Overlay {
 	public Color removedBackground;
 	public Road road;
 	public boolean catapult;
+	BufferedImage gray;
 
 	public OverlayButton(String text, boolean selectable) {
 		this.background = Color.lightGray;
@@ -29,6 +30,7 @@ public class OverlayButton extends Overlay {
 
 	public OverlayButton(BufferedImage icon) {
 		this.img = icon;
+		gray = LD36.grayOp.filter(icon, null);
 	}
 
 	public BufferedImage img = null;
@@ -45,7 +47,7 @@ public class OverlayButton extends Overlay {
 		super.draw(g);
 		if (img != null) {
 			if (road != null && !road.unlocked || catapult && Transport.currentUnits[Transport.CATAPULT_TYPE] == null) {
-				g.drawImage(LD36.grayOp.filter(img, null), (int) x + 1, (int) y + 1, (int) width - 2, (int) height - 2,
+				g.drawImage(gray, (int) x + 1, (int) y + 1, (int) width - 2, (int) height - 2,
 						null);
 			} else {
 				g.drawImage(img, (int) x + 1, (int) y + 1, (int) width - 2, (int) height - 2, null);
