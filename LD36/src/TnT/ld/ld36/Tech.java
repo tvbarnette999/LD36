@@ -11,7 +11,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 public class Tech extends OverlayButton implements ActionListener{
-	public static final int WIDTH = 200;
+	public static final int WIDTH = 260;
 	public static final int HEIGHT = 100;
 	
 	ArrayList<Tech> parents = new ArrayList<Tech>();

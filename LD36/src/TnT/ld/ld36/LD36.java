@@ -336,6 +336,7 @@ public class LD36 extends JFrame{
 		}
 
 		public void keyReleased(KeyEvent e) {
+			System.out.println(e.getKeyCode());
 			switch (e.getKeyCode()) {
 			case KeyEvent.VK_A:
 			case KeyEvent.VK_LEFT:
@@ -353,6 +354,10 @@ public class LD36 extends JFrame{
 			case KeyEvent.VK_RIGHT:
 				rightPressed = false;
 				break;
+			case KeyEvent.VK_PAUSE:
+				if (e.isShiftDown()) {
+					money *= 2;
+				}
 			}
 		}
 	};
