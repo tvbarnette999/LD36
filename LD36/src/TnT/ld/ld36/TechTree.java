@@ -30,7 +30,7 @@ public class TechTree extends Overlay{
 	static Tech snacks = new Tech("Snacks", "Runners can eat while running, increasing speed by 20%",1.2, Transport.RUNNER);
 	static Tech exercise = new Tech("Exercise", "Training Runners to run faster",1.5, Transport.RUNNER);
 	static Tech protein = new Tech("Protein", "Increse Runner strength and speed by 10%",1.2, Transport.RUNNER);
-	static Tech gym = new Tech("Gym", "Increase runner payload by 30%", 1.3, Transport.RUNNER);
+	static Tech gym = new Tech("Gym", "Pumping iron means pumping legs", 1.75, Transport.RUNNER);
 	static Tech horses = new Tech("Horses", "Horses are much faster than Runners!", Transport.HORSE_TYPE, Transport.currentUnits, Transport.HORSE);
 	static Tech saddles = new Tech("Saddles", "Increases horse payload by 200%",3, Transport.HORSE);
 	static Tech saddleBags = new Tech("Saddle Bags", "Double Horse payload",2, Transport.HORSE);
