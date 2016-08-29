@@ -4,7 +4,7 @@ public class Transport {
 	
 	//given no upgrades, on a path of the same length, how many should each unit be able to
 	//take per unit time?
-	public static Transport RUNNER = new Transport("Runner", 1d, 0x1F);
+	public static Transport RUNNER = new Transport("Runner", 2d, 0x1F);
 	public static Transport HORSE = new Transport("Horse", 10, Map.FOOT_PATH_BIT|Map.DIRT_ROAD_BIT | Map.PAVED_ROAD_BIT);;
 	public static Transport CARRIAGE = new Transport("Carriage", 100, Map.DIRT_ROAD_BIT | Map.PAVED_ROAD_BIT);
 	public static Transport CARAVAN = new Transport("Caravan", 1000, Map.DIRT_ROAD_BIT | Map.PAVED_ROAD_BIT);

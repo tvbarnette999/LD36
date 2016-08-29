@@ -448,7 +448,7 @@ public class LD36 extends JFrame{
 		}
 	};
 	public static double mailValue = .05;
-	public static double populationGrowth = 1.0005;
+	public static double populationGrowth = 1.0001;
 	public static long tick = 0;
 	public static double moneyPerTick;
 	public static long POP_BUMP = 1000; //every 100 s
@@ -476,7 +476,7 @@ public class LD36 extends JFrame{
 									cap += current.scalar / paths[t].length();
 								}
 							}
-							c.rateCapacity.set(j, (c == selectedCity && boosted ? 1.2 : 1) * cap * litFactor);
+							c.rateCapacity.set(j, (c == selectedCity && boosted ? 1.2 : 1) * cap);
 						}
 					}
 
