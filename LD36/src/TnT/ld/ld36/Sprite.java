@@ -51,10 +51,13 @@ public class Sprite {
 		if (ticks % miniTicks == 0 && ticks > maxTicks - miniTicks) {
 			src = dest;
 			it = p.getBackIt();
-		}
-		if (ticks % miniTicks == 0 && it.hasNext()) {
-			src = dest;
+//			src = m.getTileCenter(it.next());
 			dest = m.getTileCenter(it.next());
+		} else {
+			if (ticks % miniTicks == 0 && it.hasNext()) {
+				src = dest;
+				dest = m.getTileCenter(it.next());
+			}
 		}
 	}
 

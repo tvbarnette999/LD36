@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.color.ColorSpace;
 import java.awt.event.ActionEvent;
@@ -20,6 +21,7 @@ import java.awt.image.VolatileImage;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -587,23 +589,27 @@ public class LD36 extends JFrame {
 
 						// calculate desired rate for each city
 						int totalPop = 0;
+						HashMap<Point, Point> done1 = new HashMap<Point, Point>();
+						HashMap<Point, Point> done2 = new HashMap<Point, Point>();
 						for (int i = 0; i < map.cities.size(); i++) {
 							totalPop += map.cities.get(i).population;
 							for (int j = 0; j < Transport.currentUnits.length
 									&& Transport.currentUnits[j] != null; j++) {
 								if (tick % 100 / ((j + 1) * 5) == 0) {
 									ArrayList<Path[]> paths = map.cities.get(i).paths;
+									Point p;
 									for (int k = 0; k < paths.size(); k++) {
 										try {
-											paths.get(k)[j].getLast(); // this
-																		// is
-																		// really
-																		// lazy
+											p = paths.get(k)[j].getLast();
 										} catch (NullPointerException e) {
 											continue;
 										}
-										map.addAnimation(new Sprite(map, map.cities.get(i), paths.get(k)[j],
+										if (!(done1.containsKey(map.cities.get(i)) && done1.get(map.cities.get(i)).equals(p)) && !(done2.containsKey(map.cities.get(i)) && done2.get(map.cities.get(i)).equals(p)) ){
+											done1.put(map.cities.get(i), p);
+											done2.put(p, map.cities.get(i));
+											map.addAnimation(new Sprite(map, map.cities.get(i), paths.get(k)[j],
 												Transport.images[j]));
+										}
 										// System.out.println("Made sprite for "
 										// + j + " in " +
 										// map.cities.get(i).name);
