@@ -16,6 +16,7 @@ public class OverlayButton extends Overlay {
 	public ActionListener callback = null;
 	public Color enteredBackground = background.brighter();
 	public Color removedBackground;
+	public Road road;
 	public OverlayButton(String text, boolean selectable){
 		this.background = Color.lightGray;
 		this.text = text;
@@ -35,6 +36,12 @@ public class OverlayButton extends Overlay {
 		super.draw(g);
 		if(img != null){
 			g.drawImage(img,(int)x+1,(int)y+1,(int)width-2,(int)height-2,null);
+			if (road != null && !road.unlocked) {
+				Color c = g.getColor();
+				g.setColor(new Color(.5f, .5f, .5f, .5f));
+				g.fillRect((int)x+1,(int)y+1,(int)width-2,(int)height-2);
+				g.setColor(c);
+			}
 			return;
 		}
 		Color oc = g.getColor();
@@ -48,7 +55,9 @@ public class OverlayButton extends Overlay {
 		g.setFont(of);
 //		System.out.println("OB"+x+","+y);
 	}
-	
+	public void setRoad(Road road) {
+		this.road = road;
+	}
 	public void mouseEntered(MouseEvent e){
 		System.out.println("ENTER "+text);
 		this.background = enteredBackground;

@@ -88,7 +88,7 @@ public class Tech extends OverlayButton implements ActionListener{
 		g.drawLine(round(x1), round(y1), round(x2), round(y2));
 	}
 	public void draw(Graphics2D g){
-		
+//		System.out.println(name);
 		
 		Color oc = g.getColor();
 		if(researched){
@@ -115,12 +115,12 @@ public class Tech extends OverlayButton implements ActionListener{
 		if(!researched)g.drawString(LD36.moneyString(cost),(int)x+5, (int) ((int)y+height -5));
 
 		g.setFont(of.deriveFont(14f));
-		
+//		System.out.println(name+":"+x+","+y);
 		int sx = (int) (x+5);
 		int sy = (int) (y+40);
 		FontMetrics fm = g.getFontMetrics();
 		for(String s : split){
-			if(fm.stringWidth(s) >= (x+width) - sx || s.contains("\n")){
+			if(fm.stringWidth(s) >= (x+width) - sx ){
 				//next line
 				sy += 3.0*fm.getHeight()/4.0;
 				sx = (int) (this.x+5);
@@ -162,6 +162,7 @@ public class Tech extends OverlayButton implements ActionListener{
 				x-=TechTree.X_GAP;
 				
 			}else{
+				
 				drawLine(g, x, y+height/2, x-TechTree.X_GAP, y+height/2);
 				x-=TechTree.X_GAP;
 			}
