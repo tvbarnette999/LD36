@@ -457,7 +457,7 @@ public class LD36 extends JFrame{
 					for (int i = 0; i < map.cities.size(); i++) {
 						City c = map.cities.get(i);
 						for (int j = 0; j < c.desiredRate.size(); j++) {
-							c.desiredRate.set(j, (double) (c.population/(totalPop-c.population)*map.cities.get(j+(j>=i?1:0)).population));
+							c.desiredRate.set(j, City.literacy * (double) (c.population/(totalPop-c.population)*map.cities.get(j+(j>=i?1:0)).population));
 						}
 					}
 					double totalMail = 0;

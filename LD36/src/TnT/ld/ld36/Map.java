@@ -206,6 +206,7 @@ public class Map {
 	public static Map generate(){
 		Map m = new Map();
 		m.addCity((int) (MAP_WIDTH / 2.0 - 2), (int) (MAP_HEIGHT / 2.0));
+		m.cities.get(0).population = 10;
 		m.addCity((int) (MAP_WIDTH / 2.0 + 2), (int) (MAP_HEIGHT / 2.0));
 		Point p1 = m.cities.get(0).getLocation();
 		Point p2 = m.cities.get(1).getLocation();
