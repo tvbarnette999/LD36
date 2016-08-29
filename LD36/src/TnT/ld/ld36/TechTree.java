@@ -401,8 +401,16 @@ public class TechTree extends Overlay{
 	
 	static{
 		sandals.cost = 10;
-		shoeLaces.cost = 100;
-		shoes.cost = 500;
+		shoeLaces.cost = 750;
+		shoes.cost = 30;
+		snacks.cost = 1250;
+		exercise.cost = 1800;
+		protein.cost = 2400;
+		gym.cost = 3000;
+		weights.cost = 4000;
+		
+		wheel.cost = 2600;
+		
 		
 		agriculture.cost = 50;
 		paper.cost = 100;
@@ -414,8 +422,22 @@ public class TechTree extends Overlay{
 		mining.cost = 8000;
 		metal.cost = 10000;
 		
-		saddles.cost = 15000;
-		saddleBags.cost = 30000000d;
+		saddles.cost = 10000;
+		saddleBags.cost = 16000;
+		horseFood.cost = 35000;
+		horseShoes.cost = 40000;
+		
+		breeding.cost = 100000;
+		
+		olympics.cost = 30000;
+		relays.cost = 60000;
+		
+		carriage.cost = 1e6;
+		smithing.cost = 5e6;
+		carrot.cost = 3.5e6;
+		spurs.cost = 5e6;
+		
+		
 	}
 	
 	public TechTree(){		

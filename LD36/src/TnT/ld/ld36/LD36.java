@@ -417,6 +417,7 @@ public class LD36 extends JFrame{
 		}
 	};
 	public static double mailValue = .05;
+	public static double populationGrowth = 1.001;
 	public Thread physics = new Thread(){
 		public void run(){
 			while(true){
@@ -426,6 +427,7 @@ public class LD36 extends JFrame{
 					// calculate rate capacities for each city
 					for (int i = 0; i < map.cities.size(); i++) {
 						City c = map.cities.get(i);
+						c.population *= populationGrowth;
 						for (int j = 0; j < c.paths.size(); j++) {
 							double cap = 0;
 							Path[] paths = c.paths.get(j);
