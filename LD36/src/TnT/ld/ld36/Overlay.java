@@ -1,6 +1,7 @@
 package TnT.ld.ld36;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -24,17 +25,35 @@ public class Overlay extends Rectangle2D.Double implements MouseListener, MouseM
 	boolean mouseIn = false;
 	boolean enabled = true;
 	Color disabledBackground = Color.darkGray;
+	public String text;
+	public Overlay(String string) {
+		setText(string);
+	}
+	public Overlay() {
+		
+	}
 	public void draw(Graphics2D g){
 		if(!visible)return;
 		Color oc = g.getColor();
 		g.setColor(enabled?background:disabledBackground);
 		g.fill(this);
-		g.setColor(oc);
 		
 		for(Overlay o : elements){
 			o.draw(g);
 		}
 		
+		if (text != null && ! (this instanceof OverlayButton)) {
+			Font of = g.getFont();
+			g.setColor(Color.black);
+			g.setFont(of.deriveFont(24f));
+			g.drawString(text,(int)( x+width/2 - g.getFontMetrics().stringWidth(text)/2.0),(int)(y+ height/2.0));
+			g.setColor(oc);
+			g.setFont(of);
+		}
+		
+	}
+	public void setText(String text) {
+		this.text = text;
 	}
 	public void addChild(Overlay o){
 		elements.add(o);

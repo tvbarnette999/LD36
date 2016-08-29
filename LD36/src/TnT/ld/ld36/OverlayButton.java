@@ -11,7 +11,6 @@ import java.awt.event.MouseEvent;
 import javax.swing.JOptionPane;
 
 public class OverlayButton extends Overlay {
-	public String text = "Click ME";
 	public boolean selectable = false;
 	public boolean selected = false;
 	public ActionListener callback = null;
@@ -42,7 +41,7 @@ public class OverlayButton extends Overlay {
 		Font of = g.getFont();
 		g.setColor(selected?Color.RED :Color.blue);
 		g.draw(this);
-		g.setColor(Color.GREEN);
+		g.setColor(Color.black);
 		g.setFont(of.deriveFont(24f));
 		g.drawString(text,(int)( x+width/2 - g.getFontMetrics().stringWidth(text)/2.0),(int)(y+ height/2.0));
 		g.setColor(oc);

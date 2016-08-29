@@ -18,16 +18,29 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.PriorityQueue;
+import java.util.Random;
 import java.util.Vector;
 
 public class Map {
 	public static Image grass;
 	public static Image rock;
 	public static Image tents;
+	public static Image[] cityImages;
 	static{
 		grass = Resources.getImage("grass.png");
 		rock = Resources.getImage("mountainpeak.png");
 		tents = Resources.getImage("tents.png");
+		ArrayList<Image> city = new ArrayList<Image>();
+		Image img;
+		int i = 0;
+		try {
+			while((img = Resources.getImage("city_" + i++ + ".png")) != null) {
+				city.add(img);
+			}
+		} catch(Exception e) {
+
+		}
+		cityImages = city.toArray(new Image[0]);
 	}
 	public static final int MAP_WIDTH = 100;
 	public static final int MAP_HEIGHT = 100;
@@ -116,6 +129,13 @@ public class Map {
 				selection.add(tile);
 				byte d = data[tile.x][tile.y];
 				// if not city or impassible
+				if ((d&CITY_BIT) !=0 ) {
+					for (City c : cities) {
+						if (c.getX() == tile.x && c.getY() == tile.y) {
+							LD36.theLD.selectedCity = c;
+						}
+					}
+				}
 				if ((d&(CITY_BIT|IMPASS_BIT))==0) {
 					for (Road r : Road.roads) {
 						if ((d&r.mask)==0) selectAdd[r.key]++;
@@ -205,7 +225,7 @@ public class Map {
 		//expand path arrays for all existing cities
 		for (City c : cities) c.addCity();
 
-		City c = new City("Bablyon");
+		City c = new City();
 		c.x = x;
 		c.y = y;
 		c.ID = cities.size();
@@ -366,6 +386,11 @@ public class Map {
 		double lup = sup - MAX_HEIGHT;
 		AffineTransform tsup = AffineTransform.getTranslateInstance(MAX_WIDTH * .75, sup);
 		AffineTransform tlup = AffineTransform.getTranslateInstance(MAX_WIDTH * .75, lup);
+		for (City c : cities) {
+			int pop = (int) Math.max(Math.min(cityImages.length - 1, Math.log10(c.population)), 0);
+			drawTileImage(g, grass, getTileLocation(c));
+			drawTileImage(g, cityImages[pop], getTileLocation(c));
+		}
 		for (int x = startX; x <= endX; x++) {
 			for (int y = startY; y <= endY; y++) {
 				//TODO draw stuff in tile (corner at loc)
@@ -373,11 +398,13 @@ public class Map {
 					if ((data[x][y]&IMPASS_BIT) != 0) {
 						drawTileImage(g, rock, loc);
 					} else {
-						drawTileImage(g, grass, loc);
+						if((data[x][y]&CITY_BIT) == 0) {
+							drawTileImage(g, grass, loc);
+						}
 					}
-					if ((data[x][y]&CITY_BIT) != 0) {
-						drawTileImage(g, tents, loc);
-					}
+					//					if ((data[x][y]&CITY_BIT) != 0) {
+					//						drawTileImage(g, tents, loc);
+					//					}
 					if ((data[x][y]&DIRT_ROAD_BIT) != 0) {
 						g.setColor(Color.yellow.darker().darker());
 						g.fillRect((int)loc.x + 20, (int) (loc.y + 20), 20, 20);
@@ -465,4 +492,20 @@ public class Map {
 			return (int) Math.signum(a.weight-b.weight);
 		}
 	};
+	Random r = new Random();
+	public void addNewRandomCity() {
+		Point p = new Point();
+		boolean b = true;
+		do {
+			p.x = r.nextInt(MAP_WIDTH - 4) + 2;
+			p.y = r.nextInt(MAP_HEIGHT - 4) + 2;
+			b = true;
+			for (City c : cities) {
+				if (p.distance(c) < 6) {
+					b = false;
+				}
+			}
+		} while (!b);
+		addCity(p.x, p.y);
+	}
 }

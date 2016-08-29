@@ -47,8 +47,7 @@ public class Resources {
 		} catch (Exception e) {
 			System.err.println("YA DONE MESSED UP A A RON");
 			System.err.println(name);
-			System.exit(0);
-			return null;
+			throw new RuntimeException(name + " not found");
 		}
 	}
 }

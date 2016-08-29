@@ -48,9 +48,12 @@ public class LD36 extends JFrame{
 	OverlayButton addPavedRoad = new OverlayButton(Resources.getImage("icon_road.png"));
 	OverlayButton addCatapalt = new OverlayButton(Resources.getImage("icon_catapult.png"));
 	OverlayButton addAirport = new OverlayButton(Resources.getImage("icon_airport.png"));
-	
+
+	OverlayButton cityName = new OverlayButton("Name: ");
+	Overlay cityPopulation = new Overlay("Pop: ");
+
 	private static final Font moneyFont = new Font("Courier", Font.BOLD, 24);
-	
+
 	Overlay moneyOverlay = new Overlay() {
 		@Override
 		public void draw(Graphics2D g) {
@@ -167,7 +170,7 @@ public class LD36 extends JFrame{
 			if (o==addPavedRoad) road = Road.PAVED;
 			if (o==addRailRoad) road = Road.RAIL;
 			if (road != null) {
-//				System.out.println(e.getModifiers());
+				//				System.out.println(e.getModifiers());
 				if (e.getModifiers()==16 && money > road.cost * map.selectAdd[road.key]) {
 					money -= road.cost * map.selectAdd[road.key];
 					map.buildSelection(road);
@@ -187,6 +190,7 @@ public class LD36 extends JFrame{
 	TechTree techTree = new TechTree();
 	ArrayList<Overlay> activeOverlays = new ArrayList<Overlay>();
 	public double money = 0;
+	public double lifeTimeEarnings = 0;
 
 	MouseAdapter adapter = new MouseAdapter(){
 		public void mouseClicked(MouseEvent e){
@@ -367,57 +371,63 @@ public class LD36 extends JFrame{
 		int fps = 0;
 		int frames = 0;
 		public void run(){
-			while(true){
-				Graphics2D g = buffer.createGraphics();
-				g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-				g.setColor(Color.BLACK);
-				g.fillRect(0, 0, buffer.getWidth(), buffer.getHeight());
-				g.setColor(Color.BLACK);
-				switch(gameState){
-				case MAIN:
-					g.setColor(Color.white);
-					g.drawString("Click To Start", 400, 400);
-					break;
-				case GAME:
-					if(techTree.visible){
-						techTree.draw(g);
+			try {
+				while(true){
+					Graphics2D g = buffer.createGraphics();
+					g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+					g.setColor(Color.BLACK);
+					g.fillRect(0, 0, buffer.getWidth(), buffer.getHeight());
+					g.setColor(Color.BLACK);
+					switch(gameState){
+					case MAIN:
+						g.setColor(Color.white);
+						g.drawString("Click To Start", 400, 400);
+						break;
+					case GAME:
+						if(techTree.visible){
+							techTree.draw(g);
+							bottom.draw(g);
+							break;
+						}
+						map.draw(g);
+						displayCityData();
+
+						//draw everything above the map
+						bottom.setRect(0, buffer.getHeight() - Overlay.BOTTOM_HEIGHT, buffer.getWidth(), Overlay.BOTTOM_HEIGHT);
+						right.setRect(buffer.getWidth() - Overlay.RIGHT_WIDTH, 0, Overlay.RIGHT_WIDTH, buffer.getHeight() - Overlay.BOTTOM_HEIGHT);
+						right.draw(g);
 						bottom.draw(g);
+						//	g.setColor(Color.DARK_GRAY);
+
+						//bottom.setBounds(0, 5*(buffer.getHeight()/6), buffer.getWidth(), buffer.getHeight()/6 +6);
+
+
 						break;
 					}
-					map.draw(g);
 
-					//draw everything above the map
-					bottom.setRect(0, buffer.getHeight() - Overlay.BOTTOM_HEIGHT, buffer.getWidth(), Overlay.BOTTOM_HEIGHT);
-					right.setRect(buffer.getWidth() - Overlay.RIGHT_WIDTH, 0, Overlay.RIGHT_WIDTH, buffer.getHeight() - Overlay.BOTTOM_HEIGHT);
-					right.draw(g);
-					bottom.draw(g);
-					//	g.setColor(Color.DARK_GRAY);
+					g.setColor(Color.RED);
+					g.drawString(fps+" fps", 10, 20);
 
-					//bottom.setBounds(0, 5*(buffer.getHeight()/6), buffer.getWidth(), buffer.getHeight()/6 +6);
+					g.dispose();
+					Graphics g2 = panel.getGraphics();
+					g2.drawImage(buffer, 0, 0, null);
+					g2.dispose();
 
-
-					break;
+					frames++;
+					if(System.currentTimeMillis() - start >= 1000){
+						fps = frames;
+						frames = 0;
+						start = System.currentTimeMillis();
+					}
 				}
-
-				g.setColor(Color.RED);
-				g.drawString(fps+" fps", 10, 20);
-
-				g.dispose();
-				Graphics g2 = panel.getGraphics();
-				g2.drawImage(buffer, 0, 0, null);
-				g2.dispose();
-
-				frames++;
-				if(System.currentTimeMillis() - start >= 1000){
-					fps = frames;
-					frames = 0;
-					start = System.currentTimeMillis();
-				}
+			}catch (Exception e) {
+				e.printStackTrace();
+				System.exit(0);
 			}
 		}
 	};
 	public static double mailValue = .05;
-	public static double populationGrowth = 1.001;
+	public static double populationGrowth = 1.0005;
 	public Thread physics = new Thread(){
 		public void run(){
 			while(true){
@@ -455,9 +465,14 @@ public class LD36 extends JFrame{
 						totalMail += city.getMail();
 					}
 					totalMail *=  mailValue;
-					System.out.println("Mail: " + totalMail);
+					//					System.out.println("Mail: " + totalMail);
 					money += totalMail;
-					System.out.println("Money: " + moneyString(money));
+					lifeTimeEarnings += totalMail;
+
+					if (lifeTimeEarnings > Math.pow(10, map.cities.size() * 2)) {
+						map.addNewRandomCity(); //TODO can we make it scroll to this city?
+					}
+					//					System.out.println("Money: " + moneyString(money));
 				}
 				try {
 					Thread.sleep(10);
@@ -477,6 +492,8 @@ public class LD36 extends JFrame{
 		double GAP = 25;
 
 		double BX = buffer.getWidth() - 7*GAP - 7*BW;
+		double RX = buffer.getWidth() - Overlay.RIGHT_WIDTH;
+
 		clearSelection.setRect(BX, BY, BW, BW);
 		addFootPath.setRect(BX+BW+GAP, BY, BW, BW);
 		addDirtRoad.setRect(BX+2*BW+2*GAP, BY, BW, BW);
@@ -485,6 +502,10 @@ public class LD36 extends JFrame{
 		addPavedRoad.setRect(BX+5*BW+5*GAP,BY,BW,BW);
 		addAirport.setRect(BX+6*BW+6*GAP, BY, BW, BW);
 		moneyOverlay.setRect(220, BY, BX-10, BY);
+
+		cityName.setRect(RX, 0, Overlay.RIGHT_WIDTH, 100);
+		cityPopulation.setRect(RX, 110, Overlay.RIGHT_WIDTH, 80);
+
 
 		bottom.addChild(treeButton);
 		treeButton.setActionListener(new ActionListener(){
@@ -513,6 +534,9 @@ public class LD36 extends JFrame{
 		bottom.addChild(addAirport);
 		bottom.addChild(moneyOverlay);
 
+		right.addChild(cityName);
+		right.addChild(cityPopulation);
+
 		clearSelection.setActionListener(addListener);
 		addFootPath.setActionListener(addListener);
 		addDirtRoad.setActionListener(addListener);
@@ -531,6 +555,14 @@ public class LD36 extends JFrame{
 		techTree.visible = false;
 
 		gameState = State.GAME;
+	}
+	City selectedCity = null;
+	public void displayCityData() {
+		if (selectedCity == null) return;
+		City c = selectedCity;
+		cityName.setText("Name: " + c.name);
+		cityPopulation.setText("Pop: " + moneyString(c.population).substring(1));
+		System.out.println(c.name);
 	}
 
 }
