@@ -57,6 +57,7 @@ public class Overlay extends Rectangle2D.Double implements MouseListener, MouseM
 	}
 	public void addChild(Overlay o){
 		elements.add(o);
+		
 	}
 	public Overlay getEventTarget(MouseEvent e){
 		for(Overlay o : elements){
@@ -100,12 +101,13 @@ public class Overlay extends Rectangle2D.Double implements MouseListener, MouseM
 		Overlay target = getEventTarget(e);
 		if(target != null) target.mouseReleased(e);
 		
+		
 	}
 	@Override
 	public void mouseDragged(MouseEvent e) {
 		Overlay target = getEventTarget(e);
 		if(target != null) target.mouseDragged(e);
-
+		
 		System.out.println("MOVE"+e.getButton());
 		
 	}

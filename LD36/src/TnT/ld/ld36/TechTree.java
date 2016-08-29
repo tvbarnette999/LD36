@@ -591,8 +591,8 @@ public class TechTree extends Overlay{
 			if(scroll > MAX_SCROLL)scroll = MAX_SCROLL;
 		}
 		lastTime = current;
-		
-		g.translate(-scroll,0);
+		System.out.println("TT:"+x+","+y+","+height+","+width);
+		//g.translate(-scroll,0);
 		super.draw(g);
 		Color oc = g.getColor();
 		g.setColor(Color.white);
@@ -608,7 +608,7 @@ public class TechTree extends Overlay{
 //			
 //		}
 		g.setColor(oc);
-		g.translate(scroll, 0);
+		//g.translate(scroll, 0);
 		
 	}
 	
