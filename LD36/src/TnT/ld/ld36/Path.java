@@ -6,6 +6,7 @@ import java.util.LinkedList;
 
 public class Path {
 	LinkedList<Point> points = new LinkedList<Point>();
+	LinkedList<Point> reversePoints = new LinkedList<Point>();
 
 	// divide transport.scalar by path length for #/time
 	public int length() {
@@ -40,6 +41,6 @@ public class Path {
 	}
 
 	public Iterator<Point> getBackIt() {
-		return null;
+		return reversePoints.iterator();
 	}
 }
