@@ -361,6 +361,12 @@ public class LD36 extends JFrame{
 				if (e.isShiftDown()) {
 					money *= 2;
 				}
+				break;
+			case KeyEvent.VK_PRINTSCREEN:
+				if (e.isShiftDown()) {
+					map.scrollTo(map.getTileCenter(map.addNewRandomCity()));
+				}
+				break;
 			}
 		}
 	};
@@ -511,7 +517,7 @@ public class LD36 extends JFrame{
 					lifeTimeEarnings += totalMail;
 
 					if (lifeTimeEarnings > Math.pow(10, map.cities.size() * 2)) {
-						map.addNewRandomCity(); //TODO can we make it scroll to this city?
+						map.scrollTo(map.getTileCenter(map.addNewRandomCity()));
 					}
 					//					System.out.println("Money: " + moneyString(money));
 				}
