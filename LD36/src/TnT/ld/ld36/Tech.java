@@ -70,6 +70,9 @@ public class Tech extends OverlayButton implements ActionListener{
 			if(o == City.class){
 				City.literacy *= value;
 			}
+			if(o == LD36.theLD){
+				LD36.theLD.money = value;
+			}
 		}
 		LD36.theLD.money-=cost;
 		

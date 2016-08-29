@@ -55,7 +55,7 @@ public class TechTree extends Overlay{
 	static Tech cartography = new Tech("Cartography", "Maps are good", 1);
 	static Tech medicine = new Tech("Medicine", "Heal sick runners and horses, instead of shoot them!", 1.1, Transport.RUNNER, Transport.HORSE, Transport.CARAVAN, Transport.CARRIAGE);
 	//static Tech literacy = new Tech("Literacy", "");
-	static Tech steel = new Tech("Steel", "Stronger than iron, leads to way cooler stuff", 1);
+	static Tech steel = new Tech("Steel", "Stronger than iron, leads to way cooler stuff. (Like railroads)", 1);
 	//static Tech steelFarm = new Tech("Steel Farm Equipment", "");
 	static Tech math = new Tech("Math", "42", 1);
 	static Tech carriage = new Tech("Horse Drawn Carriage", "Way more space to store stuff", Transport.CARRIAGE_TYPE, Transport.CARRIAGE);
@@ -64,60 +64,60 @@ public class TechTree extends Overlay{
 	static Tech twoHorse = new Tech("Two Horse Carriage", "Bouble the horses doubles the speed.", 2, Transport.CARRIAGE);
 	static Tech caravan = new Tech("Caravan", "Groups of carriages carry way more", Transport.CARRIAGE_TYPE, Transport.CARAVAN);
 	//static Tech lanterns = new Tech("Lanterns", "");
-	static Tech steam = new Tech("Steam", "", 1);
-	static Tech engineering = new Tech("Engineering", "", 1);
-	static Tech catapult = new Tech("Catapult", "", 1);
-	static Tech biggerCatapult = new Tech("BIGGER Catapult", "Bigger is better", 1);
-	static Tech tension = new Tech("High Tension Rope", "", 1);
-	static Tech onager = new Tech("Onager", "", 1);
-	static Tech shaftMining = new Tech("Shaft Mining", "", 1);
-	static Tech metallurgy = new Tech("Metallurgy", "", 1);
-	static Tech engine = new Tech("Engine", "", 1);
-	static Tech railroad = new Tech("Rail Roads", "", Transport.TRAIN_TYPE, Transport.TRAIN, Road.RAIL);
-	static Tech modernScience = new Tech("Modern Science", "", 1);
-	static Tech steroids= new Tech("Steroids", "", 1);
-	static Tech horseSteroids = new Tech("Horse Steroids", "", 1);
-	static Tech printPress = new Tech("Printing Press", "", 1);
-	static Tech method = new Tech("Scientific Method", "", 1);
-	static Tech fossil = new Tech("Fossil Fuels", "", 1);
-	static Tech combustion = new Tech("Combustion Engine", "", 1);
-	static Tech coal = new Tech("Coal", "",1, 1);
-	static Tech locomotive = new Tech("Locomotive", "",1);
-	static Tech longTrains = new Tech("Long Trains" , "",1);
-	static Tech cowCatchers = new Tech("Cow Catchers", "",1);
-	static Tech electricity = new Tech("Electricity", "",1);
-	static Tech oil=  new Tech("Oil", "",1);
-	static Tech asphault = new Tech("Asphault", "",1);
-	static Tech paved = new Tech("Paved Road", "",1);
-	static Tech cars = new Tech("Cars", "",1);
-	static Tech gasoline = new Tech("Gasoline", "",1);
-	static Tech diesel = new Tech("Diesel", "",1);
-	static Tech jetFuel = new Tech("Jet Fuel", "",1);
-	static Tech beams = new Tech("Steel Beams", "",1);
-	static Tech aerodynamics = new Tech("Aerodynamics", "",1);
-	static Tech aviation = new Tech("Aviation", "",1);
-	static Tech airplanes = new Tech("Airplanes", "",1);
-	static Tech airports = new Tech("Airports", "",1);
+	static Tech steam = new Tech("Steam", "Energy source for science", 1);
+	static Tech engineering = new Tech("Engineering", "Build really cool stuff", 1);
+	static Tech catapult = new Tech("Catapult", "Wheeeeeeeeeeee!", 1); //TODO CATAPULTS!*******************************************************
+	static Tech biggerCatapult = new Tech("BIGGER Catapult", "Bigger is better", 1.5, Transport.CATAPAULT);
+	static Tech tension = new Tech("High Tension Rope", "Shoot further", 2, Transport.CATAPAULT_RANGE);
+	static Tech onager = new Tech("Onager", "Bigger payload and higher distance", 2, Transport.CATAPAULT_RANGE, Transport.CATAPAULT);
+	static Tech shaftMining = new Tech("Shaft Mining", "Its mining. With shafts.", 1);
+	static Tech metallurgy = new Tech("Metallurgy", "Almost to railroads!", 1);
+	static Tech engine = new Tech("Engine", "Make things happen", 1);
+	static Tech railroad = new Tech("Rail Roads", "CHOO CHOO!!!", Transport.TRAIN_TYPE, Transport.TRAIN, Road.RAIL);
+	static Tech modernScience = new Tech("Modern Science", "Science, Biatch!", 1);
+	static Tech steroids= new Tech("Steroids", "Enhances performance by 300%.", 3, Transport.RUNNER);
+	static Tech horseSteroids = new Tech("Horse Steroids", "Enhances horse performance by 300%", 3, Transport.HORSE, Transport.CARAVAN, Transport.CARRIAGE);
+	static Tech printPress = new Tech("Printing Press", "Messages are produced way quicker", 2, City.literacy);
+//	static Tech method = new Tech("Scientific Method", "", 1);
+	static Tech fossil = new Tech("Fossil Fuels", "Yay pollution!", 1);
+	static Tech combustion = new Tech("Combustion Engine", "Much more powerful engines", 1);
+	static Tech coal = new Tech("Coal", "Better fuel for trains, increase speed by 20%",1.2, Transport.TRAIN);
+	static Tech locomotive = new Tech("Locomotive", "Powerful train that can haul 50% more",1.5, Transport.TRAIN);
+	static Tech longTrains = new Tech("Long Trains" , "Longer trains carry more mail",1.5, Transport.TRAIN);
+	static Tech cowCatchers = new Tech("Cow Catchers", "Gets stuff out of the way, increasing speed by 10%",1.1, Transport.TRAIN);
+	static Tech electricity = new Tech("Electricity", "It Glows!",1);
+	static Tech oil=  new Tech("Oil", "Drill Everywhere!",1);
+	static Tech asphault = new Tech("Asphault", "Way better than dirt.",1);
+	static Tech paved = new Tech("Paved Road", "Unlocks Paved Roads",1);
+	static Tech cars = new Tech("Cars", "Can transport way more than caravans. Need paved roads",Transport.CAR_TYPE, Transport.CAR);
+	static Tech gasoline = new Tech("Gasoline", "Important fuel",1);
+	static Tech diesel = new Tech("Diesel", "Better fuel",1);
+	static Tech jetFuel = new Tech("Jet Fuel", "High quality fuel. Might can use it in the future.",1);
+	static Tech beams = new Tech("Steel Beams", "Do they melt?",1);
+	static Tech aerodynamics = new Tech("Aerodynamics", "Speeds up cars and trains by 10%.",1.1, Transport.CAR, Transport.TRAIN, Transport.SEMI, Transport.TRUCK);
+	static Tech aviation = new Tech("Aviation", "Flying looks cool",1);
+	static Tech airplanes = new Tech("Airplanes", "Flying is fun!",1);
+	static Tech airports = new Tech("Airports", "Unlocks Airports. Can only be built in cities.",1);
 	
-	static Tech dieselTrain = new Tech("Diesel Locomotive", "",1);
-	static Tech trucks = new Tech("Trucks", "",1);
-	static Tech powerLines = new Tech("Power Lines", "",1);
-	static Tech electricTrain = new Tech("Electric Trains", "",1);
-	static Tech bulletTrain = new Tech("Bullet Train", "",1);
-	static Tech battery = new Tech("Batteries", "",1);
-	static Tech semi = new Tech("Semi-Trailer Truck", "",1);
-	static Tech electricCar = new Tech("Electric Car", "",1);
+	static Tech dieselTrain = new Tech("Diesel Locomotive", "Faster by 10%",1.1, Transport.TRAIN);
+	static Tech trucks = new Tech("Trucks", "Haul twice as much as cars",Transport.CAR_TYPE, Transport.TRUCK);
+	static Tech powerLines = new Tech("Power Lines", "Zap!",1);
+	static Tech electricTrain = new Tech("Electric Trains", "20% more efficient",1.2, Transport.TRAIN);
+	static Tech bulletTrain = new Tech("Bullet Train", "Twice as fast as electric trains",2, Transport.TRAIN);
+	static Tech battery = new Tech("Batteries", "Road vehicles can run longer",1.2, Transport.CAR, Transport.TRAIN, Transport.SEMI, Transport.TRUCK);
+	static Tech semi = new Tech("Semi-Trailer Truck", "Carries 10x as much as trucks", Transport.CAR_TYPE, Transport.SEMI);
+	static Tech electricCar = new Tech("Electric Car", "More efficient that gas",1.2, Transport.CAR,Transport.TRUCK , Transport.SEMI);
 	
-	static Tech EPA = new Tech("EPA", "",1);
-	static Tech efficiency= new Tech("Fuel Efficiency", "",1);
+	static Tech EPA = new Tech("EPA", "Demands fuel efficiency",1.2, Transport.CAR, Transport.TRUCK, Transport.SEMI);
+	static Tech efficiency= new Tech("Fuel Efficiency", "Regulations require even more efficiency. ",1.2, Transport.CAR, Transport.TRUCK, Transport.SEMI);
 	
-	static Tech AI = new Tech("AI", "",1);
+	static Tech AI = new Tech("AI", "Its not self aware. Yet.",1);
 	
-	static Tech selfCar = new Tech("Self Driving Car", "",1);
-	static Tech selfTrain = new Tech("Self Driving Train", "",1);
-	static Tech selfPlane = new Tech("AutoPilot", "",1);
+	static Tech selfCar = new Tech("Self Driving Car", "Twice as efficient",2, Transport.CAR, Transport.TRUCK, Transport.SEMI);
+	static Tech selfTrain = new Tech("Self Driving Train", "Twice as efficient",2, Transport.TRAIN);
+	static Tech selfPlane = new Tech("AutoPilot", "Twice as efficient",2, Transport.PLANE);
 	
-	static Tech singularity = new Tech("Singularity", "Machines take over. ", 1);
+	static Tech singularity = new Tech("Singularity", "Machines take over. Mail is no longer needed. Have infinite Money", java.lang.Double.POSITIVE_INFINITY, LD36.theLD);
 	//TODO research inflation. you make more monezzz
 	//reseach capitalism
 	//static Tech onagers = new Tech("Onagers", "Increases catapault range by 20%",  Transport.CATAPAULT_RANGE);
@@ -196,7 +196,7 @@ public class TechTree extends Overlay{
 		horseSteroids.row = 3;
 		
 		printPress.row = 2;
-		method.row = 2;
+//		method.row = 2;
 		fossil.row = 2;
 		electricity.row = 2;
 		oil.row = 2;
@@ -347,8 +347,8 @@ public class TechTree extends Overlay{
 		//Train steroids?
 		
 		printPress.addParent(engineering);
-		method.addParent(printPress);
-		fossil.addParent(method);
+//		method.addParent(printPress);
+		fossil.addParent(printPress);
 		
 		combustion.addParent(engine);
 		combustion.addParent(fossil);

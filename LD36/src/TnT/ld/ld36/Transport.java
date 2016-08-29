@@ -10,7 +10,7 @@ public class Transport {
 	public static Transport CARAVAN = new Transport("Caravan", 1000, Map.DIRT_ROAD_BIT | Map.PAVED_ROAD_BIT);
 	public static Transport CATAPAULT = new Transport("Catapult", 1000, Map.CITY_BIT);
 	public static Transport CAR = new Transport("Car", 10000, Map.PAVED_ROAD_BIT);
-	public static Transport TRUCK = new Transport("Truck", 100000, Map.PAVED_ROAD_BIT);
+	public static Transport TRUCK = new Transport("Truck",10000 , Map.PAVED_ROAD_BIT);
 	public static Transport SEMI = new Transport("Semi", 1000000, Map.PAVED_ROAD_BIT);
 	public static Transport PLANE = new Transport("Airplane", 10000000, Map.CITY_BIT);
 	public static Transport JET = new Transport("Jumbo Jet", 100000000, Map.CITY_BIT);
