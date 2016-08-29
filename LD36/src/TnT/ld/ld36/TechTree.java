@@ -17,12 +17,12 @@ public class TechTree extends Overlay{
 	static ArrayList<Tech> heads = new ArrayList<Tech>();
 	
 	//instantiate all the techs here, pass them the list of ones they affect
-	static Tech sandals = new Tech("Sandals", "Increase Runner speed by 10%.", 1.1, Transport.RUNNER);
+	static Tech sandals = new Tech("Sandals", "Increase Runner speed by 50%.", 1.5, Transport.RUNNER);
 	static Tech shoeLaces = new Tech("Shoe Laces", "Keeps runners shoes from coming off, doubling speed", 2, Transport.RUNNER);
-	static Tech shoes = new Tech("Shoes", "Increases Runner Speed by 10%.", 1.1, Transport.RUNNER);
-	static Tech agriculture = new Tech("Agriculture", "Better Food Increases Runner payload by 20%", 1.2, Transport.RUNNER);
+	static Tech shoes = new Tech("Shoes", "Increases Runner Speed by 30%.", 1.3, Transport.RUNNER);
+	static Tech agriculture = new Tech("Agriculture", "Better Food Increases Runner payload by 40%", 1.4, Transport.RUNNER);
 	static Tech paper = new Tech("Paper", "Messages on paper weight less than stone, tripling Runner payload", 3.0, Transport.RUNNER);
-	static Tech ink = new Tech("Ink", "Ink allows more people to write letters", 2, City.class);
+	static Tech ink = new Tech("Ink", "Ink allows more people to write letters", 2.2, City.class);
 	static Tech husbandry = new Tech("Husbandry", "Allows research into horses", 0);
 	static Tech mining = new Tech("Mining", "Allows aquisition of metal",1);
 	static Tech metal = new Tech("Metal", "Oooooh! Shiny!",1);
@@ -42,7 +42,7 @@ public class TechTree extends Overlay{
 	static Tech dirtRoad = new Tech("Dirt Roads", "Easier for all units to traverse",1, Road.DIRT);
 	
 	
-	static Tech olympics = new Tech("Olympics", "Competitive Running!", 1.1, Transport.RUNNER );
+	static Tech olympics = new Tech("Olympics", "Competitive Running!", 3.1, Transport.RUNNER );
 	static Tech relays = new Tech("Relays", "Runner better at delivering things.", 1.1, Transport.RUNNER);
 	static Tech carrot = new Tech("Carrot on a Stick", "Motivated horses to move faster", 1.2, Transport.HORSE, Transport.CARRIAGE, Transport.CARAVAN);
 	static Tech spurs = new Tech("Spurs", "Better control of horses", 1.1, Transport.HORSE);
@@ -74,7 +74,7 @@ public class TechTree extends Overlay{
 	static Tech metallurgy = new Tech("Metallurgy", "Almost to railroads!", 1);
 	static Tech engine = new Tech("Engine", "Make things happen", 1);
 	static Tech railroad = new Tech("Rail Roads", "CHOO CHOO!!!", Transport.TRAIN_TYPE, Transport.TRAIN, Road.RAIL);
-	static Tech modernScience = new Tech("Modern Science", "Science, Biatch!", 1);
+	static Tech modernScience = new Tech("Modern Science", "Vastly different from Scientology", 1);
 	static Tech steroids= new Tech("Steroids", "Enhances performance by 300%.", 3, Transport.RUNNER);
 	static Tech horseSteroids = new Tech("Horse Steroids", "Enhances horse performance by 300%", 3, Transport.HORSE, Transport.CARAVAN, Transport.CARRIAGE);
 	static Tech printPress = new Tech("Printing Press", "Messages are produced way quicker", 2, City.literacy);
@@ -409,6 +409,33 @@ public class TechTree extends Overlay{
 		gym.cost = 3000;
 		weights.cost = 4000;
 		
+		dirtRoad.cost = 6000;
+		
+		metalRims.cost = 2.1e6;
+		
+		smootherRoads.cost = 10.2e6;
+		
+		ditches.cost = 15e6;
+		lighterCarriage.cost = 4.8e6;
+		twoHorse.cost = 24e6;
+		
+		math.cost = 42e6;
+		ironHorseShoes.cost = 20e6;
+		iron.cost = 30e6;
+		
+		caravan.cost = 33e6;
+		
+		steam.cost = 50e6;
+		cartography.cost = 60e6;
+		modernScience.cost = 500e6;
+		catapult.cost = 1e8;
+		medicine.cost = 1e7;
+		biggerCatapult.cost = 5e8;
+		
+		shaftMining.cost = 50e7;
+		
+		metallurgy.cost = 50e8;
+		
 		wheel.cost = 2600;
 		
 		
@@ -436,6 +463,93 @@ public class TechTree extends Overlay{
 		smithing.cost = 5e6;
 		carrot.cost = 3.5e6;
 		spurs.cost = 5e6;
+		
+		engineering.cost = 1e9;
+		
+		steroids.cost = 9.99e10;
+		
+		tension.cost = 2e9;
+		printPress.cost = 9e9;
+		
+		steel.cost = metallurgy.cost * 15.9;
+		
+		engine.cost = printPress.cost * 25;
+		
+		fossil.cost = (steel.cost + engine.cost) * 1.25;
+		
+		horseSteroids.cost = steroids.cost * horses.cost * 10;
+		
+		onager.cost = tension.cost * tension.cost;
+		
+		electricity.cost = fossil.cost * 12.5;
+		
+		railroad.cost = electricity.cost * horses.cost * 10;
+		
+		combustion.cost = (fossil.cost + engine.cost) * 50;
+		
+		asphault.cost = (horses.cost * railroad.cost) * 20;
+		
+		oil.cost = iron.cost * metal.cost * metallurgy.cost;
+		
+		coal.cost = Math.abs(oil.cost - asphault.cost * 1.5);
+		
+		locomotive.cost = coal.cost * railroad.cost;
+		
+		paved.cost = railroad.cost * asphault.cost;
+		
+		gasoline.cost = asphault.cost * oil.cost;
+		
+		jetFuel.cost = oil.cost * gasoline.cost * 12;
+		
+		longTrains.cost = locomotive.cost * engine.cost * horses.cost;
+		
+		diesel.cost = oil.cost * locomotive.cost;
+		
+		cars.cost = diesel.cost * paved.cost;
+		
+		beams.cost = jetFuel.cost * metallurgy.cost / 20;
+		
+		cowCatchers.cost = longTrains.cost * horses.cost;
+		
+		powerLines.cost = electricity.cost * paved.cost;
+		
+		trucks.cost = cars.cost * 15;
+		
+		semi.cost = trucks.cost * 100;
+		
+		aerodynamics.cost = beams.cost * 4.26;
+		
+		dieselTrain.cost = locomotive.cost  * diesel.cost;
+		
+		battery.cost = powerLines.cost * paved.cost;
+		
+		EPA.cost = diesel.cost * diesel.cost;
+		
+		aviation.cost = aerodynamics.cost * paved.cost * 12;
+		
+		electricTrain.cost = powerLines.cost * locomotive.cost;
+		
+		AI.cost = battery.cost * sandals.cost * sandals.cost;
+		
+		electricCar.cost = EPA.cost * sandals.cost * saddles.cost;
+		
+		efficiency.cost = EPA.cost * 100;
+		
+		airplanes.cost = aviation.cost * saddles.cost;
+		
+		airports.cost = airplanes.cost * paved.cost;
+		
+		selfCar.cost = (AI.cost + electricCar.cost) * 12.6;
+		
+		bulletTrain.cost = (electricTrain.cost + dieselTrain.cost) * 100;
+		
+		selfTrain.cost = AI.cost * bulletTrain.cost;
+		
+		selfPlane.cost = airplanes.cost * AI.cost;
+		
+		singularity.cost = Math.pow(AI.cost, 2.5) ;
+		
+		
 		
 		
 	}

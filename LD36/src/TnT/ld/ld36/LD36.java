@@ -51,6 +51,17 @@ public class LD36 extends JFrame{
 
 	OverlayButton cityName = new OverlayButton("Name: ");
 	Overlay cityPopulation = new Overlay("Pop: ");
+	boolean boosted = true;
+	OverlayButton increase = new OverlayButton("Write Mail for City") {
+		@Override
+		public void mousePressed(MouseEvent e) {
+			boosted = true;
+		}
+		@Override
+		public void mouseReleased(MouseEvent e) {
+			boosted = false;
+		}
+	};
 
 	private static final Font moneyFont = new Font("Courier", Font.BOLD, 24);
 
@@ -61,7 +72,9 @@ public class LD36 extends JFrame{
 			g.setFont(moneyFont);
 			Color c = g.getColor();
 			g.setColor(Color.black);
-			g.drawString(moneyString(money), (int) x, (int) (y + moneyFont.getSize() * 1.5));
+			String mon;
+			g.drawString(mon = moneyString(money), (int) x, (int) (y + moneyFont.getSize() * 1.5));
+			g.drawString(moneyString(moneyPerTick), (int) x + Math.max(g.getFontMetrics().stringWidth(mon) + 50, 150), (int) (y + moneyFont.getSize() * 1.5));
 			g.setColor(c);
 			g.setFont(f);
 		}
@@ -428,6 +441,9 @@ public class LD36 extends JFrame{
 	};
 	public static double mailValue = .05;
 	public static double populationGrowth = 1.0005;
+	public static long tick = 0;
+	public static double moneyPerTick;
+	public static long POP_BUMP = 1000; //every 100 s
 	public Thread physics = new Thread(){
 		public void run(){
 			while(true){
@@ -438,6 +454,11 @@ public class LD36 extends JFrame{
 					for (int i = 0; i < map.cities.size(); i++) {
 						City c = map.cities.get(i);
 						c.population *= populationGrowth;
+						if (tick++ % POP_BUMP == 0) {
+							for (int v = 0; v < 10; v++) {
+								c.population *= populationGrowth;
+							}
+						}
 						for (int j = 0; j < c.paths.size(); j++) {
 							double cap = 0;
 							Path[] paths = c.paths.get(j);
@@ -447,17 +468,18 @@ public class LD36 extends JFrame{
 									cap += current.scalar / paths[t].length();
 								}
 							}
-							c.rateCapacity.set(j, cap);
+							c.rateCapacity.set(j, (c == selectedCity && boosted ? 1.2 : 1) * cap);
 						}
 					}
 
 					//calculate desired rate for each city
 					int totalPop = 0;
 					for (int i = 0; i < map.cities.size(); i++) totalPop += map.cities.get(i).population;
+					double litFactor = Math.pow(City.literacy + 1, 2.75);
 					for (int i = 0; i < map.cities.size(); i++) {
 						City c = map.cities.get(i);
 						for (int j = 0; j < c.desiredRate.size(); j++) {
-							c.desiredRate.set(j, City.literacy * (double) (c.population/(totalPop-c.population)*map.cities.get(j+(j>=i?1:0)).population));
+							c.desiredRate.set(j, (c == selectedCity && boosted ? 1.2 : 1) * litFactor * (double) (c.population/(totalPop-c.population)*map.cities.get(j+(j>=i?1:0)).population));
 						}
 					}
 					double totalMail = 0;
@@ -466,6 +488,7 @@ public class LD36 extends JFrame{
 					}
 					totalMail *=  mailValue;
 					//					System.out.println("Mail: " + totalMail);
+					moneyPerTick = totalMail;
 					money += totalMail;
 					lifeTimeEarnings += totalMail;
 
@@ -505,6 +528,7 @@ public class LD36 extends JFrame{
 
 		cityName.setRect(RX, 0, Overlay.RIGHT_WIDTH, 100);
 		cityPopulation.setRect(RX, 110, Overlay.RIGHT_WIDTH, 80);
+		increase.setRect(RX, buffer.getHeight() - Overlay.BOTTOM_HEIGHT - 60 , Overlay.RIGHT_WIDTH, 50);
 
 
 		bottom.addChild(treeButton);
@@ -536,6 +560,7 @@ public class LD36 extends JFrame{
 
 		right.addChild(cityName);
 		right.addChild(cityPopulation);
+		right.addChild(increase);
 
 		clearSelection.setActionListener(addListener);
 		addFootPath.setActionListener(addListener);
@@ -562,7 +587,6 @@ public class LD36 extends JFrame{
 		City c = selectedCity;
 		cityName.setText("Name: " + c.name);
 		cityPopulation.setText("Pop: " + moneyString(c.population).substring(1));
-		System.out.println(c.name);
 	}
 
 }

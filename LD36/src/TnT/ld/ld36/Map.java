@@ -395,12 +395,15 @@ public class Map {
 		for (int x = startX; x <= endX; x++) {
 			for (int y = startY; y <= endY; y++) {
 				//TODO draw stuff in tile (corner at loc)
-				if (x >= 0 && x < MAP_WIDTH && y >= 0 && y < MAP_HEIGHT) {
+				d:if (x >= 0 && x < MAP_WIDTH && y >= 0 && y < MAP_HEIGHT) {
+
 					if ((data[x][y]&IMPASS_BIT) != 0) {
 						drawTileImage(g, rock, loc);
 					} else {
 						if((data[x][y]&CITY_BIT) == 0) {
 							drawTileImage(g, grass, loc);
+						} else {
+							break d;
 						}
 					}
 					//					if ((data[x][y]&CITY_BIT) != 0) {
