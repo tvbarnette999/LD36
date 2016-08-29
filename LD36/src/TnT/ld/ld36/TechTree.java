@@ -88,7 +88,7 @@ public class TechTree extends Overlay{
 	static Tech electricity = new Tech("Electricity", "It Glows!",20, City.class);
 	static Tech oil=  new Tech("Oil", "Drill Everywhere!",4, Transport.TRAIN, Transport.CAR, Transport.PLANE);
 	static Tech asphault = new Tech("Asphault", "Way better than dirt.",25, Transport.CAR);
-	static Tech paved = new Tech("Paved Road", "Unlocks Paved Roads",2.5, Transport.CAR, Transport.RUNNER, Transport.CARAVAN, Transport.CARRIAGE, Transport.HORSE);
+	static Tech paved = new Tech("Paved Road", "Unlocks Paved Roads", 1, Road.PAVED);
 	static Tech cars = new Tech("Cars", "Can transport way more than caravans. Need paved roads",Transport.CAR_TYPE,Transport.currentUnits, Transport.CAR);
 	static Tech gasoline = new Tech("Gasoline", "Important fuel",5, Transport.CAR);
 	static Tech diesel = new Tech("Diesel", "Better fuel", 3, Transport.CAR);
@@ -96,7 +96,7 @@ public class TechTree extends Overlay{
 	static Tech beams = new Tech("Steel Beams", "Do they melt?",3.987, City.class);
 	static Tech aerodynamics = new Tech("Aerodynamics", "Speeds up cars and trains by 10%.",1.1, Transport.CAR, Transport.TRAIN, Transport.SEMI, Transport.TRUCK);
 	static Tech aviation = new Tech("Aviation", "Flying looks cool",1.2, City.class);
-	static Tech airplanes = new Tech("Airplanes", "Flying is fun!",1.2, City.class);
+	static Tech airplanes = new Tech("Airplanes", "Flying is fun!",Transport.PLANE_TYPE, Transport.currentUnits, Transport.PLANE);
 	static Tech airports = new Tech("Airports", "Unlocks Airports. Can only be built in cities.",1, Road.AIRPORT);
 	
 	static Tech dieselTrain = new Tech("Diesel Locomotive", "Faster by 10%",1.1, Transport.TRAIN);
