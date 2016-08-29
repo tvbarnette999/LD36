@@ -288,7 +288,9 @@ public class LD36 extends JFrame{
 				//handle anything above the map here, then forward to the map
 				for(Overlay o :activeOverlays){
 					if(!o.visible) continue;
-					if(o.contains(e.getPoint())) return;
+					if(o.contains(e.getPoint())){
+						o.mouseDragged(e);
+					};
 				}
 				map.mouseDragged(e);
 			}

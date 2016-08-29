@@ -105,6 +105,8 @@ public class Overlay extends Rectangle2D.Double implements MouseListener, MouseM
 	public void mouseDragged(MouseEvent e) {
 		Overlay target = getEventTarget(e);
 		if(target != null) target.mouseDragged(e);
+
+		System.out.println("MOVE"+e.getButton());
 		
 	}
 	@Override
