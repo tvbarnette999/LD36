@@ -62,6 +62,10 @@ public class LD36 extends JFrame{
 		public void mouseReleased(MouseEvent e) {
 			boosted = false;
 		}
+		@Override
+		public void mouseExited(MouseEvent e) {
+			mouseReleased(e);
+		}
 	};
 
 	private static final Font moneyFont = new Font("Courier", Font.BOLD, 24);
@@ -335,6 +339,7 @@ public class LD36 extends JFrame{
 				break;
 			case KeyEvent.VK_ESCAPE:
 				if(treeButton.callback != null && techTree.visible)treeButton.callback.actionPerformed(new ActionEvent(treeButton, 0 ,""));
+				else map.clearSelection();
 			}
 		}
 
@@ -443,6 +448,7 @@ public class LD36 extends JFrame{
 						g.drawString(Arrays.toString(Transport.currentUnits), 200, 15);
 						g.drawString(Arrays.toString(Transport.debug()), 200, 30);
 						g.drawString("lit:"+City.literacy, 100,15);
+						g.drawString("lifetime: " + moneyString(lifeTimeEarnings), 100, 40);
 					}
 					
 					g.dispose();
