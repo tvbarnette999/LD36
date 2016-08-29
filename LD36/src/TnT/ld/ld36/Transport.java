@@ -1,5 +1,7 @@
 package TnT.ld.ld36;
 
+import java.awt.image.BufferedImage;
+
 public class Transport {
 	
 	//given no upgrades, on a path of the same length, how many should each unit be able to
@@ -22,6 +24,8 @@ public class Transport {
 	// units used for pathfinding
 	public static final Transport[] baseUnits = {RUNNER, HORSE, CARRIAGE, CAR, TRAIN};
 	public static Transport[] currentUnits = {RUNNER, null, null, null, null, null, null};
+	
+	public BufferedImage[] images = {Resources.getImage("footprint.png"), /* HORSES GO HERE*/null, Resources.getImage("carriage.png"), Resources.getImage("car.png"), Resources.getImage("truck.png"), Resources.getImage("train.png") };
 	
 	public static final int RUNNER_TYPE = 0;
 	public static final int HORSE_TYPE = 1;

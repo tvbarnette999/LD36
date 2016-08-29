@@ -69,6 +69,7 @@ public class Map {
 	public static final byte AIRPORT_BIT = 64;
 
 	Vector<Point> selection = new Vector<Point>();
+	Vector<Sprite> anims = new Vector<Sprite>();
 	int[] selectAdd = new int[Road.roads.length];
 	int[] selectRemove = new int[Road.roads.length];
 	

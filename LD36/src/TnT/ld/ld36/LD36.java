@@ -524,13 +524,24 @@ public class LD36 extends JFrame{
 
 					//calculate desired rate for each city
 					int totalPop = 0;
-					for (int i = 0; i < map.cities.size(); i++) totalPop += map.cities.get(i).population;
+					for (int i = 0; i < map.cities.size(); i++) {
+						totalPop += map.cities.get(i).population;
+					}
 					for (int i = 0; i < map.cities.size(); i++) {
 						City c = map.cities.get(i);
 						for (int j = 0; j < c.desiredRate.size(); j++) {
 							c.desiredRate.set(j, (c == selectedCity && boosted ? 1.2 : 1) * litFactor * (double) (c.population/(totalPop-c.population)*map.cities.get(j+(j>=i?1:0)).population));
 						}
 					}
+					//animate sprites
+					
+					for (int i = 0; i < map.anims.size(); i++) {
+						map.anims.get(i).tick();
+						if (map.anims.get(i).isDone()) {
+							map.anims.remove(i--);
+						}
+					}
+					
 					double totalMail = 0;
 					for (City city : map.cities) {
 						totalMail += city.getMail();
