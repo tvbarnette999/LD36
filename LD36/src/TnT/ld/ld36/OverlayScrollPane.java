@@ -3,6 +3,7 @@ package TnT.ld.ld36;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
 public class OverlayScrollPane extends Overlay{
@@ -51,7 +52,7 @@ public class OverlayScrollPane extends Overlay{
 		if(hactive){
 			//do the stuff
 			hbar.x = e.getX()-hoffset;
-			hscroll =  (hmaxscroll * (hbar.x/(this.width-hbar.width)));
+			calculateScroll();
 			return;
 		}
 		inner.mouseDragged(e);
@@ -61,10 +62,25 @@ public class OverlayScrollPane extends Overlay{
 		inner.mouseMoved(new MouseEvent(e.getComponent(), e.getID(), e.getWhen(), e.getModifiers(), e.getX()+(int)hscroll, e.getY(), e.getXOnScreen(), e.getYOnScreen(), e.getClickCount(), e.isPopupTrigger(), e.getButton()));
 		
 	}
+	public void calculateScroll(){
+
+		hscroll =  (hmaxscroll * (hbar.x/(this.width-hbar.width)));
+	}
 	public Dimension innerSize(){
 		return new Dimension((int)this.width,(int)( this.height-hbar.height));
 	}
 	public void draw(Graphics2D g){
+		
+		if(LD36.theLD.rightPressed && !hactive ){
+			hbar.x +=5;
+			calculateScroll();
+			
+		}
+		else if(LD36.theLD.left && !hactive){
+			hbar.x -=5;
+			calculateScroll();
+		}
+		
 		Color oc = g.getColor();
 		
 		//hideclass oe in case it changes
