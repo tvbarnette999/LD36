@@ -120,7 +120,7 @@ public class Tech extends OverlayButton implements ActionListener{
 		int sy = (int) (y+40);
 		FontMetrics fm = g.getFontMetrics();
 		for(String s : split){
-			if(fm.stringWidth(s) >= (x+width) - sx ){
+			if(fm.stringWidth(s) >= (x+width) - sx || s.contains("\n")){
 				//next line
 				sy += 3.0*fm.getHeight()/4.0;
 				sx = (int) (this.x+5);
