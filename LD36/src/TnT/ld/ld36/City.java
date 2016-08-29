@@ -67,4 +67,14 @@ public class City extends Point {
 	public Point2D.Double p() {
 		return new Point2D.Double(x, y);
 	}
+	
+	@Override
+	public boolean equals(Object other) {
+		return super.equals(other);
+	}
+	
+	@Override
+	public int hashCode() {
+		return super.hashCode();
+	}
 }
