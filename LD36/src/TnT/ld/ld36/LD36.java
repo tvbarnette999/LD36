@@ -208,7 +208,7 @@ public class LD36 extends JFrame{
 					map.clearSelection();
 				}
 			} else if (o==addCatapalt) {
-
+				
 			} else if (o==addAirport) {
 
 			}

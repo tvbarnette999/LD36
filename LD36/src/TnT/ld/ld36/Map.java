@@ -72,6 +72,7 @@ public class Map {
 	Vector<Sprite> anims = new Vector<Sprite>();
 	int[] selectAdd = new int[Road.roads.length];
 	int[] selectRemove = new int[Road.roads.length];
+	int selectAddAirport, selectRemoveAirport, selectAddCatapult, selectRemoveCatapult;
 	
 	ArrayList<HelpPopup> helps = new ArrayList<HelpPopup>();
 
@@ -150,6 +151,15 @@ public class Map {
 						if ((d&r.mask)==0) selectAdd[r.key]++;
 						else selectRemove[r.key]++;
 					}
+				} else if ((d&CITY_BIT) != 0) {
+					for (int i = 0; i < cities.size(); i++) {
+						if (tile.equals(cities.get(i))) {
+							if (cities.get(i).airport) selectRemoveAirport++;
+							else selectAddAirport++;
+							if (cities.get(i).catapults > 0) selectRemoveCatapult++;
+							selectAddCatapult++;
+						}
+					}
 				}
 			}
 		}
@@ -165,6 +175,15 @@ public class Map {
 						if ((d&r.mask)==0) selectAdd[r.key]--;
 						else selectRemove[r.key]--;
 					}
+				} else if ((d&CITY_BIT) != 0) {
+					for (int i = 0; i < cities.size(); i++) {
+						if (tile.equals(cities.get(i))) {
+							if (cities.get(i).airport) selectRemoveAirport--;
+							else selectAddAirport--;
+							if (cities.get(i).catapults > 0) selectRemoveCatapult--;
+							selectAddCatapult--;
+						}
+					}
 				}
 			}
 		}
@@ -178,6 +197,10 @@ public class Map {
 			selectAdd[i] = 0;
 			selectRemove[i] = 0;
 		}
+		selectAddAirport = 0;
+		selectAddCatapult = 0;
+		selectRemoveAirport = 0;
+		selectRemoveCatapult = 0;
 	}
 	public void buildSelection(Road r) {
 		for (int i = 0; i < selection.size(); i++) {

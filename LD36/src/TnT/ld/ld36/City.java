@@ -13,6 +13,7 @@ public class City extends Point{
 	double population = 1; //double?
 	static double literacy = .1;
 	boolean airport = false;
+	int catapults = 0;
 	//divide transport.scalar by path length for #/time
 	public City(String name){
 		this.name = name;
