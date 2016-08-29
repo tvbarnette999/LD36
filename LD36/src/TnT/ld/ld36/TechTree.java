@@ -31,7 +31,7 @@ public class TechTree extends Overlay{
 	static Tech exercise = new Tech("Exercise", "Training Runners to run faster",1.5, Transport.RUNNER);
 	static Tech protein = new Tech("Protein", "Increse Runner strength and speed by 10%",1.2, Transport.RUNNER);
 	static Tech gym = new Tech("Gym", "Increase runner payload by 10%", 1.1, Transport.RUNNER);
-	static Tech horses = new Tech("Horses", "Horses are much faster than Runners!", Transport.HORSE_TYPE, Transport.HORSE);
+	static Tech horses = new Tech("Horses", "Horses are much faster than Runners!", Transport.HORSE_TYPE, Transport.currentUnits, Transport.HORSE);
 	static Tech saddles = new Tech("Saddles", "Increases horse payload by 20%",1.2, Transport.HORSE);
 	static Tech saddleBags = new Tech("Saddle Bags", "Double Horse payload",2, Transport.HORSE);
 	static Tech horseFood = new Tech("Horse Food", "Increases horse speed by 50%", 1.5, Transport.HORSE, Transport.CARRIAGE, Transport.CARAVAN);
@@ -58,11 +58,11 @@ public class TechTree extends Overlay{
 	static Tech steel = new Tech("Steel", "Stronger than iron, leads to way cooler stuff. (Like railroads)", 1);
 	//static Tech steelFarm = new Tech("Steel Farm Equipment", "");
 	static Tech math = new Tech("Math", "42", 1);
-	static Tech carriage = new Tech("Horse Drawn Carriage", "Way more space to store stuff", Transport.CARRIAGE_TYPE, Transport.CARRIAGE);
+	static Tech carriage = new Tech("Horse Drawn Carriage", "Way more space to store stuff", Transport.CARRIAGE_TYPE,Transport.currentUnits, Transport.CARRIAGE);
 	static Tech metalRims = new Tech("Metal Rims", "Adds coolness, so increases carriage speed by 10%", 1);
 	static Tech lighterCarriage = new Tech("Lighter Carriage", "increase crriage speed by 20%", 1.2, Transport.CARRIAGE);
 	static Tech twoHorse = new Tech("Two Horse Carriage", "Bouble the horses doubles the speed.", 2, Transport.CARRIAGE);
-	static Tech caravan = new Tech("Caravan", "Groups of carriages carry way more", Transport.CARRIAGE_TYPE, Transport.CARAVAN);
+	static Tech caravan = new Tech("Caravan", "Groups of carriages carry way more", Transport.CARRIAGE_TYPE,Transport.currentUnits, Transport.CARAVAN);
 	//static Tech lanterns = new Tech("Lanterns", "");
 	static Tech steam = new Tech("Steam", "Energy source for science", 1);
 	static Tech engineering = new Tech("Engineering", "Build really cool stuff", 1);
@@ -73,7 +73,7 @@ public class TechTree extends Overlay{
 	static Tech shaftMining = new Tech("Shaft Mining", "Its mining. With shafts.", 1);
 	static Tech metallurgy = new Tech("Metallurgy", "Almost to railroads!", 1);
 	static Tech engine = new Tech("Engine", "Make things happen", 1);
-	static Tech railroad = new Tech("Rail Roads", "CHOO CHOO!!!", Transport.TRAIN_TYPE, Transport.TRAIN, Road.RAIL);
+	static Tech railroad = new Tech("Rail Roads", "CHOO CHOO!!!", Transport.TRAIN_TYPE, Transport.currentUnits, Transport.TRAIN, Road.RAIL);
 	static Tech modernScience = new Tech("Modern Science", "Vastly different from Scientology", 1);
 	static Tech steroids= new Tech("Steroids", "Enhances performance by 300%.", 3, Transport.RUNNER);
 	static Tech horseSteroids = new Tech("Horse Steroids", "Enhances horse performance by 300%", 3, Transport.HORSE, Transport.CARAVAN, Transport.CARRIAGE);
@@ -89,7 +89,7 @@ public class TechTree extends Overlay{
 	static Tech oil=  new Tech("Oil", "Drill Everywhere!",1);
 	static Tech asphault = new Tech("Asphault", "Way better than dirt.",1);
 	static Tech paved = new Tech("Paved Road", "Unlocks Paved Roads",1);
-	static Tech cars = new Tech("Cars", "Can transport way more than caravans. Need paved roads",Transport.CAR_TYPE, Transport.CAR);
+	static Tech cars = new Tech("Cars", "Can transport way more than caravans. Need paved roads",Transport.CAR_TYPE,Transport.currentUnits, Transport.CAR);
 	static Tech gasoline = new Tech("Gasoline", "Important fuel",1);
 	static Tech diesel = new Tech("Diesel", "Better fuel",1);
 	static Tech jetFuel = new Tech("Jet Fuel", "High quality fuel. Might can use it in the future.",1);
@@ -100,12 +100,12 @@ public class TechTree extends Overlay{
 	static Tech airports = new Tech("Airports", "Unlocks Airports. Can only be built in cities.",1);
 	
 	static Tech dieselTrain = new Tech("Diesel Locomotive", "Faster by 10%",1.1, Transport.TRAIN);
-	static Tech trucks = new Tech("Trucks", "Haul twice as much as cars",Transport.CAR_TYPE, Transport.TRUCK);
+	static Tech trucks = new Tech("Trucks", "Haul twice as much as cars",Transport.CAR_TYPE, Transport.currentUnits, Transport.TRUCK);
 	static Tech powerLines = new Tech("Power Lines", "Zap!",1);
 	static Tech electricTrain = new Tech("Electric Trains", "20% more efficient",1.2, Transport.TRAIN);
 	static Tech bulletTrain = new Tech("Bullet Train", "Twice as fast as electric trains",2, Transport.TRAIN);
 	static Tech battery = new Tech("Batteries", "Road vehicles can run longer",1.2, Transport.CAR, Transport.TRAIN, Transport.SEMI, Transport.TRUCK);
-	static Tech semi = new Tech("Semi-Trailer Truck", "Carries 10x as much as trucks", Transport.CAR_TYPE, Transport.SEMI);
+	static Tech semi = new Tech("Semi-Trailer Truck", "Carries 10x as much as trucks", Transport.CAR_TYPE,Transport.currentUnits, Transport.SEMI);
 	static Tech electricCar = new Tech("Electric Car", "More efficient that gas",1.2, Transport.CAR,Transport.TRUCK , Transport.SEMI);
 	
 	static Tech EPA = new Tech("EPA", "Demands fuel efficiency",1.2, Transport.CAR, Transport.TRUCK, Transport.SEMI);

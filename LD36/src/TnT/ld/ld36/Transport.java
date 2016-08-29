@@ -44,6 +44,13 @@ public class Transport {
 	public String toString() {
 		return name;
 	}
+	public static String[] debug(){
+		String[] s = new String[currentUnits.length];
+		for(int i =0;i < s.length;i++){
+			if(currentUnits[i]!=null)s[i]=""+currentUnits[i].scalar;
+		}
+		return s;
+	}
 	
 	
 }

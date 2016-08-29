@@ -34,6 +34,7 @@ import javax.swing.SwingUtilities;
 
 public class LD36 extends JFrame{
 	public static LD36 theLD;
+	public static boolean debug = true;
 	volatile State gameState = State.MAIN;
 	JPanel panel = new JPanel();
 	Map map;
@@ -421,11 +422,18 @@ public class LD36 extends JFrame{
 					g.setColor(Color.RED);
 					g.drawString(fps+" fps", 10, 20);
 
+					if(debug){
+						g.drawString(Arrays.toString(Transport.currentUnits), 200, 15);
+						g.drawString(Arrays.toString(Transport.debug()), 200, 30);
+						g.drawString("lit:"+City.literacy, 100,15);
+					}
+					
 					g.dispose();
 					Graphics g2 = panel.getGraphics();
 					g2.drawImage(buffer, 0, 0, null);
 					g2.dispose();
 
+					
 					frames++;
 					if(System.currentTimeMillis() - start >= 1000){
 						fps = frames;
