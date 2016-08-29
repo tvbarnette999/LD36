@@ -591,8 +591,8 @@ public class TechTree extends Overlay{
 			if(scroll > MAX_SCROLL)scroll = MAX_SCROLL;
 		}
 		lastTime = current;
-		
-		g.translate(-scroll,0);
+//		System.out.println("TT:"+x+","+y+","+height+","+width);
+		//g.translate(-scroll,0);
 		super.draw(g);
 		Color oc = g.getColor();
 		g.setColor(Color.white);
@@ -608,21 +608,21 @@ public class TechTree extends Overlay{
 //			
 //		}
 		g.setColor(oc);
-		g.translate(scroll, 0);
+		//g.translate(scroll, 0);
 		
 	}
 	
-	public void mouseMoved(MouseEvent e){
-		super.mouseMoved(new MouseEvent(e.getComponent(), e.getID(), e.getWhen(), e.getModifiers(), e.getX()+(int)scroll, e.getY(), e.getXOnScreen(), e.getYOnScreen(), e.getClickCount(), e.isPopupTrigger(), e.getButton()));
-	}
-	public void mousePressed(MouseEvent e){
-		super.mousePressed(new MouseEvent(e.getComponent(), e.getID(), e.getWhen(), e.getModifiers(), e.getX()+(int)scroll, e.getY(), e.getXOnScreen(), e.getYOnScreen(), e.getClickCount(), e.isPopupTrigger(), e.getButton()));
-	}
-	public void mouseReleased(MouseEvent e){
-		super.mouseReleased(new MouseEvent(e.getComponent(), e.getID(), e.getWhen(), e.getModifiers(), e.getX()+(int)scroll, e.getY(), e.getXOnScreen(), e.getYOnScreen(), e.getClickCount(), e.isPopupTrigger(), e.getButton()));
-	}
-	public void mouseClicked(MouseEvent e){
-		super.mouseClicked(new MouseEvent(e.getComponent(), e.getID(), e.getWhen(), e.getModifiers(), e.getX()+(int)scroll, e.getY(), e.getXOnScreen(), e.getYOnScreen(), e.getClickCount(), e.isPopupTrigger(), e.getButton()));
-	}
+//	public void mouseMoved(MouseEvent e){
+//		super.mouseMoved(new MouseEvent(e.getComponent(), e.getID(), e.getWhen(), e.getModifiers(), e.getX()+(int)scroll, e.getY(), e.getXOnScreen(), e.getYOnScreen(), e.getClickCount(), e.isPopupTrigger(), e.getButton()));
+//	}
+//	public void mousePressed(MouseEvent e){
+//		super.mousePressed(new MouseEvent(e.getComponent(), e.getID(), e.getWhen(), e.getModifiers(), e.getX()+(int)scroll, e.getY(), e.getXOnScreen(), e.getYOnScreen(), e.getClickCount(), e.isPopupTrigger(), e.getButton()));
+//	}
+//	public void mouseReleased(MouseEvent e){
+//		super.mouseReleased(new MouseEvent(e.getComponent(), e.getID(), e.getWhen(), e.getModifiers(), e.getX()+(int)scroll, e.getY(), e.getXOnScreen(), e.getYOnScreen(), e.getClickCount(), e.isPopupTrigger(), e.getButton()));
+//	}
+//	public void mouseClicked(MouseEvent e){
+//		super.mouseClicked(new MouseEvent(e.getComponent(), e.getID(), e.getWhen(), e.getModifiers(), e.getX()+(int)scroll, e.getY(), e.getXOnScreen(), e.getYOnScreen(), e.getClickCount(), e.isPopupTrigger(), e.getButton()));
+//	}
 	
 }

@@ -41,6 +41,7 @@ public class LD36 extends JFrame{
 	VolatileImage buffer;
 	Overlay bottom = new Overlay();
 	Overlay right = new Overlay();
+	OverlayScrollPane sp = new OverlayScrollPane();
 	OverlayButton treeButton = new OverlayButton("Technology Tree");
 	OverlayButton clearSelection = new OverlayButton("Clear");
 	OverlayButton addFootPath = new OverlayButton(Resources.getImage("icon_footpath.png"));
@@ -433,8 +434,8 @@ public class LD36 extends JFrame{
 						g.drawString("Click To Start", 400, 400);
 						break;
 					case GAME:
-						if(techTree.visible){
-							techTree.draw(g);
+						if(sp.visible){
+							sp.draw(g);
 							bottom.draw(g);
 							map.graphicsStall = true;
 							break;
@@ -553,7 +554,11 @@ public class LD36 extends JFrame{
 
 		treeButton.setRect(10, buffer.getHeight() - 70, 200, 50);
 
-		techTree.height = buffer.getHeight() - Overlay.BOTTOM_HEIGHT;//setRect(0, 0, buffer.getWidth(), buffer.getHeight());
+//		/*techTree.height*/sp.height = buffer.getHeight() - Overlay.BOTTOM_HEIGHT;//setRect(0, 0, buffer.getWidth(), buffer.getHeight());
+//		sp.width = buffer.getWidth();
+		sp.setRect(0,0,buffer.getWidth(), buffer.getHeight()-Overlay.BOTTOM_HEIGHT);
+		techTree.height = sp.innerSize().getHeight();
+//		System.out.println(techTree.height);
 		double BY = treeButton.getY();
 		double BW = 50;
 		double GAP = 25;
@@ -579,13 +584,15 @@ public class LD36 extends JFrame{
 		bottom.addChild(treeButton);
 		treeButton.setActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				if(techTree.visible){
-					techTree.visible = false;
+				if(sp.visible){
+					//techTree.visible = false;
+					sp.visible = false;
 					//bottom.visible = true;
 					right.visible = true;
 					treeButton.text = "Technology Tree";
 				} else{
-					techTree.visible = true;
+					//techTree.visible = true;
+					sp.visible=true;
 					//bottom.visible = false;
 					right.visible = false;
 					treeButton.text = "Close";
@@ -618,11 +625,20 @@ public class LD36 extends JFrame{
 
 		activeOverlays.add(bottom);
 		activeOverlays.add(right);
-		activeOverlays.add(techTree);
+		activeOverlays.add(sp);
 
+//		OverlayScrollBar ttScroll = new OverlayScrollBar();
+//		ttScroll.setRect(20,600,50,15);
+		
+//		techTree.addChild(ttScroll);
 		//techTree.addChild(treeButton);
+
+		TechTree.MAX_SCROLL = (int) (techTree.width - buffer.getWidth());
+		sp.setMaxHorizontalScroll(TechTree.MAX_SCROLL);
 		techTree.addChild(moneyOverlay);
-		techTree.visible = false;
+//		techTree.visible = false;
+		sp.visible = false;
+		sp.inner = techTree;
 
 		gameState = State.GAME;
 	}
