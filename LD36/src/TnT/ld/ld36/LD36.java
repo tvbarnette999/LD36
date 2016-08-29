@@ -333,9 +333,6 @@ public class LD36 extends JFrame{
 			case KeyEvent.VK_SPACE:
 				if (gameState==State.GAME) map.scrollTo(map.getTileCenter(0, 0));
 				break;
-			case KeyEvent.VK_ENTER:
-				if (gameState==State.GAME) map.scrollTo(map.getTileCenter((int)(Map.MAP_WIDTH/2), (int)(Map.MAP_HEIGHT/2)));
-				break;
 			case KeyEvent.VK_ESCAPE:
 				if(treeButton.callback != null && techTree.visible)treeButton.callback.actionPerformed(new ActionEvent(treeButton, 0 ,""));
 			}
