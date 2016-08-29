@@ -1,10 +1,12 @@
 package TnT.ld.ld36;//TODO TnTWizard.ld.ld36? or TnT.wizard.ld.ld36?
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.color.ColorSpace;
 import java.awt.event.ActionEvent;
@@ -13,21 +15,26 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
+import java.awt.image.BufferedImage;
 import java.awt.image.ColorConvertOp;
 import java.awt.image.VolatileImage;
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
-public class LD36 extends JFrame {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 8318833936997575712L;
+
+
+//LOOK AT WHITEBOARD DUNCAN! it has my ideas for gui. i didnts get as far as i hoped
+
+
+public class LD36 extends JFrame{
 	public static LD36 theLD;
 	public static boolean debug = true;
 	volatile State gameState = State.MAIN;
@@ -57,21 +64,14 @@ public class LD36 extends JFrame {
 	boolean shownHelp = false;
 	boolean boosted = true;
 	OverlayButton increase = new OverlayButton("Write Mail for City") {
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = -8660650637481509055L;
-
 		@Override
 		public void mousePressed(MouseEvent e) {
 			boosted = true;
 		}
-
 		@Override
 		public void mouseReleased(MouseEvent e) {
 			boosted = false;
 		}
-
 		@Override
 		public void mouseExited(MouseEvent e) {
 			mouseReleased(e);
@@ -81,11 +81,6 @@ public class LD36 extends JFrame {
 	private static final Font moneyFont = new Font("Courier", Font.BOLD, 24);
 
 	Overlay moneyOverlay = new Overlay() {
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = -5539501003550325316L;
-
 		@Override
 		public void draw(Graphics2D g) {
 			Font f = g.getFont();
@@ -94,9 +89,7 @@ public class LD36 extends JFrame {
 			g.setColor(Color.black);
 			String mon;
 			g.drawString(mon = moneyString(money), (int) x, (int) (y + moneyFont.getSize() * 1.5));
-			g.drawString(moneyString(moneyPerTick * (1000 / PHYSICS_DELAY)) + "/s",
-					(int) x + Math.max((g.getFontMetrics().stringWidth(mon) / 20) * 20 + 50, 150),
-					(int) (y + moneyFont.getSize() * 1.5));
+			g.drawString(moneyString(moneyPerTick * (1000 / PHYSICS_DELAY)) + "/s", (int) x + Math.max((g.getFontMetrics().stringWidth(mon) / 20) * 20 + 50, 150), (int) (y + moneyFont.getSize() * 1.5));
 			g.setColor(c);
 			g.setFont(f);
 		}
@@ -105,23 +98,17 @@ public class LD36 extends JFrame {
 	OverlayButton addSelected = clearSelection;
 
 	private static final DecimalFormat smallFormat = new DecimalFormat("$###,###,###.##");
-	private static final String[] small = new String[] { "m", "b", "tr", "quadr", "quint", "sext", "sept", "oct", "non",
-			"dec" };
-	private static final String[] ones = new String[] { "un", "duo", "tre", "quattuor", "quinqua", "se", "septe",
-			"octo", "nove" };
-	private static final String[] tens = new String[] { "deci", "viginti", "triginta", "quadraginta", "quinquaginta",
-			"sexaginta", "septuaginta", "octoginta", "nonaginta" };
-	private static final String[] hundreds = new String[] { "centi", "ducenti", "trecenti", "quadringenti", "quingenti",
-			"sescenti", "septingenti", "octingenti", "nongenti" };
-	private static final String[] treSpecialTens = new String[] { "", "s", "s", "s", "s", "", "", "", "" };
-	private static final String[] treSpecialHundreds = new String[] { "", "", "s", "s", "s", "", "", "", "" };
-	private static final String[] seSpecialTens = new String[] { "", "", "s", "s", "s", "", "", "x", "" };
-	private static final String[] seSpecialHundreds = new String[] { "x", "", "s", "s", "s", "", "", "x", "" };
-	private static final String[] septeNoveSpecialTens = new String[] { "n", "m", "n", "n", "n", "n", "n", "m", "" };
-	private static final String[] septeNoveSpecialHundreds = new String[] { "n", "n", "n", "n", "n", "n", "n", "m",
-			"" };
-
-	public static String moneyString(double x) {
+	private static final String[] small = new String[] {"m", "b", "tr", "quadr", "quint", "sext", "sept", "oct", "non", "dec"};
+	private static final String[] ones = new String[] { "un", "duo", "tre", "quattuor", "quinqua", "se", "septe", "octo", "nove"};
+	private static final String[] tens = new String[] { "deci", "viginti", "triginta", "quadraginta", "quinquaginta", "sexaginta", "septuaginta", "octoginta", "nonaginta"};
+	private static final String[] hundreds = new String[] {"centi", "ducenti", "trecenti", "quadringenti", "quingenti", "sescenti", "septingenti", "octingenti", "nongenti"};
+	private static final String[] treSpecialTens = new String[]{"", "s", "s", "s", "s", "", "", "", ""};
+	private static final String[] treSpecialHundreds = new String[]{"", "", "s", "s", "s", "", "", "", ""};
+	private static final String[] seSpecialTens = new String[]{"", "", "s", "s", "s", "", "", "x", ""};
+	private static final String[] seSpecialHundreds = new String[]{"x", "", "s", "s", "s", "", "", "x", ""};
+	private static final String[] septeNoveSpecialTens = new String[]{"n", "m", "n", "n", "n", "n", "n", "m", ""};
+	private static final String[] septeNoveSpecialHundreds = new String[]{"n", "n", "n", "n", "n", "n", "n", "m", ""};
+	public static String moneyString(double x){
 		if (x == Double.POSITIVE_INFINITY || x == Double.NaN) {
 			return "$ ∞";
 		}
@@ -136,7 +123,7 @@ public class LD36 extends JFrame {
 			one = small[log - 1];
 		} else {
 			if (log > 1000) {
-				// thousand = log / 1000;
+				//			thousand = log / 1000;
 				log %= 1000;
 			}
 			if (log > 100) {
@@ -162,7 +149,7 @@ public class LD36 extends JFrame {
 		}
 		String s1 = "", s2 = "";
 		if (Ten >= 0) {
-			if (One == 2) { // tre
+			if (One == 2) { //tre
 				s1 = treSpecialTens[Ten];
 			}
 			if (One == 5) {
@@ -173,7 +160,7 @@ public class LD36 extends JFrame {
 			}
 		}
 		if (Hundred >= 0) {
-			if (Ten == 2) { // tre
+			if (Ten == 2) { //tre
 				s2 = treSpecialHundreds[Hundred];
 			}
 			if (Ten == 5) {
@@ -183,16 +170,14 @@ public class LD36 extends JFrame {
 				s2 = septeNoveSpecialHundreds[Hundred];
 			}
 		}
-		String start = " " + one + s1 + ten + s2 + hundred;
-		if (endsEven(start)) {
+		String start = " " + one + s1 + ten + s2+ hundred;
+		if (endsEven(start)){
 			start = start.substring(0, start.length() - 1);
 		}
 		return "$" + String.format("%1$.5f", x / Math.pow(10, initlog * 3 + 3)).substring(0, 5) + start + "illion";
 	}
-
 	/**
 	 * Does not include o bc reasons
-	 * 
 	 * @param s
 	 * @return
 	 */
@@ -200,38 +185,38 @@ public class LD36 extends JFrame {
 	private static boolean endsEven(String s) {
 		return s.length() > 0 && "aeiu".indexOf(s.charAt(s.length() - 1)) >= 0;
 	}
-
-	ActionListener addListener = new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
+	ActionListener addListener = new ActionListener(){
+		public void actionPerformed(ActionEvent e){
 			OverlayButton o = (OverlayButton) e.getSource();
-			if (o == clearSelection) {
+			if (o==clearSelection) {
 				map.clearSelection();
 				return;
 			}
 			Road road = null;
-			if (o == addFootPath)
-				road = Road.FOOTPATH;
-			if (o == addDirtRoad)
-				road = Road.DIRT;
-			if (o == addPavedRoad)
-				road = Road.PAVED;
-			if (o == addRailRoad)
-				road = Road.RAIL;
+			if (o==addFootPath) road = Road.FOOTPATH;
+			if (o==addDirtRoad) road = Road.DIRT;
+			if (o==addPavedRoad) road = Road.PAVED;
+			if (o==addRailRoad) road = Road.RAIL;
 			if (road != null) {
-				if (!road.unlocked)
-					return;
-				if (e.getModifiers() == 16 && money > road.cost * map.selectAdd[road.key]) {
+				if (!road.unlocked) return;
+				if (e.getModifiers()==16 && money > road.cost * map.selectAdd[road.key]) {
 					money -= road.cost * map.selectAdd[road.key];
 					map.buildSelection(road);
 					map.clearSelection();
-				} else if (e.getModifiers() == 4) {
-					map.sellSelection(road);
+				}// else if (e.getModifiers()==4) {
+//					map.sellSelection(road);
+//					map.clearSelection();
+//				}
+			} else if (o==addCatapalt) {
+				if (money > Transport.CATAPULT_COST*map.selectAddCatapult) {
+					map.buildCatapults();
 					map.clearSelection();
 				}
-			} else if (o == addCatapalt) {
-
-			} else if (o == addAirport) {
-
+			} else if (o==addAirport) {
+				if (money > Road.AIRPORT.cost * map.selectAddAirport) {
+					map.buildAirports();
+					map.clearSelection();
+				}
 			}
 		}
 	};
@@ -241,19 +226,18 @@ public class LD36 extends JFrame {
 	public double money = 0;
 	public double lifeTimeEarnings = 0;
 
-	MouseAdapter adapter = new MouseAdapter() {
-		public void mouseClicked(MouseEvent e) {
-			// TODO consider ignoring game state and use overlays for menu?
-			switch (gameState) {
+	MouseAdapter adapter = new MouseAdapter(){
+		public void mouseClicked(MouseEvent e){
+			//TODO consider ignoring game state and use overlays for menu?
+			switch(gameState){
 			case MAIN:
 				startGame();
 				break;
 			case GAME:
-				// handle anything above the map here, then forward to the map
-				for (Overlay o : activeOverlays) {
-					if (!o.visible)
-						continue;
-					if (o.contains(e.getPoint())) {
+				//handle anything above the map here, then forward to the map
+				for(Overlay o :activeOverlays){
+					if(!o.visible) continue;
+					if(o.contains(e.getPoint())){
 						o.mouseClicked(e);
 						return;
 					}
@@ -261,17 +245,15 @@ public class LD36 extends JFrame {
 				map.mouseClicked(e);
 			}
 		}
-
-		public void mousePressed(MouseEvent e) {
-			switch (gameState) {
+		public void mousePressed(MouseEvent e){
+			switch(gameState){
 			case MAIN:
 				break;
 			case GAME:
-				// handle anything above the map here, then forward to the map
-				for (Overlay o : activeOverlays) {
-					if (!o.visible)
-						continue;
-					if (o.contains(e.getPoint())) {
+				//handle anything above the map here, then forward to the map
+				for(Overlay o :activeOverlays){
+					if(!o.visible) continue;
+					if(o.contains(e.getPoint())){
 						o.mousePressed(e);
 						return;
 					}
@@ -279,82 +261,70 @@ public class LD36 extends JFrame {
 				map.mousePressed(e);
 			}
 		}
-
-		public void mouseReleased(MouseEvent e) {
-			switch (gameState) {
+		public void mouseReleased(MouseEvent e){
+			switch(gameState){
 			case MAIN:
 				break;
 			case GAME:
-				// handle anything above the map here, then forward to the map
-				for (Overlay o : activeOverlays) {
-					if (!o.visible)
-						continue;
-					if (o.contains(e.getPoint())) {
+				//handle anything above the map here, then forward to the map
+				for(Overlay o :activeOverlays){
+					if(!o.visible) continue;
+					if(o.contains(e.getPoint())){
 						o.mouseReleased(e);
 					}
 				}
 			}
 		}
-
-		public void mouseMoved(MouseEvent e) {
-			// System.out.println(e.getPoint());
-			switch (gameState) {
+		public void mouseMoved(MouseEvent e){
+			//			System.out.println(e.getPoint());
+			switch(gameState){
 			case MAIN:
 				break;
 			case GAME:
-				// handle anything above the map here, then forward to the map
-				for (Overlay o : activeOverlays) {
-					if (!o.visible)
-						continue;
-					if (o.contains(e.getPoint())) {
-						if (!o.mouseIn) {
+				//handle anything above the map here, then forward to the map
+				for(Overlay o :activeOverlays){
+					if(!o.visible) continue;
+					if(o.contains(e.getPoint())){
+						if(!o.mouseIn){
 							o.mouseIn = true;
-							o.mouseEntered(new MouseEvent(panel, MouseEvent.MOUSE_ENTERED, e.getWhen(), 0, e.getX(),
-									e.getY(), e.getXOnScreen(), e.getYOnScreen(), 0, false, 0));
+							o.mouseEntered(new MouseEvent(panel, MouseEvent.MOUSE_ENTERED, e.getWhen(), 0, e.getX(), e.getY(), e.getXOnScreen(), e.getYOnScreen(), 0, false, 0));
 						}
 						o.mouseMoved(e);
-					} else {
-						if (o.mouseIn) {
+					} else{
+						if(o.mouseIn){
 							o.mouseIn = false;
-							o.mouseExited(new MouseEvent(panel, MouseEvent.MOUSE_EXITED, e.getWhen(), 0, e.getX(),
-									e.getY(), e.getXOnScreen(), e.getYOnScreen(), 0, false, 0));
+							o.mouseExited(new MouseEvent(panel, MouseEvent.MOUSE_EXITED, e.getWhen(), 0, e.getX(), e.getY(), e.getXOnScreen(), e.getYOnScreen(), 0, false, 0));
 						}
 					}
 				}
-				// map.mouseMoved(e);
+				//					map.mouseMoved(e);
 			}
 		}
-
-		public void mouseDragged(MouseEvent e) {
-			switch (gameState) {
+		public void mouseDragged(MouseEvent e){
+			switch(gameState){
 			case MAIN:
 				break;
 			case GAME:
-				// handle anything above the map here, then forward to the map
-				for (Overlay o : activeOverlays) {
-					if (!o.visible)
-						continue;
-					if (o.contains(e.getPoint())) {
+				//handle anything above the map here, then forward to the map
+				for(Overlay o :activeOverlays){
+					if(!o.visible) continue;
+					if(o.contains(e.getPoint())){
 						o.mouseDragged(e);
 						return;
-					}
-					;
+					};
 				}
 				map.mouseDragged(e);
 			}
 		}
-
-		public void mouseWheelMoved(MouseWheelEvent e) {
-			switch (gameState) {
+		public void mouseWheelMoved(MouseWheelEvent e){
+			switch(gameState){
 			case MAIN:
 				break;
 			case GAME:
-				// handle anything above the map here, then forward to the map
-				for (Overlay o : activeOverlays) {
-					if (!o.visible)
-						continue;
-					if (o.contains(e.getPoint()))
-						return;
+				//handle anything above the map here, then forward to the map
+				for(Overlay o :activeOverlays){
+					if(!o.visible) continue;
+					if(o.contains(e.getPoint())) return;
 				}
 				map.mouseWheelMoved(e);
 			}
@@ -382,14 +352,11 @@ public class LD36 extends JFrame {
 				rightPressed = true;
 				break;
 			case KeyEvent.VK_SPACE:
-				if (gameState == State.GAME)
-					map.scrollTo(map.getTileCenter((int) (Map.MAP_WIDTH / 2), (int) (Map.MAP_HEIGHT / 2)));
+				if (gameState==State.GAME) map.scrollTo(map.getTileCenter((int)(Map.MAP_WIDTH/2), (int)(Map.MAP_HEIGHT/2)));
 				break;
 			case KeyEvent.VK_ESCAPE:
-				if (treeButton.callback != null && techTree.visible)
-					treeButton.callback.actionPerformed(new ActionEvent(treeButton, 0, ""));
-				else
-					map.clearSelection();
+				if(treeButton.callback != null && techTree.visible)treeButton.callback.actionPerformed(new ActionEvent(treeButton, 0 ,""));
+				else map.clearSelection();
 			}
 		}
 
@@ -428,7 +395,7 @@ public class LD36 extends JFrame {
 
 	public static void main(String[] args) {
 		theLD = new LD36();
-		theLD.initGUI();
+		theLD.initGUI();		
 	}
 
 	protected void generateCity() {
@@ -440,11 +407,10 @@ public class LD36 extends JFrame {
 			shownHelp = true;
 		}
 	}
-
 	public void initGUI() {
-		// Fullscreen?
+		//Fullscreen?
 		panel.setPreferredSize(new Dimension(1280, 768));
-		// buffer = new BufferedImage(1280, 768, BufferedImage.TYPE_4BYTE_ABGR);
+		//		buffer = new BufferedImage(1280, 768, BufferedImage.TYPE_4BYTE_ABGR);
 		panel.setFocusable(true);
 		panel.grabFocus();
 		panel.addKeyListener(keyAdapter);
@@ -461,26 +427,25 @@ public class LD36 extends JFrame {
 		physics.start();
 	}
 
-	public Thread graphics = new Thread() {
+	public Thread graphics = new Thread(){
 		long start = System.currentTimeMillis();
 		int fps = 0;
 		int frames = 0;
-
-		public void run() {
+		public void run(){
 			try {
-				while (true) {
+				while(true){
 					Graphics2D g = buffer.createGraphics();
 					g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 					g.setColor(Color.BLACK);
 					g.fillRect(0, 0, buffer.getWidth(), buffer.getHeight());
 					g.setColor(Color.BLACK);
-					switch (gameState) {
+					switch(gameState){
 					case MAIN:
 						g.setColor(Color.white);
 						g.drawString("Click To Start", 400, 400);
 						break;
 					case GAME:
-						if (sp.visible) {
+						if(sp.visible){
 							sp.draw(g);
 							bottom.draw(g);
 							map.graphicsStall = true;
@@ -489,28 +454,26 @@ public class LD36 extends JFrame {
 						map.draw(g);
 						displayCityData();
 
-						// draw everything above the map
-						bottom.setRect(0, buffer.getHeight() - Overlay.BOTTOM_HEIGHT, buffer.getWidth(),
-								Overlay.BOTTOM_HEIGHT);
-						right.setRect(buffer.getWidth() - Overlay.RIGHT_WIDTH, 0, Overlay.RIGHT_WIDTH,
-								buffer.getHeight() - Overlay.BOTTOM_HEIGHT);
+						//draw everything above the map
+						bottom.setRect(0, buffer.getHeight() - Overlay.BOTTOM_HEIGHT, buffer.getWidth(), Overlay.BOTTOM_HEIGHT);
+						right.setRect(buffer.getWidth() - Overlay.RIGHT_WIDTH, 0, Overlay.RIGHT_WIDTH, buffer.getHeight() - Overlay.BOTTOM_HEIGHT);
 						right.draw(g);
 						bottom.draw(g);
-						// g.setColor(Color.DARK_GRAY);
+						//	g.setColor(Color.DARK_GRAY);
 
-						// bottom.setBounds(0, 5*(buffer.getHeight()/6),
-						// buffer.getWidth(), buffer.getHeight()/6 +6);
+						//bottom.setBounds(0, 5*(buffer.getHeight()/6), buffer.getWidth(), buffer.getHeight()/6 +6);
+
 
 						break;
 					}
 
 					g.setColor(Color.RED);
-					g.drawString(fps + " fps", 10, 20);
+					g.drawString(fps+" fps", 10, 20);
 
-					if (debug) {
+					if(debug){
 						g.drawString(Arrays.toString(Transport.currentUnits), 200, 15);
 						g.drawString(Arrays.toString(Transport.debug()), 200, 30);
-						g.drawString("lit:" + City.literacy, 100, 15);
+						g.drawString("lit:"+City.literacy, 100,15);
 						g.drawString("lifetime: " + moneyString(lifeTimeEarnings), 100, 40);
 					}
 
@@ -519,14 +482,15 @@ public class LD36 extends JFrame {
 					g2.drawImage(buffer, 0, 0, null);
 					g2.dispose();
 
+
 					frames++;
-					if (System.currentTimeMillis() - start >= 1000) {
+					if(System.currentTimeMillis() - start >= 1000){
 						fps = frames;
 						frames = 0;
 						start = System.currentTimeMillis();
 					}
 				}
-			} catch (Exception e) {
+			}catch (Exception e) {
 				e.printStackTrace();
 				System.exit(0);
 			}
@@ -536,14 +500,13 @@ public class LD36 extends JFrame {
 	public static double populationGrowth = 1.0001;
 	public static long tick = 0;
 	public static double moneyPerTick;
-	public static long POP_BUMP = 1000; // every 100 s
-	public Thread physics = new Thread() {
-		public void run() {
+	public static long POP_BUMP = 1000; //every 100 s
+	public Thread physics = new Thread(){
+		public void run(){
 			try {
-				while (true) {
+				while(true){
 					if (gameState.equals(TnT.ld.ld36.State.GAME)) {
-						if (map.recalcFlag)
-							map.calculateAllPaths();
+						if (map.recalcFlag) map.calculateAllPaths();
 						double litFactor = Math.pow(City.literacy + 1, 2.75);
 						// calculate rate capacities for each city
 						for (int i = 0; i < map.cities.size(); i++) {
@@ -567,28 +530,21 @@ public class LD36 extends JFrame {
 							}
 						}
 
-						// calculate desired rate for each city
+						//calculate desired rate for each city
 						int totalPop = 0;
 						for (int i = 0; i < map.cities.size(); i++) {
 							totalPop += map.cities.get(i).population;
-							for (int j = 0; j < Transport.currentUnits.length
-									&& Transport.currentUnits[j] != null; j++) {
+							for (int j = 0; j < Transport.currentUnits.length && Transport.currentUnits[j] != null; j++) {
 								if (tick % 100 / ((j + 1) * 5) == 0) {
 									ArrayList<Path[]> paths = map.cities.get(i).paths;
 									for (int k = 0; k < paths.size(); k++) {
 										try {
-											paths.get(k)[j].getLast(); // this
-																		// is
-																		// really
-																		// lazy
+											paths.get(k)[j].getLast(); //this is really lazy
 										} catch (NullPointerException e) {
 											continue;
 										}
-										map.addAnimation(new Sprite(map, map.cities.get(i), paths.get(k)[j],
-												Transport.images[j]));
-										// System.out.println("Made sprite for "
-										// + j + " in " +
-										// map.cities.get(i).name);
+										map.addAnimation(new Sprite(map, map.cities.get(i), paths.get(k)[j], Transport.images[j]));
+//										System.out.println("Made sprite for " + j + " in " + map.cities.get(i).name);
 									}
 								}
 							}
@@ -596,13 +552,10 @@ public class LD36 extends JFrame {
 						for (int i = 0; i < map.cities.size(); i++) {
 							City c = map.cities.get(i);
 							for (int j = 0; j < c.desiredRate.size(); j++) {
-								c.desiredRate.set(j,
-										(c == selectedCity && boosted ? 1.2 : 1) * litFactor
-												* (double) (c.population / (totalPop - c.population)
-														* map.cities.get(j + (j >= i ? 1 : 0)).population));
+								c.desiredRate.set(j, (c == selectedCity && boosted ? 1.2 : 1) * litFactor * (double) (c.population/(totalPop-c.population)*map.cities.get(j+(j>=i?1:0)).population));
 							}
 						}
-						// animate sprites
+						//animate sprites
 
 						for (int i = 0; i < map.anims.size(); i++) {
 							map.anims.get(i).animate();
@@ -611,12 +564,14 @@ public class LD36 extends JFrame {
 							}
 						}
 
+
+
 						double totalMail = 0;
 						for (City city : map.cities) {
 							totalMail += city.getMail();
 						}
-						totalMail *= mailValue;
-						// System.out.println("Mail: " + totalMail);
+						totalMail *=  mailValue;
+						//					System.out.println("Mail: " + totalMail);
 						moneyPerTick = totalMail;
 						money += totalMail;
 						lifeTimeEarnings += totalMail;
@@ -624,48 +579,44 @@ public class LD36 extends JFrame {
 						if (lifeTimeEarnings > Math.pow(7, map.cities.size() * 1.5)) {
 							generateCity();
 						}
-						// System.out.println("Money: " + moneyString(money));
+						//					System.out.println("Money: " + moneyString(money));
 					}
 					try {
 						Thread.sleep(PHYSICS_DELAY);
-					} catch (Exception e) {
-					}
+					} catch (Exception e) {}
 				}
-			} catch (Exception e) {
+			} catch(Exception e) {
 				e.printStackTrace();
 				System.exit(0);
 			}
-		}
+		} 
 	};
 	public static final long PHYSICS_DELAY = 10;
-
-	public void startGame() {
+	public void startGame(){
 		map = Map.generate();
 
 		treeButton.setRect(10, buffer.getHeight() - 70, 200, 50);
 
-		// /*techTree.height*/sp.height = buffer.getHeight() -
-		// Overlay.BOTTOM_HEIGHT;//setRect(0, 0, buffer.getWidth(),
-		// buffer.getHeight());
-		// sp.width = buffer.getWidth();
-		sp.setRect(0, 0, buffer.getWidth(), buffer.getHeight() - Overlay.BOTTOM_HEIGHT);
+		//		/*techTree.height*/sp.height = buffer.getHeight() - Overlay.BOTTOM_HEIGHT;//setRect(0, 0, buffer.getWidth(), buffer.getHeight());
+		//		sp.width = buffer.getWidth();
+		sp.setRect(0,0,buffer.getWidth(), buffer.getHeight()-Overlay.BOTTOM_HEIGHT);
 		techTree.height = sp.innerSize().getHeight();
-		// System.out.println(techTree.height);
+		//		System.out.println(techTree.height);
 		double BY = treeButton.getY();
 		double BW = 50;
 		double GAP = 25;
 
-		double BX = buffer.getWidth() - 7 * GAP - 7 * BW;
+		double BX = buffer.getWidth() - 7*GAP - 7*BW;
 		double RX = buffer.getWidth() - Overlay.RIGHT_WIDTH;
 
 		clearSelection.setRect(BX, BY, BW, BW);
-		addFootPath.setRect(BX + BW + GAP, BY, BW, BW);
-		addDirtRoad.setRect(BX + 2 * BW + 2 * GAP, BY, BW, BW);
-		addCatapalt.setRect(BX + 3 * BW + 3 * GAP, BY, BW, BW);
-		addRailRoad.setRect(BX + 4 * BW + 4 * GAP, BY, BW, BW);
-		addPavedRoad.setRect(BX + 5 * BW + 5 * GAP, BY, BW, BW);
-		addAirport.setRect(BX + 6 * BW + 6 * GAP, BY, BW, BW);
-		moneyOverlay.setRect(220, BY, BX - 10, BY);
+		addFootPath.setRect(BX+BW+GAP, BY, BW, BW);
+		addDirtRoad.setRect(BX+2*BW+2*GAP, BY, BW, BW);
+		addCatapalt.setRect(BX+3*BW+3*GAP, BY, BW, BW);
+		addRailRoad.setRect(BX+4*BW+4*GAP,  BY, BW, BW);
+		addPavedRoad.setRect(BX+5*BW+5*GAP,BY,BW,BW);
+		addAirport.setRect(BX+6*BW+6*GAP, BY, BW, BW);
+		moneyOverlay.setRect(220, BY, BX-10, BY);
 
 		addFootPath.setRoad(Road.FOOTPATH);
 		addDirtRoad.setRoad(Road.DIRT);
@@ -676,27 +627,29 @@ public class LD36 extends JFrame {
 
 		cityName.setRect(RX, 0, Overlay.RIGHT_WIDTH, 100);
 		cityPopulation.setRect(RX, 110, Overlay.RIGHT_WIDTH, 80);
-		increase.setRect(RX, buffer.getHeight() - Overlay.BOTTOM_HEIGHT - 60, Overlay.RIGHT_WIDTH, 50);
+		increase.setRect(RX, buffer.getHeight() - Overlay.BOTTOM_HEIGHT - 60 , Overlay.RIGHT_WIDTH, 50);
 		increase.enabled = false;
 
+
 		bottom.addChild(treeButton);
-		treeButton.setActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if (sp.visible) {
-					// techTree.visible = false;
+		treeButton.setActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				if(sp.visible){
+					//techTree.visible = false;
 					sp.visible = false;
-					// bottom.visible = true;
+					//bottom.visible = true;
 					right.visible = true;
 					treeButton.text = "Technology Tree";
-				} else {
-					// techTree.visible = true;
-					sp.visible = true;
-					// bottom.visible = false;
+				} else{
+					//techTree.visible = true;
+					sp.visible=true;
+					//bottom.visible = false;
 					right.visible = false;
 					treeButton.text = "Close";
 				}
 			}
 		});
+
 
 		bottom.addChild(clearSelection);
 		bottom.addChild(addFootPath);
@@ -719,36 +672,33 @@ public class LD36 extends JFrame {
 		addPavedRoad.setActionListener(addListener);
 		addAirport.setActionListener(addListener);
 
+
 		activeOverlays.add(bottom);
 		activeOverlays.add(right);
 		activeOverlays.add(sp);
 
-		// OverlayScrollBar ttScroll = new OverlayScrollBar();
-		// ttScroll.setRect(20,600,50,15);
+		//		OverlayScrollBar ttScroll = new OverlayScrollBar();
+		//		ttScroll.setRect(20,600,50,15);
 
-		// techTree.addChild(ttScroll);
-		// techTree.addChild(treeButton);
+		//		techTree.addChild(ttScroll);
+		//techTree.addChild(treeButton);
 
 		TechTree.MAX_SCROLL = (int) (techTree.width - buffer.getWidth());
 		sp.setMaxHorizontalScroll(TechTree.MAX_SCROLL);
 		techTree.addChild(moneyOverlay);
-		// techTree.visible = false;
+		//		techTree.visible = false;
 		sp.visible = false;
 		sp.inner = techTree;
 
 		gameState = State.GAME;
 	}
-
 	private City selectedCity = null;
-
 	public void setSelectedCity(City c) {
 		selectedCity = c;
 		increase.enabled = true;
 	}
-
 	public void displayCityData() {
-		if (selectedCity == null)
-			return;
+		if (selectedCity == null) return;
 		City c = selectedCity;
 		cityName.setText("Name: " + c.name);
 		cityPopulation.setText("Pop: " + moneyString(c.population).substring(1));
