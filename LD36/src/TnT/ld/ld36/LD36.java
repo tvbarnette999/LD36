@@ -15,6 +15,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
+import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorConvertOp;
 import java.awt.image.VolatileImage;
@@ -22,6 +23,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Random;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -84,6 +86,12 @@ public class LD36 extends JFrame {
 	OverlayButton addPavedRoad = new OverlayButton(road);
 	OverlayButton addCatapalt = new OverlayButton(catapult);
 	OverlayButton addAirport = new OverlayButton(airport);
+	OverlayText footPathCost;
+	OverlayText dirtRoadCost;
+	OverlayText railRoadCost;
+	OverlayText pavedRoadCost;
+	OverlayText catapultCost;
+	OverlayText airportCost;
 	
 
 	OverlayButton cityName = new OverlayButton("Name: ");
@@ -269,12 +277,14 @@ public class LD36 extends JFrame {
 				// map.clearSelection();
 				// }
 			} else if (o == addCatapalt) {
-				if (money > Transport.CATAPULT_COST * map.selectAddCatapult) {
+				if (money >= Transport.CATAPULT_COST * map.selectAddCatapult) {
+					money -= Transport.CATAPULT_COST * map.selectAddCatapult;
 					map.buildCatapults();
 					map.clearSelection();
 				}
 			} else if (o == addAirport) {
-				if (money > Road.AIRPORT.cost * map.selectAddAirport) {
+				if (money >= Road.AIRPORT.cost * map.selectAddAirport) {
+					money -= Road.AIRPORT.cost * map.selectAddAirport;
 					map.buildAirports();
 					map.clearSelection();
 				}
@@ -490,6 +500,7 @@ public class LD36 extends JFrame {
 	}
 
 	public void initGUI() {
+		this.setTitle(GAME_NAME);
 		// Fullscreen?
 		panel.setPreferredSize(new Dimension(1280, 768));
 		// buffer = new BufferedImage(1280, 768, BufferedImage.TYPE_4BYTE_ABGR);
@@ -508,24 +519,65 @@ public class LD36 extends JFrame {
 		graphics.start();
 		physics.start();
 	}
-
+	public static final String GAME_NAME = "IT'S MAIL TIIIME...";
+	public static final String CLICK = "Click anywhere to continue";
 	public Thread graphics = new Thread() {
 		long start = System.currentTimeMillis();
 		int fps = 0;
 		int frames = 0;
-
+		int tick = 0;
+		ArrayList<MenuSprite> menuSprites = new ArrayList<MenuSprite>();
+		Random r = new Random();
 		public void run() {
 			try {
 				while (true) {
 					Graphics2D g = buffer.createGraphics();
 					g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-					g.setColor(Color.BLACK);
+					g.setColor(Color.darkGray);
 					g.fillRect(0, 0, buffer.getWidth(), buffer.getHeight());
 					g.setColor(Color.BLACK);
 					switch (gameState) {
 					case MAIN:
+						Font f = g.getFont();
+						g.setFont(f.deriveFont(42f));
 						g.setColor(Color.white);
-						g.drawString("Click To Start", 400, 400);
+						g.drawString(GAME_NAME,(getWidth() - g.getFontMetrics().stringWidth(GAME_NAME)) / 2, 200);
+						g.setFont(f.deriveFont(24f));
+						g.drawString(CLICK,(getWidth() - g.getFontMetrics().stringWidth(CLICK)) / 2, 400);
+						g.setFont(f);
+						for (MenuSprite s : menuSprites) {
+							s.draw(g);
+						}
+						if (tick++ % 100 == 0) {
+							Point2D.Double src, dest;
+							if (r.nextBoolean()) {
+								if (r.nextBoolean()) {
+									src = new Point2D.Double(0, r.nextInt(getHeight()));
+								} else {
+									src = new Point2D.Double(getWidth(), r.nextInt(getHeight()));
+								}
+							} else {
+								if (r.nextBoolean()) {
+									src = new Point2D.Double(r.nextInt(getWidth()), getHeight());
+								} else {
+									src = new Point2D.Double(r.nextInt(getWidth()), 0);
+								}
+							}
+							if (r.nextBoolean()) {
+								if (r.nextBoolean()) {
+									dest = new Point2D.Double(0, r.nextInt(getHeight()));
+								} else {
+									dest = new Point2D.Double(getWidth(), r.nextInt(getHeight()));
+								}
+							} else {
+								if (r.nextBoolean()) {
+									dest = new Point2D.Double(r.nextInt(getWidth()), getHeight());
+								} else {
+									dest = new Point2D.Double(r.nextInt(getWidth()), 0);
+								}
+							}
+							menuSprites.add(new MenuSprite(src, dest, Transport.baseUnits[r.nextInt(Transport.baseUnits.length)].img));
+						}
 						break;
 					case GAME:
 						if (sp.visible) {
@@ -537,6 +589,23 @@ public class LD36 extends JFrame {
 						map.draw(g);
 						displayCityData();
 
+						footPathCost.setText(moneyString(map.selectAdd[Road.FOOTPATH.key]*Road.FOOTPATH.cost));
+						dirtRoadCost.setText(moneyString(map.selectAdd[Road.DIRT.key]*Road.DIRT.cost));
+						pavedRoadCost.setText(moneyString(map.selectAdd[Road.PAVED.key]*Road.PAVED.cost));
+						railRoadCost.setText(moneyString(map.selectAdd[Road.RAIL.key]*Road.RAIL.cost));
+						airportCost.setText(moneyString(map.selectAddAirport*Road.AIRPORT.cost));
+						catapultCost.setText(moneyString(map.selectAddCatapult*Transport.CATAPULT_COST));
+						
+						Color good = Color.green.darker().darker();
+						Color bad = Color.red;
+						footPathCost.setColor(map.selectAdd[Road.FOOTPATH.key]*Road.FOOTPATH.cost>money?bad:good);
+						dirtRoadCost.setColor(map.selectAdd[Road.DIRT.key]*Road.DIRT.cost>money?bad:good);
+						pavedRoadCost.setColor(map.selectAdd[Road.PAVED.key]*Road.PAVED.cost>money?bad:good);
+						railRoadCost.setColor(map.selectAdd[Road.RAIL.key]*Road.RAIL.cost>money?bad:good);
+						airportCost.setColor(map.selectAddAirport*Road.AIRPORT.cost>money?bad:good);
+						catapultCost.setColor(map.selectAddCatapult*Transport.CATAPULT_COST>money?bad:good);
+						
+						
 						// draw everything above the map
 						bottom.setRect(0, buffer.getHeight() - Overlay.BOTTOM_HEIGHT, buffer.getWidth(),
 								Overlay.BOTTOM_HEIGHT);
@@ -594,7 +663,7 @@ public class LD36 extends JFrame {
 			}
 		}
 	};
-	public static double mailValue = .05;
+	public static double mailValue = .003;
 	public static double populationGrowth = 1.0001;
 	public static long tick = 0;
 	public static double moneyPerTick;
@@ -619,13 +688,29 @@ public class LD36 extends JFrame {
 							for (int j = 0; j < c.paths.size(); j++) {
 								double cap = 0;
 								Path[] paths = c.paths.get(j);
+								Point last = null;
 								for (int t = 0; t < Transport.baseUnits.length; t++) {
 									Transport current = Transport.currentUnits[t];
 									if (current != null && paths[t] != null) {
 										cap += current.scalar / paths[t].length();
+										last = paths[t].getLast();
 									}
 								}
+								if (last != null && map.cities.get(i).distance(last) < Transport.CATAPAULT_RANGE.scalar) {
+									cap += Transport.CATAPAULT.scalar * map.cities.get(i).catapults;
+								}
 								c.rateCapacity.set(j, (c == selectedCity && boosted ? 1.2 : 1) * cap);
+							}
+							if (map.cities.get(i).airport) {
+								boolean past = false;
+								for (int k = 0; k < map.cities.size() - 1; k++) {
+									if (k == i) {
+										past = true;
+									}
+									if (map.cities.get(k + (past?1:0)).airport) {
+										c.rateCapacity.set(k, c.rateCapacity.get(k) + (c == selectedCity && boosted ? 1.2 : 1) * Transport.PLANE.scalar / map.cities.get(i).distance(map.cities.get(k)));
+									}
+								}
 							}
 						}
 
@@ -635,7 +720,7 @@ public class LD36 extends JFrame {
 						HashMap<Point, Point> done2 = new HashMap<Point, Point>();
 						for (int i = 0; i < map.cities.size(); i++) {
 							totalPop += map.cities.get(i).population;
-							for (int j = 0; j < Transport.currentUnits.length
+							for (int j = 0; j < Transport.baseUnits.length
 									&& Transport.currentUnits[j] != null; j++) {
 								if (tick % 700 / ((j + 1) * 5) == 0) {
 									ArrayList<Path[]> paths = map.cities.get(i).paths;
@@ -650,7 +735,7 @@ public class LD36 extends JFrame {
 											done1.put(map.cities.get(i), p);
 											done2.put(p, map.cities.get(i));
 											map.addAnimation(new Sprite(map, map.cities.get(i), paths.get(k)[j],
-												Transport.images[j]));
+												Transport.currentUnits[j].img));
 										}
 										// System.out.println("Made sprite for "
 										// + j + " in " +
@@ -725,14 +810,23 @@ public class LD36 extends JFrame {
 		double RX = buffer.getWidth() - Overlay.RIGHT_WIDTH;
 
 		clearSelection.setRect(BX, BY, BW, BW);
-		addFootPath.setRect(BX+BW+GAP, BY, BW, BW);
-		addDirtRoad.setRect(BX+2*BW+2*GAP, BY, BW, BW);
-		addCatapalt.setRect(BX+3*BW+3*GAP, BY, BW, BW);
-		addRailRoad.setRect(BX+4*BW+4*GAP,  BY, BW, BW);
-		addPavedRoad.setRect(BX+5*BW+5*GAP,BY,BW,BW);
-		addAirport.setRect(BX+6*BW+6*GAP, BY, BW, BW);
-		moneyOverlay.setRect(220, BY, BX-100, BY);
+		addFootPath.setRect(BX + BW + GAP, BY, BW, BW);
+		addDirtRoad.setRect(BX + 2 * BW + 2 * GAP, BY, BW, BW);
+		addCatapalt.setRect(BX + 3 * BW + 3 * GAP, BY, BW, BW);
+		addRailRoad.setRect(BX + 4 * BW + 4 * GAP, BY, BW, BW);
+		addPavedRoad.setRect(BX + 5 * BW + 5 * GAP, BY, BW, BW);
+		addAirport.setRect(BX + 6 * BW + 6 * GAP, BY, BW, BW);
+		moneyOverlay.setRect(220, BY, BX - 10, BY);
 		
+		double h = -10;
+		BX += BW/2;
+		footPathCost = new OverlayText(BX + 1*BW + 1*GAP, BY + h, "test");
+		dirtRoadCost = new OverlayText(BX + 2*BW + 2*GAP, BY + h, "test");
+		catapultCost = new OverlayText(BX + 3*BW + 3*GAP, BY + h, "test");
+		railRoadCost = new OverlayText(BX + 4*BW + 4*GAP, BY + h, "test");
+		pavedRoadCost = new OverlayText(BX + 5*BW + 5*GAP, BY + h, "test");
+		airportCost = new OverlayText(BX + 6*BW + 6*GAP, BY + h, "test");
+
 		addFootPath.setRoad(Road.FOOTPATH);
 		addDirtRoad.setRoad(Road.DIRT);
 		addRailRoad.setRoad(Road.RAIL);
@@ -773,6 +867,13 @@ public class LD36 extends JFrame {
 		bottom.addChild(addPavedRoad);
 		bottom.addChild(addAirport);
 		bottom.addChild(moneyOverlay);
+		
+		bottom.addChild(footPathCost);
+		bottom.addChild(dirtRoadCost);
+		bottom.addChild(catapultCost);
+		bottom.addChild(railRoadCost);
+		bottom.addChild(pavedRoadCost);
+		bottom.addChild(airportCost);
 
 		
 		
