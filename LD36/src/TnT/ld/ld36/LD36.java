@@ -549,33 +549,41 @@ public class LD36 extends JFrame {
 							s.draw(g);
 						}
 						if (tick++ % 100 == 0) {
-							Point2D.Double src, dest;
-							if (r.nextBoolean()) {
-								if (r.nextBoolean()) {
-									src = new Point2D.Double(0, r.nextInt(getHeight()));
-								} else {
-									src = new Point2D.Double(getWidth(), r.nextInt(getHeight()));
-								}
-							} else {
-								if (r.nextBoolean()) {
-									src = new Point2D.Double(r.nextInt(getWidth()), getHeight());
-								} else {
-									src = new Point2D.Double(r.nextInt(getWidth()), 0);
-								}
+							Point2D.Double src = new Point2D.Double(-1, -1), dest = new Point2D.Double(-1, -1);
+							int s = r.nextInt(4);
+							switch (s) {
+							case 0:
+								src = new Point2D.Double(0, r.nextInt(getHeight()));
+								break;
+							case 1:
+								src = new Point2D.Double(getWidth(), r.nextInt(getHeight()));
+								break;
+							case 2:
+								src = new Point2D.Double(r.nextInt(getWidth()), getHeight());
+								break;
+							case 3:
+								src = new Point2D.Double(r.nextInt(getWidth()), 0);
+								break;
 							}
-							if (r.nextBoolean()) {
-								if (r.nextBoolean()) {
+							int d = s;
+							while (d == s || dest.distance(src) < 500) {
+								d = r.nextInt(4);
+								switch (d) {
+								case 0:
 									dest = new Point2D.Double(0, r.nextInt(getHeight()));
-								} else {
+									break;
+								case 1:
 									dest = new Point2D.Double(getWidth(), r.nextInt(getHeight()));
-								}
-							} else {
-								if (r.nextBoolean()) {
+									break;
+								case 2:
 									dest = new Point2D.Double(r.nextInt(getWidth()), getHeight());
-								} else {
+									break;
+								case 3:
 									dest = new Point2D.Double(r.nextInt(getWidth()), 0);
+									break;
 								}
 							}
+							
 							menuSprites.add(new MenuSprite(src, dest, Transport.baseUnits[r.nextInt(Transport.baseUnits.length)].img));
 						}
 						break;

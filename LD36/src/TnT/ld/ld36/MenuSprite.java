@@ -11,7 +11,7 @@ public class MenuSprite {
 	public int x = 0, y = 0;
 	Point2D.Double src, dest;
 	int ticks = 0;
-	int maxTicks = 400;
+	int maxTicks = 2000;
 	public MenuSprite(Point2D.Double src, Point2D.Double dest, BufferedImage img) {
 		this.src = src;
 		x = (int) src.x;
@@ -42,6 +42,6 @@ public class MenuSprite {
 		// g.fillRect(x, y, 100, 100);
 	}
 	public boolean isDone() {
-		return ticks > maxTicks;
+		return ticks > maxTicks || dest.distance(x, y) < 2;
 	}
 }
