@@ -43,7 +43,35 @@ public class LD36 extends JFrame {
 	VolatileImage buffer;
 	Overlay bottom = new Overlay();
 	Overlay right = new Overlay();
+	Overlay city = new Overlay(){
+		public void draw(Graphics2D g){
+			if(selectedCity == null)return;
+			Color oc = g.getColor();
+			g.setColor(Color.black);
+//			g.fill(this);
+			int y = (int) this.y;
+			int i2 = 0;
+			g.drawString("Destination:", (int) x, y);
+			g.drawString("Delivery Rate", (int) (x+100), y);
+			g.drawString("Demand", (int) (x+100), y+15);
+			g.drawLine((int)x,y+17,(int)x+Overlay.RIGHT_WIDTH, y+17);
+			y+=30;
+			for(int i = 0; i <  map.cities.size(); i++, i2++){
+				if(map.cities.get(i) == selectedCity){
+					i2--;
+					continue;
+				}
+				g.drawString(" "+map.cities.get(i).name+":", (int) x, y);
+				g.drawString(""+moneyString(map.cities.get(i).desiredRate.get(i2)).substring(1),(int) x+100, y+15);
+				g.drawString(""+moneyString(map.cities.get(i).rateCapacity.get(i2)).substring(1), (int) (x+100), y);
+				y+=30;
+			}
+			
+			g.setColor(oc);
+		}
+	};
 	OverlayScrollPane sp = new OverlayScrollPane();
+	
 	public static final BufferedImage footPath = Resources.getImage("icon_footpath.png");
 	public static final BufferedImage dirtRoad = Resources.getImage("icon_dirtroad.png");
 	public static final BufferedImage trainTrack = Resources.getImage("icon_traintrack.png");
@@ -773,7 +801,7 @@ public class LD36 extends JFrame {
 	public void startGame() {
 		map = Map.generate();
 
-		treeButton.setRect(10, buffer.getHeight() - 70, 200, 50);
+		treeButton.setRect(10, buffer.getHeight() - 70 - 30, 200, 50);
 
 		// /*techTree.height*/sp.height = buffer.getHeight() -
 		// Overlay.BOTTOM_HEIGHT;//setRect(0, 0, buffer.getWidth(),
@@ -798,14 +826,14 @@ public class LD36 extends JFrame {
 		addAirport.setRect(BX + 6 * BW + 6 * GAP, BY, BW, BW);
 		moneyOverlay.setRect(220, BY, BX - 10, BY);
 		
-		double h = -10;
+		double h = -15;
 		BX += BW/2;
 		footPathCost = new OverlayText(BX + 1*BW + 1*GAP, BY + h, "test");
-		dirtRoadCost = new OverlayText(BX + 2*BW + 2*GAP, BY + h, "test");
+		dirtRoadCost = new OverlayText(BX + 2*BW + 2*GAP, BY + BW - h, "test");
 		catapultCost = new OverlayText(BX + 3*BW + 3*GAP, BY + h, "test");
-		railRoadCost = new OverlayText(BX + 4*BW + 4*GAP, BY + h, "test");
+		railRoadCost = new OverlayText(BX + 4*BW + 4*GAP, BY + BW - h, "test");
 		pavedRoadCost = new OverlayText(BX + 5*BW + 5*GAP, BY + h, "test");
-		airportCost = new OverlayText(BX + 6*BW + 6*GAP, BY + h, "test");
+		airportCost = new OverlayText(BX + 6*BW + 6*GAP, BY + BW - h, "test");
 
 		addFootPath.setRoad(Road.FOOTPATH);
 		addDirtRoad.setRoad(Road.DIRT);
@@ -816,6 +844,7 @@ public class LD36 extends JFrame {
 
 		cityName.setRect(RX, 0, Overlay.RIGHT_WIDTH, 100);
 		cityPopulation.setRect(RX, 110, Overlay.RIGHT_WIDTH, 80);
+		city.setRect(RX,200, Overlay.RIGHT_WIDTH, 600 );
 		increase.setRect(RX, buffer.getHeight() - Overlay.BOTTOM_HEIGHT - 60, Overlay.RIGHT_WIDTH, 50);
 		increase.enabled = false;
 
@@ -854,9 +883,12 @@ public class LD36 extends JFrame {
 		bottom.addChild(pavedRoadCost);
 		bottom.addChild(airportCost);
 
+		
+		
 		right.addChild(cityName);
 		right.addChild(cityPopulation);
 		right.addChild(increase);
+		right.addChild(city);
 
 		clearSelection.setActionListener(addListener);
 		addFootPath.setActionListener(addListener);
