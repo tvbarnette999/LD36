@@ -50,26 +50,26 @@ public class LD36 extends JFrame {
 			g.setColor(Color.black);
 //			g.fill(this);
 			int y = (int) this.y;
-			int i2 = 0;
 			g.drawString("Destination:", (int) x, y);
 			g.drawString("Delivery Rate", (int) (x+100), y);
 			g.drawString("Demand", (int) (x+100), y+15);
 			g.drawLine((int)x,y+17,(int)x+Overlay.RIGHT_WIDTH, y+17);
 			y+=30;
-			for(int i = 0; i <  map.cities.size(); i++, i2++){
-				if(map.cities.get(i) == selectedCity){
-					i2--;
-					continue;
-				}
-				g.drawString(" "+map.cities.get(i).name+":", (int) x, y);
-				g.drawString(""+moneyString(map.cities.get(i).desiredRate.get(i2)).substring(1),(int) x+100, y+15);
-				g.drawString(""+moneyString(map.cities.get(i).rateCapacity.get(i2)).substring(1), (int) (x+100), y);
+			for(int i = 0; i < selectedCity.desiredRate.size(); i++){
+				g.setColor(gradient(selectedCity.rateCapacity.get(i), selectedCity.desiredRate.get(i)));
+				g.drawString(" "+map.cities.get(i + (i>=selectedCity.ID ? 1:0)).name+":", (int) x, y);
+				g.drawString(""+moneyString(selectedCity.desiredRate.get(i)).substring(1),(int) x+100, y+15);
+				g.drawString(""+moneyString(selectedCity.rateCapacity.get(i)).substring(1), (int) (x+100), y);
 				y+=30;
 			}
 			
 			g.setColor(oc);
 		}
 	};
+	public static Color gradient(double capacity, double demand) {
+		if (demand > capacity) return Color.red;
+		else return Color.getHSBColor(.33f-(float)Math.max(0, Math.min(1, demand/capacity))/3, 1, .5f);
+	}
 	OverlayScrollPane sp = new OverlayScrollPane();
 	
 	public static final BufferedImage footPath = Resources.getImage("icon_footpath.png");
@@ -723,7 +723,7 @@ public class LD36 extends JFrame {
 						}
 
 						// calculate desired rate for each city
-						int totalPop = 0;
+						double totalPop = 0;
 						HashMap<Point, Point> done1 = new HashMap<Point, Point>();
 						HashMap<Point, Point> done2 = new HashMap<Point, Point>();
 						for (int i = 0; i < map.cities.size(); i++) {
