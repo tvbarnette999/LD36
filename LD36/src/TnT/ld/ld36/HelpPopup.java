@@ -6,13 +6,14 @@ import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
 
 public class HelpPopup {
-	public int x, y; //the tile to display on
+	public int x, y; // the tile to display on
 	public double px, py;
 	public Point2D.Double p;
-	public double ticks = 15; //seconds
+	public double ticks = 15; // seconds
 	public String text;
 	public String[] display;
 	Map m;
+
 	public HelpPopup(Map m, int x, int y, String text) {
 		this.text = text;
 		this.m = m;
@@ -23,12 +24,12 @@ public class HelpPopup {
 		py = p.y;
 		display = text.split("\n");
 	}
-	
+
 	public HelpPopup(Map m, int x, int y, String text, int ticks) {
 		this(m, x, y, text);
 		this.ticks = ticks;
 	}
-	
+
 	public void draw(Graphics2D g) {
 		int width = 0;
 		for (String s : display) {
