@@ -56,6 +56,12 @@ public class LD36 extends JFrame {
 	OverlayButton addPavedRoad = new OverlayButton(road);
 	OverlayButton addCatapalt = new OverlayButton(catapult);
 	OverlayButton addAirport = new OverlayButton(airport);
+	OverlayText footPathCost;
+	OverlayText dirtRoadCost;
+	OverlayText roadRoadCost;
+	OverlayText pavedRoadCost;
+	OverlayText catapultCost;
+	OverlayText airportCost;
 	
 
 	OverlayButton cityName = new OverlayButton("Name: ");
@@ -623,7 +629,7 @@ public class LD36 extends JFrame {
 						HashMap<Point, Point> done2 = new HashMap<Point, Point>();
 						for (int i = 0; i < map.cities.size(); i++) {
 							totalPop += map.cities.get(i).population;
-							for (int j = 0; j < Transport.currentUnits.length
+							for (int j = 0; j < Transport.baseUnits.length
 									&& Transport.currentUnits[j] != null; j++) {
 								if (tick % 700 / ((j + 1) * 5) == 0) {
 									ArrayList<Path[]> paths = map.cities.get(i).paths;
@@ -638,7 +644,7 @@ public class LD36 extends JFrame {
 											done1.put(map.cities.get(i), p);
 											done2.put(p, map.cities.get(i));
 											map.addAnimation(new Sprite(map, map.cities.get(i), paths.get(k)[j],
-												Transport.images[j]));
+												Transport.currentUnits[j].img));
 										}
 										// System.out.println("Made sprite for "
 										// + j + " in " +
@@ -713,14 +719,19 @@ public class LD36 extends JFrame {
 		double RX = buffer.getWidth() - Overlay.RIGHT_WIDTH;
 
 		clearSelection.setRect(BX, BY, BW, BW);
-		addFootPath.setRect(BX+BW+GAP, BY, BW, BW);
-		addDirtRoad.setRect(BX+2*BW+2*GAP, BY, BW, BW);
-		addCatapalt.setRect(BX+3*BW+3*GAP, BY, BW, BW);
-		addRailRoad.setRect(BX+4*BW+4*GAP,  BY, BW, BW);
-		addPavedRoad.setRect(BX+5*BW+5*GAP,BY,BW,BW);
-		addAirport.setRect(BX+6*BW+6*GAP, BY, BW, BW);
-		moneyOverlay.setRect(220, BY, BX-100, BY);
+		addFootPath.setRect(BX + BW + GAP, BY, BW, BW);
+		addDirtRoad.setRect(BX + 2 * BW + 2 * GAP, BY, BW, BW);
+		addCatapalt.setRect(BX + 3 * BW + 3 * GAP, BY, BW, BW);
+		addRailRoad.setRect(BX + 4 * BW + 4 * GAP, BY, BW, BW);
+		addPavedRoad.setRect(BX + 5 * BW + 5 * GAP, BY, BW, BW);
+		addAirport.setRect(BX + 6 * BW + 6 * GAP, BY, BW, BW);
+		moneyOverlay.setRect(220, BY, BX - 10, BY);
 		
+		double h = 20;
+		footPathCost = new OverlayText(BX + 1*BW + 1*GAP, BY + h);
+		dirtRoadCost = new OverlayText(BX + 2*BW + 2*GAP, BY + h);
+		dirtRoadCost = new OverlayText(BX + 2*BW + 2*GAP, BY + h);
+
 		addFootPath.setRoad(Road.FOOTPATH);
 		addDirtRoad.setRoad(Road.DIRT);
 		addRailRoad.setRoad(Road.RAIL);
