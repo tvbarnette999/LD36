@@ -46,10 +46,20 @@ public class LD36 extends JFrame {
 	Overlay city = new Overlay(){
 		public void draw(Graphics2D g){
 			if(selectedCity == null)return;
+			
+			Font f = g.getFont();
+			
+			g.setColor(Color.black);
+			g.drawString("Has Airport: "+selectedCity.airport, (int)(x), (int)(y-15));
+			g.drawString("# Catapults: "+selectedCity.catapults, (int)(x), (int)(y));
+			
+			g.setFont(f);
+			
+			
 			Color oc = g.getColor();
 			g.setColor(Color.black);
 //			g.fill(this);
-			int y = (int) this.y;
+			int y = (int) this.y+20;
 			g.drawString("Destination:", (int) x, y);
 			g.drawString("Delivery Rate", (int) (x+100), y);
 			g.drawString("Demand", (int) (x+100), y+15);
