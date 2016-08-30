@@ -41,7 +41,35 @@ public class LD36 extends JFrame {
 	VolatileImage buffer;
 	Overlay bottom = new Overlay();
 	Overlay right = new Overlay();
+	Overlay city = new Overlay(){
+		public void draw(Graphics2D g){
+			if(selectedCity == null)return;
+			Color oc = g.getColor();
+			g.setColor(Color.white);
+//			g.fill(this);
+			int y = (int) this.y;
+			int i2 = 0;
+			g.drawString("Destination:", (int) x, y);
+			g.drawString("Delivery Rate", (int) (x+100), y);
+			g.drawString("Demand", (int) (x+100), y+15);
+			g.drawLine((int)x,y+17,(int)x+Overlay.RIGHT_WIDTH, y+17);
+			y+=30;
+			for(int i = 0; i <  map.cities.size(); i++, i2++){
+				if(map.cities.get(i) == selectedCity){
+					i2--;
+					continue;
+				}
+				g.drawString(" "+map.cities.get(i).name+":", (int) x, y);
+				g.drawString(""+map.cities.get(i).desiredRate.get(i2),(int) x+100, y+15);
+				g.drawString(""+map.cities.get(i).rateCapacity.get(i2), (int) (x+100), y);
+				y+=30;
+			}
+			
+			g.setColor(oc);
+		}
+	};
 	OverlayScrollPane sp = new OverlayScrollPane();
+	
 	public static final BufferedImage footPath = Resources.getImage("icon_footpath.png");
 	public static final BufferedImage dirtRoad = Resources.getImage("icon_dirtroad.png");
 	public static final BufferedImage trainTrack = Resources.getImage("icon_traintrack.png");
@@ -714,6 +742,7 @@ public class LD36 extends JFrame {
 
 		cityName.setRect(RX, 0, Overlay.RIGHT_WIDTH, 100);
 		cityPopulation.setRect(RX, 110, Overlay.RIGHT_WIDTH, 80);
+		city.setRect(RX,200, Overlay.RIGHT_WIDTH, 600 );
 		increase.setRect(RX, buffer.getHeight() - Overlay.BOTTOM_HEIGHT - 60, Overlay.RIGHT_WIDTH, 50);
 		increase.enabled = false;
 
@@ -745,9 +774,12 @@ public class LD36 extends JFrame {
 		bottom.addChild(addAirport);
 		bottom.addChild(moneyOverlay);
 
+		
+		
 		right.addChild(cityName);
 		right.addChild(cityPopulation);
 		right.addChild(increase);
+		right.addChild(city);
 
 		clearSelection.setActionListener(addListener);
 		addFootPath.setActionListener(addListener);
