@@ -663,7 +663,7 @@ public class LD36 extends JFrame {
 			}
 		}
 	};
-	public static double mailValue = .003;
+	public static double mailValue = .03;
 	public static double populationGrowth = 1.0001;
 	public static long tick = 0;
 	public static double moneyPerTick;

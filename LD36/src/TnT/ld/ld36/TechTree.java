@@ -509,43 +509,43 @@ public class TechTree extends Overlay {
 
 		fossil.cost = (steel.cost + engine.cost) * 1.25;
 
-		horseSteroids.cost = steroids.cost * horses.cost * 10;
+		horseSteroids.cost = steroids.cost * horses.cost / 10;
 
-		onager.cost = tension.cost * tension.cost;
+		onager.cost = tension.cost * tension.cost/10000;
 
 		electricity.cost = fossil.cost * 12.5;
 
-		railroad.cost = electricity.cost * horses.cost * 10;
+		railroad.cost = electricity.cost * horses.cost / 10000;
 
 		combustion.cost = (fossil.cost + engine.cost) * 50;
 
-		asphault.cost = (horses.cost * railroad.cost) * 20;
+		asphault.cost = (horses.cost * railroad.cost) / 20;
 
-		oil.cost = iron.cost * metal.cost * metallurgy.cost;
+		oil.cost = iron.cost * metal.cost * metallurgy.cost/10000000;
 
-		coal.cost = Math.abs(oil.cost - asphault.cost * 1.5);
+		coal.cost = Math.abs(oil.cost - asphault.cost * 1.5)/100;
 
-		locomotive.cost = coal.cost * railroad.cost;
+		locomotive.cost = coal.cost * railroad.cost/10000000;
 
-		paved.cost = railroad.cost * asphault.cost;
+		paved.cost = railroad.cost * asphault.cost/1e12;
 
-		gasoline.cost = asphault.cost * oil.cost;
+		gasoline.cost = asphault.cost * oil.cost/1e10;
 
-		jetFuel.cost = oil.cost * gasoline.cost * 12;
+		jetFuel.cost = oil.cost * gasoline.cost / 12e12;
 
-		longTrains.cost = locomotive.cost * engine.cost * horses.cost;
+		longTrains.cost = locomotive.cost * engine.cost /100;
 
-		diesel.cost = oil.cost * locomotive.cost;
+		diesel.cost = oil.cost * locomotive.cost/1e8;
 
-		cars.cost = diesel.cost * paved.cost;
+		cars.cost = diesel.cost * paved.cost /1e11;
 
 		beams.cost = jetFuel.cost * metallurgy.cost / 20;
 
-		cowCatchers.cost = longTrains.cost * horses.cost;
+		cowCatchers.cost = longTrains.cost *100;
 
-		powerLines.cost = electricity.cost * paved.cost;
+		powerLines.cost = electricity.cost * paved.cost /1000000;
 
-		trucks.cost = cars.cost * 15;
+		trucks.cost = cars.cost * 10;
 
 		semi.cost = trucks.cost * 100;
 
