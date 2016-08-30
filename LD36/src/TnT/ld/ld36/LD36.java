@@ -514,6 +514,7 @@ public class LD36 extends JFrame {
 								Overlay.BOTTOM_HEIGHT);
 						right.setRect(buffer.getWidth() - Overlay.RIGHT_WIDTH, 0, Overlay.RIGHT_WIDTH,
 								buffer.getHeight() - Overlay.BOTTOM_HEIGHT);
+						
 						right.draw(g);
 						bottom.draw(g);
 						// g.setColor(Color.DARK_GRAY);
@@ -532,6 +533,19 @@ public class LD36 extends JFrame {
 						g.drawString(Arrays.toString(Transport.debug()), 200, 30);
 						g.drawString("lit:" + City.literacy, 100, 15);
 						g.drawString("lifetime: " + moneyString(lifeTimeEarnings), 100, 40);
+						String s = "";
+						/*
+						for(int i =0;i <bottom.elements.size(); i++){
+							if(bottom.elements.get(i) == null){
+								System.out.println("A");
+							}
+							if(bottom.elements.get(i).background == null){
+								System.out.println("B");
+							}
+							s+=bottom.elements.get(i).background.getRed()+" ";
+						}
+						*/
+						//g.drawString(s, 400, 700);
 					}
 
 					g.dispose();
@@ -699,14 +713,14 @@ public class LD36 extends JFrame {
 		double RX = buffer.getWidth() - Overlay.RIGHT_WIDTH;
 
 		clearSelection.setRect(BX, BY, BW, BW);
-		addFootPath.setRect(BX + BW + GAP, BY, BW, BW);
-		addDirtRoad.setRect(BX + 2 * BW + 2 * GAP, BY, BW, BW);
-		addCatapalt.setRect(BX + 3 * BW + 3 * GAP, BY, BW, BW);
-		addRailRoad.setRect(BX + 4 * BW + 4 * GAP, BY, BW, BW);
-		addPavedRoad.setRect(BX + 5 * BW + 5 * GAP, BY, BW, BW);
-		addAirport.setRect(BX + 6 * BW + 6 * GAP, BY, BW, BW);
-		moneyOverlay.setRect(220, BY, BX - 10, BY);
-
+		addFootPath.setRect(BX+BW+GAP, BY, BW, BW);
+		addDirtRoad.setRect(BX+2*BW+2*GAP, BY, BW, BW);
+		addCatapalt.setRect(BX+3*BW+3*GAP, BY, BW, BW);
+		addRailRoad.setRect(BX+4*BW+4*GAP,  BY, BW, BW);
+		addPavedRoad.setRect(BX+5*BW+5*GAP,BY,BW,BW);
+		addAirport.setRect(BX+6*BW+6*GAP, BY, BW, BW);
+		moneyOverlay.setRect(220, BY, BX-100, BY);
+		
 		addFootPath.setRoad(Road.FOOTPATH);
 		addDirtRoad.setRoad(Road.DIRT);
 		addRailRoad.setRoad(Road.RAIL);
@@ -770,11 +784,14 @@ public class LD36 extends JFrame {
 		// techTree.addChild(treeButton);
 
 		TechTree.MAX_SCROLL = (int) (techTree.width - buffer.getWidth());
-		sp.setMaxHorizontalScroll(TechTree.MAX_SCROLL);
+//		sp.setMaxHorizontalScroll(TechTree.MAX_SCROLL);
 		techTree.addChild(moneyOverlay);
 		// techTree.visible = false;
 		sp.visible = false;
 		sp.inner = techTree;
+		right.setRect(buffer.getWidth() - Overlay.RIGHT_WIDTH, 0, Overlay.RIGHT_WIDTH, buffer.getHeight() - Overlay.BOTTOM_HEIGHT);
+		
+		
 
 		gameState = State.GAME;
 	}
