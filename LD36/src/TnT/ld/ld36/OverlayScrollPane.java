@@ -21,6 +21,7 @@ public class OverlayScrollPane extends Overlay{
 	int hmin = 0;
 	int vmin = 0;
 	int vmax = 0;
+	long lastScroll = 0;
 	
 		
 	public OverlayScrollPane(){
@@ -115,33 +116,36 @@ public class OverlayScrollPane extends Overlay{
 		this.vmax = (int) (inner.height - innerSize().getHeight());
 		
 //		System.out.println(hmax+", "+hscroll);
-		if(LD36.rightPressed && !hactive ){
-			hbar.x +=5;
-			if(hbar.x > width -hbar.width){
-				hbar.x = width - hbar.width;
+		if(System.currentTimeMillis() - lastScroll > 30){
+			if(LD36.rightPressed && !hactive ){
+				hbar.x +=5;
+				if(hbar.x > width -hbar.width){
+					hbar.x = width - hbar.width;
+				}
+				calculateScroll();
+				
 			}
-			calculateScroll();
-			
-		}
-		else if(LD36.left && !hactive){
-			hbar.x -=5;
-			if(hbar.x < x){
-				hbar.x = x;
+			else if(LD36.left && !hactive){
+				hbar.x -=5;
+				if(hbar.x < x){
+					hbar.x = x;
+				}
+				calculateScroll();
 			}
-			calculateScroll();
-		}
-		if(LD36.down && ! vactive){
-			vbar.y+=5;
-			if(vbar.y > height-vbar.height){
-				vbar.y = height-vbar.height;
+			if(LD36.down && ! vactive){
+				vbar.y+=5;
+				if(vbar.y > height-vbar.height){
+					vbar.y = height-vbar.height;
+				}
+				calculateScroll();
+			} else if(LD36.up && ! vactive){
+				vbar.y-=5;
+				if(vbar.y < y){
+					vbar.y = y;
+				}
+				calculateScroll();
 			}
-			calculateScroll();
-		} else if(LD36.up && ! vactive){
-			vbar.y-=5;
-			if(vbar.y < y){
-				vbar.y = y;
-			}
-			calculateScroll();
+			lastScroll = System.currentTimeMillis();
 		}
 		
 		Color oc = g.getColor();
