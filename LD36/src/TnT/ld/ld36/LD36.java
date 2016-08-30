@@ -520,6 +520,7 @@ public class LD36 extends JFrame {
 								Overlay.BOTTOM_HEIGHT);
 						right.setRect(buffer.getWidth() - Overlay.RIGHT_WIDTH, 0, Overlay.RIGHT_WIDTH,
 								buffer.getHeight() - Overlay.BOTTOM_HEIGHT);
+						
 						right.draw(g);
 						bottom.draw(g);
 						// g.setColor(Color.DARK_GRAY);
@@ -538,6 +539,19 @@ public class LD36 extends JFrame {
 						g.drawString(Arrays.toString(Transport.debug()), 200, 30);
 						g.drawString("lit:" + City.literacy, 100, 15);
 						g.drawString("lifetime: " + moneyString(lifeTimeEarnings), 100, 40);
+						String s = "";
+						/*
+						for(int i =0;i <bottom.elements.size(); i++){
+							if(bottom.elements.get(i) == null){
+								System.out.println("A");
+							}
+							if(bottom.elements.get(i).background == null){
+								System.out.println("B");
+							}
+							s+=bottom.elements.get(i).background.getRed()+" ";
+						}
+						*/
+						//g.drawString(s, 400, 700);
 					}
 
 					g.dispose();
@@ -583,13 +597,29 @@ public class LD36 extends JFrame {
 							for (int j = 0; j < c.paths.size(); j++) {
 								double cap = 0;
 								Path[] paths = c.paths.get(j);
+								Point last = null;
 								for (int t = 0; t < Transport.baseUnits.length; t++) {
 									Transport current = Transport.currentUnits[t];
 									if (current != null && paths[t] != null) {
 										cap += current.scalar / paths[t].length();
+										last = paths[t].getLast();
 									}
 								}
+								if (last != null && map.cities.get(i).distance(last) < Transport.CATAPAULT_RANGE.scalar) {
+									cap += Transport.CATAPAULT.scalar;
+								}
 								c.rateCapacity.set(j, (c == selectedCity && boosted ? 1.2 : 1) * cap);
+							}
+							if (map.cities.get(i).airport) {
+								boolean past = false;
+								for (int k = 0; k < map.cities.size() - 1; k++) {
+									if (k == i) {
+										past = true;
+									}
+									if (map.cities.get(k + (past?1:0)).airport) {
+										c.rateCapacity.set(k, c.rateCapacity.get(k) + (c == selectedCity && boosted ? 1.2 : 1) * Transport.PLANE.scalar / map.cities.get(i).distance(map.cities.get(k)));
+									}
+								}
 							}
 						}
 
@@ -765,11 +795,14 @@ public class LD36 extends JFrame {
 		// techTree.addChild(treeButton);
 
 		TechTree.MAX_SCROLL = (int) (techTree.width - buffer.getWidth());
-		sp.setMaxHorizontalScroll(TechTree.MAX_SCROLL);
+//		sp.setMaxHorizontalScroll(TechTree.MAX_SCROLL);
 		techTree.addChild(moneyOverlay);
 		// techTree.visible = false;
 		sp.visible = false;
 		sp.inner = techTree;
+		right.setRect(buffer.getWidth() - Overlay.RIGHT_WIDTH, 0, Overlay.RIGHT_WIDTH, buffer.getHeight() - Overlay.BOTTOM_HEIGHT);
+		
+		
 
 		gameState = State.GAME;
 	}
