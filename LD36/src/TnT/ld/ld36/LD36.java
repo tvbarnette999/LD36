@@ -36,7 +36,7 @@ public class LD36 extends JFrame {
 	 */
 	private static final long serialVersionUID = 8318833936997575712L;
 	public static LD36 theLD;
-	public static boolean debug = true;
+	public static boolean debug = false;
 	volatile State gameState = State.MAIN;
 	JPanel panel = new JPanel();
 	Map map;
@@ -671,7 +671,7 @@ public class LD36 extends JFrame {
 			}
 		}
 	};
-	public static double mailValue = .003;
+	public static double mailValue = .03;
 	public static double populationGrowth = 1.0001;
 	public static long tick = 0;
 	public static double moneyPerTick;
