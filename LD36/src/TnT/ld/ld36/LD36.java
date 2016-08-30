@@ -577,13 +577,29 @@ public class LD36 extends JFrame {
 							for (int j = 0; j < c.paths.size(); j++) {
 								double cap = 0;
 								Path[] paths = c.paths.get(j);
+								Point last = null;
 								for (int t = 0; t < Transport.baseUnits.length; t++) {
 									Transport current = Transport.currentUnits[t];
 									if (current != null && paths[t] != null) {
 										cap += current.scalar / paths[t].length();
+										last = paths[t].getLast();
 									}
 								}
+								if (last != null && map.cities.get(i).distance(last) < Transport.CATAPAULT_RANGE.scalar) {
+									cap += Transport.CATAPAULT.scalar;
+								}
 								c.rateCapacity.set(j, (c == selectedCity && boosted ? 1.2 : 1) * cap);
+							}
+							if (map.cities.get(i).airport) {
+								boolean past = false;
+								for (int k = 0; k < map.cities.size() - 1; k++) {
+									if (k == i) {
+										past = true;
+									}
+									if (map.cities.get(k + (past?1:0)).airport) {
+										c.rateCapacity.set(k, c.rateCapacity.get(k) + (c == selectedCity && boosted ? 1.2 : 1) * Transport.PLANE.scalar / map.cities.get(i).distance(map.cities.get(k)));
+									}
+								}
 							}
 						}
 
