@@ -6,7 +6,7 @@ import java.awt.Graphics2D;
 
 public class OverlayText extends Overlay {
 	String text = "";
-	float fontSize = 10;
+	float fontSize = 15;
 	Color c = Color.black;
 	
 	public OverlayText(double x, double y, String text) {

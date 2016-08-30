@@ -47,7 +47,7 @@ public class LD36 extends JFrame {
 		public void draw(Graphics2D g){
 			if(selectedCity == null)return;
 			Color oc = g.getColor();
-			g.setColor(Color.white);
+			g.setColor(Color.black);
 //			g.fill(this);
 			int y = (int) this.y;
 			int i2 = 0;
@@ -62,8 +62,8 @@ public class LD36 extends JFrame {
 					continue;
 				}
 				g.drawString(" "+map.cities.get(i).name+":", (int) x, y);
-				g.drawString(""+map.cities.get(i).desiredRate.get(i2),(int) x+100, y+15);
-				g.drawString(""+map.cities.get(i).rateCapacity.get(i2), (int) (x+100), y);
+				g.drawString(""+moneyString(map.cities.get(i).desiredRate.get(i2)).substring(1),(int) x+100, y+15);
+				g.drawString(""+moneyString(map.cities.get(i).rateCapacity.get(i2)).substring(1), (int) (x+100), y);
 				y+=30;
 			}
 			
@@ -793,7 +793,7 @@ public class LD36 extends JFrame {
 	public void startGame() {
 		map = Map.generate();
 
-		treeButton.setRect(10, buffer.getHeight() - 70, 200, 50);
+		treeButton.setRect(10, buffer.getHeight() - 70 - 30, 200, 50);
 
 		// /*techTree.height*/sp.height = buffer.getHeight() -
 		// Overlay.BOTTOM_HEIGHT;//setRect(0, 0, buffer.getWidth(),
@@ -818,14 +818,14 @@ public class LD36 extends JFrame {
 		addAirport.setRect(BX + 6 * BW + 6 * GAP, BY, BW, BW);
 		moneyOverlay.setRect(220, BY, BX - 10, BY);
 		
-		double h = -10;
+		double h = -15;
 		BX += BW/2;
 		footPathCost = new OverlayText(BX + 1*BW + 1*GAP, BY + h, "test");
-		dirtRoadCost = new OverlayText(BX + 2*BW + 2*GAP, BY + h, "test");
+		dirtRoadCost = new OverlayText(BX + 2*BW + 2*GAP, BY + BW - h, "test");
 		catapultCost = new OverlayText(BX + 3*BW + 3*GAP, BY + h, "test");
-		railRoadCost = new OverlayText(BX + 4*BW + 4*GAP, BY + h, "test");
+		railRoadCost = new OverlayText(BX + 4*BW + 4*GAP, BY + BW - h, "test");
 		pavedRoadCost = new OverlayText(BX + 5*BW + 5*GAP, BY + h, "test");
-		airportCost = new OverlayText(BX + 6*BW + 6*GAP, BY + h, "test");
+		airportCost = new OverlayText(BX + 6*BW + 6*GAP, BY + BW - h, "test");
 
 		addFootPath.setRoad(Road.FOOTPATH);
 		addDirtRoad.setRoad(Road.DIRT);
