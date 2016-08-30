@@ -539,8 +539,9 @@ public class LD36 extends JFrame {
 		ArrayList<MenuSprite> menuSprites = new ArrayList<MenuSprite>();
 		Random r = new Random();
 		public void run() {
-			try {
+			
 				while (true) {
+					try{
 					Graphics2D g = buffer.createGraphics();
 					g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 					g.setColor(Color.darkGray);
@@ -674,11 +675,12 @@ public class LD36 extends JFrame {
 						frames = 0;
 						start = System.currentTimeMillis();
 					}
-				}
+				
 			} catch (Exception e) {
 				e.printStackTrace();
-				System.exit(0);
+//				System.exit(0)
 			}
+				}
 		}
 	};
 	public static double mailValue = .03;
@@ -688,8 +690,9 @@ public class LD36 extends JFrame {
 	public static long POP_BUMP = 1000; // every 100 s
 	public Thread physics = new Thread() {
 		public void run() {
-			try {
+			
 				while (true) {
+					try{
 					if (gameState.equals(TnT.ld.ld36.State.GAME)) {
 						if (map.recalcFlag)
 							map.calculateAllPaths();
@@ -799,11 +802,12 @@ public class LD36 extends JFrame {
 						Thread.sleep(PHYSICS_DELAY);
 					} catch (Exception e) {
 					}
+					} catch (Exception e) {
+						e.printStackTrace();
+//						System.exit(0);
+					}
 				}
-			} catch (Exception e) {
-				e.printStackTrace();
-				System.exit(0);
-			}
+			
 		}
 	};
 	public static final long PHYSICS_DELAY = 10;
