@@ -15,6 +15,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
+import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorConvertOp;
 import java.awt.image.VolatileImage;
@@ -22,6 +23,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Random;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -468,6 +470,7 @@ public class LD36 extends JFrame {
 	}
 
 	public void initGUI() {
+		this.setTitle(GAME_NAME);
 		// Fullscreen?
 		panel.setPreferredSize(new Dimension(1280, 768));
 		// buffer = new BufferedImage(1280, 768, BufferedImage.TYPE_4BYTE_ABGR);
@@ -486,24 +489,65 @@ public class LD36 extends JFrame {
 		graphics.start();
 		physics.start();
 	}
-
+	public static final String GAME_NAME = "IT'S MAIL TIIIME...";
+	public static final String CLICK = "Click anywhere to continue";
 	public Thread graphics = new Thread() {
 		long start = System.currentTimeMillis();
 		int fps = 0;
 		int frames = 0;
-
+		int tick = 0;
+		ArrayList<MenuSprite> menuSprites = new ArrayList<MenuSprite>();
+		Random r = new Random();
 		public void run() {
 			try {
 				while (true) {
 					Graphics2D g = buffer.createGraphics();
 					g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-					g.setColor(Color.BLACK);
+					g.setColor(Color.darkGray);
 					g.fillRect(0, 0, buffer.getWidth(), buffer.getHeight());
 					g.setColor(Color.BLACK);
 					switch (gameState) {
 					case MAIN:
+						Font f = g.getFont();
+						g.setFont(f.deriveFont(42f));
 						g.setColor(Color.white);
-						g.drawString("Click To Start", 400, 400);
+						g.drawString(GAME_NAME,(getWidth() - g.getFontMetrics().stringWidth(GAME_NAME)) / 2, 200);
+						g.setFont(f.deriveFont(24f));
+						g.drawString(CLICK,(getWidth() - g.getFontMetrics().stringWidth(CLICK)) / 2, 400);
+						g.setFont(f);
+						for (MenuSprite s : menuSprites) {
+							s.draw(g);
+						}
+						if (tick++ % 100 == 0) {
+							Point2D.Double src, dest;
+							if (r.nextBoolean()) {
+								if (r.nextBoolean()) {
+									src = new Point2D.Double(0, r.nextInt(getHeight()));
+								} else {
+									src = new Point2D.Double(getWidth(), r.nextInt(getHeight()));
+								}
+							} else {
+								if (r.nextBoolean()) {
+									src = new Point2D.Double(r.nextInt(getWidth()), getHeight());
+								} else {
+									src = new Point2D.Double(r.nextInt(getWidth()), 0);
+								}
+							}
+							if (r.nextBoolean()) {
+								if (r.nextBoolean()) {
+									dest = new Point2D.Double(0, r.nextInt(getHeight()));
+								} else {
+									dest = new Point2D.Double(getWidth(), r.nextInt(getHeight()));
+								}
+							} else {
+								if (r.nextBoolean()) {
+									dest = new Point2D.Double(r.nextInt(getWidth()), getHeight());
+								} else {
+									dest = new Point2D.Double(r.nextInt(getWidth()), 0);
+								}
+							}
+							menuSprites.add(new MenuSprite(src, dest, Transport.baseUnits[r.nextInt(Transport.baseUnits.length)].img));
+						}
 						break;
 					case GAME:
 						if (sp.visible) {
@@ -572,7 +616,7 @@ public class LD36 extends JFrame {
 			}
 		}
 	};
-	public static double mailValue = .001;
+	public static double mailValue = .003;
 	public static double populationGrowth = 1.0001;
 	public static long tick = 0;
 	public static double moneyPerTick;
@@ -606,7 +650,7 @@ public class LD36 extends JFrame {
 									}
 								}
 								if (last != null && map.cities.get(i).distance(last) < Transport.CATAPAULT_RANGE.scalar) {
-									cap += Transport.CATAPAULT.scalar;
+									cap += Transport.CATAPAULT.scalar * map.cities.get(i).catapults;
 								}
 								c.rateCapacity.set(j, (c == selectedCity && boosted ? 1.2 : 1) * cap);
 							}
