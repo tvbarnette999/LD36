@@ -60,7 +60,7 @@ public class LD36 extends JFrame {
 	OverlayButton addAirport = new OverlayButton(airport);
 	OverlayText footPathCost;
 	OverlayText dirtRoadCost;
-	OverlayText roadRoadCost;
+	OverlayText railRoadCost;
 	OverlayText pavedRoadCost;
 	OverlayText catapultCost;
 	OverlayText airportCost;
@@ -249,12 +249,14 @@ public class LD36 extends JFrame {
 				// map.clearSelection();
 				// }
 			} else if (o == addCatapalt) {
-				if (money > Transport.CATAPULT_COST * map.selectAddCatapult) {
+				if (money >= Transport.CATAPULT_COST * map.selectAddCatapult) {
+					money -= Transport.CATAPULT_COST * map.selectAddCatapult;
 					map.buildCatapults();
 					map.clearSelection();
 				}
 			} else if (o == addAirport) {
-				if (money > Road.AIRPORT.cost * map.selectAddAirport) {
+				if (money >= Road.AIRPORT.cost * map.selectAddAirport) {
+					money -= Road.AIRPORT.cost * map.selectAddAirport;
 					map.buildAirports();
 					map.clearSelection();
 				}
@@ -559,6 +561,23 @@ public class LD36 extends JFrame {
 						map.draw(g);
 						displayCityData();
 
+						footPathCost.setText(moneyString(map.selectAdd[Road.FOOTPATH.key]*Road.FOOTPATH.cost));
+						dirtRoadCost.setText(moneyString(map.selectAdd[Road.DIRT.key]*Road.DIRT.cost));
+						pavedRoadCost.setText(moneyString(map.selectAdd[Road.PAVED.key]*Road.PAVED.cost));
+						railRoadCost.setText(moneyString(map.selectAdd[Road.RAIL.key]*Road.RAIL.cost));
+						airportCost.setText(moneyString(map.selectAddAirport*Road.AIRPORT.cost));
+						catapultCost.setText(moneyString(map.selectAddCatapult*Transport.CATAPULT_COST));
+						
+						Color good = Color.green.darker().darker();
+						Color bad = Color.red;
+						footPathCost.setColor(map.selectAdd[Road.FOOTPATH.key]*Road.FOOTPATH.cost>money?bad:good);
+						dirtRoadCost.setColor(map.selectAdd[Road.DIRT.key]*Road.DIRT.cost>money?bad:good);
+						pavedRoadCost.setColor(map.selectAdd[Road.PAVED.key]*Road.PAVED.cost>money?bad:good);
+						railRoadCost.setColor(map.selectAdd[Road.RAIL.key]*Road.RAIL.cost>money?bad:good);
+						airportCost.setColor(map.selectAddAirport*Road.AIRPORT.cost>money?bad:good);
+						catapultCost.setColor(map.selectAddCatapult*Transport.CATAPULT_COST>money?bad:good);
+						
+						
 						// draw everything above the map
 						bottom.setRect(0, buffer.getHeight() - Overlay.BOTTOM_HEIGHT, buffer.getWidth(),
 								Overlay.BOTTOM_HEIGHT);
@@ -771,10 +790,14 @@ public class LD36 extends JFrame {
 		addAirport.setRect(BX + 6 * BW + 6 * GAP, BY, BW, BW);
 		moneyOverlay.setRect(220, BY, BX - 10, BY);
 		
-		double h = 20;
-		footPathCost = new OverlayText(BX + 1*BW + 1*GAP, BY + h);
-		dirtRoadCost = new OverlayText(BX + 2*BW + 2*GAP, BY + h);
-		dirtRoadCost = new OverlayText(BX + 2*BW + 2*GAP, BY + h);
+		double h = -10;
+		BX += BW/2;
+		footPathCost = new OverlayText(BX + 1*BW + 1*GAP, BY + h, "test");
+		dirtRoadCost = new OverlayText(BX + 2*BW + 2*GAP, BY + h, "test");
+		catapultCost = new OverlayText(BX + 3*BW + 3*GAP, BY + h, "test");
+		railRoadCost = new OverlayText(BX + 4*BW + 4*GAP, BY + h, "test");
+		pavedRoadCost = new OverlayText(BX + 5*BW + 5*GAP, BY + h, "test");
+		airportCost = new OverlayText(BX + 6*BW + 6*GAP, BY + h, "test");
 
 		addFootPath.setRoad(Road.FOOTPATH);
 		addDirtRoad.setRoad(Road.DIRT);
@@ -815,6 +838,13 @@ public class LD36 extends JFrame {
 		bottom.addChild(addPavedRoad);
 		bottom.addChild(addAirport);
 		bottom.addChild(moneyOverlay);
+		
+		bottom.addChild(footPathCost);
+		bottom.addChild(dirtRoadCost);
+		bottom.addChild(catapultCost);
+		bottom.addChild(railRoadCost);
+		bottom.addChild(pavedRoadCost);
+		bottom.addChild(airportCost);
 
 		right.addChild(cityName);
 		right.addChild(cityPopulation);

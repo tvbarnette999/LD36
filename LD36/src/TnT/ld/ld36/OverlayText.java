@@ -6,8 +6,8 @@ import java.awt.Graphics2D;
 
 public class OverlayText extends Overlay {
 	String text = "";
-	Font f;
-	Color c;
+	float fontSize = 10;
+	Color c = Color.black;
 	
 	public OverlayText(double x, double y, String text) {
 		this.text = text;
@@ -21,8 +21,8 @@ public class OverlayText extends Overlay {
 		this(x, y, "");
 	}
 	
-	public void setFont(Font f) {
-		this.f = f;
+	public void setFontSize(float size) {
+		fontSize = size;
 	}
 	
 	public void setColor(Color c) {
@@ -36,10 +36,10 @@ public class OverlayText extends Overlay {
 	public void draw(Graphics2D g) {
 		Font fo = g.getFont();
 		Color co = g.getColor();
-		g.setFont(f);
+		g.setFont(fo.deriveFont(fontSize));
 		g.setColor(c);
-		
-		g.drawString(text, (int) (x-g.getFontMetrics(f).stringWidth(text)/2), (int)(y-f.getSize2D()/2));
+//		System.out.println(text);
+		g.drawString(text, (int) (x-g.getFontMetrics(g.getFont()).stringWidth(text)/2), (int)(y+fontSize/2));
 		
 		g.setFont(fo);
 		g.setColor(co);
