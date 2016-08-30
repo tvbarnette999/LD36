@@ -740,6 +740,7 @@ public class Map {
 	}
 
 	public void addAnimation(Sprite sprite) {
+		if (anims.size() > 10 * cities.size()) return;
 		anims.add(sprite);
 	}
 }

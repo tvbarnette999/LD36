@@ -519,31 +519,31 @@ public class TechTree extends Overlay {
 
 		combustion.cost = (fossil.cost + engine.cost) * 50;
 
-		asphault.cost = (horses.cost * railroad.cost) / 20;
+		asphault.cost = (horses.cost * railroad.cost) / 500;
 
 		oil.cost = iron.cost * metal.cost * metallurgy.cost/10000000;
 
 		coal.cost = Math.abs(oil.cost - asphault.cost * 1.5)/100;
 
-		locomotive.cost = coal.cost * railroad.cost/10000000;
+		locomotive.cost = coal.cost * railroad.cost/1000000000;
 
-		paved.cost = railroad.cost * asphault.cost/1e12;
+		paved.cost = railroad.cost * asphault.cost/1e9;
 
-		gasoline.cost = asphault.cost * oil.cost/1e10;
+		gasoline.cost = asphault.cost * oil.cost/1e12;
 
 		jetFuel.cost = oil.cost * gasoline.cost / 12e12;
 
-		longTrains.cost = locomotive.cost * engine.cost /100;
+		longTrains.cost = locomotive.cost * engine.cost /10000000;
 
-		diesel.cost = oil.cost * locomotive.cost/1e8;
+		diesel.cost = oil.cost * locomotive.cost/1e12;
 
-		cars.cost = diesel.cost * paved.cost /1e11;
+		cars.cost = diesel.cost * paved.cost /1e14;
 
-		beams.cost = jetFuel.cost * metallurgy.cost / 20;
+		beams.cost = jetFuel.cost * metallurgy.cost / 2000;
 
-		cowCatchers.cost = longTrains.cost *100;
+		cowCatchers.cost = longTrains.cost *1000;
 
-		powerLines.cost = electricity.cost * paved.cost /1000000;
+		powerLines.cost = electricity.cost * paved.cost /100000000;
 
 		trucks.cost = cars.cost * 10;
 
@@ -551,15 +551,15 @@ public class TechTree extends Overlay {
 
 		aerodynamics.cost = beams.cost * 4.26;
 
-		dieselTrain.cost = locomotive.cost * diesel.cost;
+		dieselTrain.cost = locomotive.cost * diesel.cost / 1000;
 
-		battery.cost = powerLines.cost * paved.cost;
+		battery.cost = powerLines.cost * paved.cost / 1000;
 
-		EPA.cost = diesel.cost * diesel.cost;
+		EPA.cost = diesel.cost * 2000;
 
-		aviation.cost = aerodynamics.cost * paved.cost * 12;
+		aviation.cost = aerodynamics.cost * paved.cost / 100;
 
-		electricTrain.cost = powerLines.cost * locomotive.cost;
+		electricTrain.cost = powerLines.cost * locomotive.cost / 1e7;
 
 		AI.cost = battery.cost * sandals.cost * sandals.cost;
 

@@ -728,26 +728,31 @@ public class LD36 extends JFrame {
 						HashMap<Point, Point> done2 = new HashMap<Point, Point>();
 						for (int i = 0; i < map.cities.size(); i++) {
 							totalPop += map.cities.get(i).population;
+							int count = 0;
 							for (int j = 0; j < Transport.baseUnits.length
 									&& Transport.currentUnits[j] != null; j++) {
+								count = 0;
 								if (tick % 700 / ((j + 1) * 5) == 0) {
-									ArrayList<Path[]> paths = map.cities.get(i).paths;
-									Point p;
-									for (int k = 0; k < paths.size(); k++) {
-										try {
-											p = paths.get(k)[j].getLast();
-										} catch (NullPointerException e) {
-											continue;
+									count++;
+									if (count <= 5 || count > 5 && Math.random() < 1 / count) {
+										ArrayList<Path[]> paths = map.cities.get(i).paths;
+										Point p;
+										for (int k = 0; k < paths.size(); k++) {
+											try {
+												p = paths.get(k)[j].getLast();
+											} catch (NullPointerException e) {
+												continue;
+											}
+											if (!(done1.containsKey(map.cities.get(i)) && done1.get(map.cities.get(i)).equals(p)) && !(done2.containsKey(map.cities.get(i)) && done2.get(map.cities.get(i)).equals(p)) ){
+												done1.put(map.cities.get(i), p);
+												done2.put(p, map.cities.get(i));
+												map.addAnimation(new Sprite(map, map.cities.get(i), paths.get(k)[j],
+														Transport.currentUnits[j].img));
+											}
+											// System.out.println("Made sprite for "
+											// + j + " in " +
+											// map.cities.get(i).name);
 										}
-										if (!(done1.containsKey(map.cities.get(i)) && done1.get(map.cities.get(i)).equals(p)) && !(done2.containsKey(map.cities.get(i)) && done2.get(map.cities.get(i)).equals(p)) ){
-											done1.put(map.cities.get(i), p);
-											done2.put(p, map.cities.get(i));
-											map.addAnimation(new Sprite(map, map.cities.get(i), paths.get(k)[j],
-												Transport.currentUnits[j].img));
-										}
-										// System.out.println("Made sprite for "
-										// + j + " in " +
-										// map.cities.get(i).name);
 									}
 								}
 							}
