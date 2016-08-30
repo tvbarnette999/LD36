@@ -41,8 +41,8 @@ public class Map {
 		}
 		cityImages = city.toArray(new Image[0]);
 	}
-	public static final int MAP_WIDTH = 100;
-	public static final int MAP_HEIGHT = 100;
+	public static final int MAP_WIDTH = 60;
+	public static final int MAP_HEIGHT = 40;
 	/** Ratio of width:height of hexagon */
 	public static final double RATIO = 1.154700538;
 	/** The height of a tile at max zoom */
