@@ -41,8 +41,8 @@ public class Map {
 		}
 		cityImages = city.toArray(new Image[0]);
 	}
-	public static final int MAP_WIDTH = 100;
-	public static final int MAP_HEIGHT = 100;
+	public static final int MAP_WIDTH = 60;
+	public static final int MAP_HEIGHT = 40;
 	/** Ratio of width:height of hexagon */
 	public static final double RATIO = 1.154700538;
 	/** The height of a tile at max zoom */
@@ -603,15 +603,15 @@ public class Map {
 					// if ((data[x][y]&CITY_BIT) != 0) {
 					// drawTileImage(g, tents, loc);
 					// }
-					if ((data[x][y] & DIRT_ROAD_BIT) != 0) {
-//						g.setColor(Color.yellow.darker().darker());
-//						g.fillRect((int) loc.x + 20, (int) (loc.y + 20), 20, 20);
-						drawTileImage(g, LD36.dirtRoad, loc);
-					}
 					if ((data[x][y] & FOOT_PATH_BIT) != 0) {
 //						g.setColor(Color.GREEN);
 //						g.fillRect((int) loc.x + 60, (int) loc.y + 20, 20, 20);
 						drawTileImage(g, LD36.footPath, loc);
+					}
+					if ((data[x][y] & DIRT_ROAD_BIT) != 0) {
+//						g.setColor(Color.yellow.darker().darker());
+//						g.fillRect((int) loc.x + 20, (int) (loc.y + 20), 20, 20);
+						drawTileImage(g, LD36.dirtRoad, loc);
 					}
 					if ((data[x][y] & PAVED_ROAD_BIT) != 0) {
 //						g.setColor(Color.black);
